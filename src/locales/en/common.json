@@ -1,0 +1,132 @@
+{
+  "site_title": "Japan Travel Guide | Tokyo Tourism | Best Japan Trip Planner 2025",
+  "site_description": "Discover Japan with AI-powered travel planning. Complete guide to Tokyo, Yokohama, Saitama & Chiba tourism. Hotels, restaurants, attractions & personalized itineraries for your perfect Japan trip.",
+  "navigation": {
+    "home": "Home",
+    "areas": "Areas",
+    "categories": "Categories", 
+    "favorites": "Favorites",
+    "profile": "Profile",
+    "coordinator": "Travel Coordinator",
+    "ai_spots": "AI Recommendations",
+    "plan": "Trip Planner",
+    "courses": "Travel Courses",
+    "realtime": "Real-time Information",
+    "stories": "Travel Stories"
+  },
+  "hero": {
+    "title": "Plan Your Dream Trip to Japan with AI",
+    "subtitle": "Get personalized itineraries, hidden gems, and authentic experiences tailored just for you. Start planning in under 60 seconds.",
+    "plan": "Create My Trip Plan",
+    "explore": "Explore Destinations"
+  },
+  "features": {
+    "title": "Why Choose Our Japan Travel Guide",
+    "ai_planning": {
+      "title": "AI Travel Planning",
+      "description": "Get personalized Japan itineraries based on your interests, budget, and travel style. Our AI analyzes thousands of attractions to create your perfect trip."
+    },
+    "comprehensive_guide": {
+      "title": "Comprehensive Local Guide",
+      "description": "Discover hidden gems and popular attractions in Tokyo, Yokohama, Saitama, and Chiba with insider tips from local experts."
+    },
+    "real_time": {
+      "title": "Real-Time Information",
+      "description": "Access live updates on opening hours, crowd levels, weather conditions, and transportation schedules for seamless travel."
+    },
+    "multilingual": {
+      "title": "Multilingual Support",
+      "description": "Available in English, Japanese, and Korean to help international visitors navigate Japan with confidence."
+    }
+  },
+  "areas": {
+    "title": "Popular Japan Travel Destinations",
+    "subtitle": "Explore the best tourist attractions and hidden gems in Japan's most exciting regions",
+    "spots": "spots",
+    "features": {
+      "title": "Discover Japan's Best Regions",
+      "explore": {
+        "title": "Explore Diverse Areas",
+        "description": "From bustling Tokyo to serene Saitama, discover unique experiences in each region"
+      },
+      "discover": {
+        "title": "Discover Hidden Gems",
+        "description": "Find local favorites and off-the-beaten-path attractions recommended by experts"
+      },
+      "experience": {
+        "title": "Experience Authentic Japan",
+        "description": "Immerse yourself in local culture, cuisine, and traditions"
+      }
+    },
+    "tokyo": {
+      "name": "Tokyo",
+      "title": "Tokyo Travel Guide",
+      "description": "Japan's vibrant capital city where cutting-edge technology meets ancient traditions. Explore Shibuya, Asakusa, Ginza, Tokyo Skytree, and countless temples, museums, and world-class restaurants."
+    },
+    "yokohama": {
+      "name": "Yokohama",
+      "title": "Yokohama Tourism",
+      "description": "International port city famous for Chinatown, Red Brick Warehouse, Minato Mirai skyline, and coastal attractions. Perfect for day trips from Tokyo."
+    },
+    "saitama": {
+      "name": "Saitama",
+      "title": "Saitama Attractions",
+      "description": "Experience traditional Japan in Kawagoe's historic Edo-period streets and enjoy natural beauty in Chichibu. Great for cultural tourism and hiking."
+    },
+    "chiba": {
+      "name": "Chiba",
+      "title": "Chiba Travel",
+      "description": "Home to Narita Airport, Tokyo Disneyland, and beautiful Boso Peninsula beaches. Combines theme parks, nature, and traditional Japanese culture."
+    }
+  },
+  "categories": {
+    "sightseeing": "Tourist Attractions",
+    "restaurants": "Japanese Restaurants",
+    "hotels": "Hotels & Accommodation", 
+    "transportation": "Transportation Guide",
+    "entertainment": "Entertainment & Activities",
+    "shopping": "Shopping Districts"
+  },
+  "actions": {
+    "search": "Search Japan Attractions",
+    "add_to_favorites": "Save to Favorites",
+    "share": "Share Recommendation",
+    "get_directions": "Get Directions",
+    "view_details": "View Details",
+    "plan_trip": "Add to Trip Plan",
+    "book_now": "Book Now"
+  },
+  "common": {
+    "loading": "Loading Japan travel information...",
+    "error": "Unable to load travel information",
+    "no_results": "No attractions found",
+    "rating": "Tourist Rating",
+    "reviews": "Traveler Reviews", 
+    "open_now": "Open Now",
+    "closed": "Currently Closed",
+    "popular": "Popular Attraction",
+    "recommended": "AI Recommended",
+    "budget_friendly": "Budget Friendly",
+    "family_friendly": "Family Friendly"
+  },
+  "seo": {
+    "keywords": [
+      "Japan travel",
+      "Japan tourism", 
+      "Tokyo travel guide",
+      "Japan trip planner",
+      "Tokyo attractions",
+      "Japan hotels",
+      "Japan restaurants",
+      "Yokohama travel",
+      "Saitama tourism",
+      "Chiba travel",
+      "Japan itinerary",
+      "Tokyo sightseeing",
+      "Japan vacation",
+      "Tokyo tourism",
+      "Japan tour",
+      "Tokyo guide"
+    ]
+  }
+}
