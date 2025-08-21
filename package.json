@@ -15,11 +15,14 @@
     "@types/google.maps": "^3.58.1",
     "autoprefixer": "^10.4.21",
     "firebase": "^12.1.0",
+    "i18next": "^25.3.6",
     "lucide-react": "^0.536.0",
     "next": "15.4.5",
+    "next-intl": "^4.3.4",
     "openai": "^5.12.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-i18next": "^15.6.1",
     "stripe": "^18.4.0"
   },
   "devDependencies": {
