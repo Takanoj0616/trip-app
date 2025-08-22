@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  images: {
+    domains: ['images.unsplash.com'],
+  },
   // Disable caching in development
   ...(process.env.NODE_ENV === 'development' && {
     assetPrefix: '',
