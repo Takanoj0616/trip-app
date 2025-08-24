@@ -23,6 +23,7 @@ interface SpotName {
   ja: string;
   en: string;
   ko: string;
+  fr: string;
 }
 
 interface Spot {
@@ -45,14 +46,14 @@ export default function TokyoSpots() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [favoriteSpots, setFavoriteSpots] = useState<Set<number>>(new Set());
-  const [currentLanguage, setCurrentLanguage] = useState<'ja' | 'en' | 'ko'>('ja');
+  const [currentLanguage, setCurrentLanguage] = useState<'ja' | 'en' | 'ko' | 'fr'>('ja');
 
   // Listen for language changes from header
   useEffect(() => {
     const checkLanguage = () => {
       const activeLangBtn = document.querySelector('.lang-btn.active');
       if (activeLangBtn) {
-        const lang = activeLangBtn.getAttribute('data-lang') as 'ja' | 'en' | 'ko';
+        const lang = activeLangBtn.getAttribute('data-lang') as 'ja' | 'en' | 'ko' | 'fr';
         if (lang && lang !== currentLanguage) {
           setCurrentLanguage(lang);
         }
@@ -399,19 +400,123 @@ export default function TokyoSpots() {
         },
         reviews: "리뷰"
       }
+    },
+    fr: {
+      pageTitle: "Tokyo Spots",
+      pageSubtitle: "Découvrez les meilleurs restaurants, attractions et hôtels de Tokyo",
+      categories: {
+        food: "Restaurants",
+        sights: "Attractions",
+        hotels: "Hôtels"
+      },
+      filters: {
+        sortBy: "Trier par:",
+        budget: "Budget:",
+        cuisine: "Cuisine:",
+        openNow: "Ouvert maintenant",
+        crowdLevel: "Niveau d'affluence:",
+        duration: "Durée:",
+        indoor: "Intérieur",
+        outdoor: "Extérieur",
+        pricePerNight: "Prix/nuit:",
+        starRating: "Étoiles:",
+        available: "Disponible",
+        allBudgets: "Tous",
+        allCuisines: "Toutes",
+        allLevels: "Tous",
+        allDurations: "Toutes",
+        allPrices: "Tous",
+        allStars: "Toutes",
+        budget1: "Moins de ¥1,000",
+        budget2: "¥1,000-3,000",
+        budget3: "Plus de ¥3,000",
+        japanese: "Japonaise",
+        sushi: "Sushi",
+        ramen: "Ramen",
+        western: "Occidentale",
+        low: "Peu fréquenté",
+        medium: "Normal",
+        high: "Très fréquenté",
+        short: "Moins d'1 heure",
+        medium2: "1-3 heures",
+        long: "Plus de 3 heures"
+      },
+      sorting: {
+        popular: "Populaire",
+        rating: "Note",
+        distance: "Distance",
+        price: "Prix"
+      },
+      actions: {
+        search: "Rechercher par mot-clé...",
+        detailsBtn: "Voir les détails",
+        loadMore: "Charger plus"
+      },
+      spots: {
+        cuisineTypes: {
+          "ビュッフェ": "Buffet",
+          "ファストフード": "Fast-food",
+          "ベーカリー": "Boulangerie",
+          "焼肉": "Grillades",
+          "そば・うどん": "Soba/Udon",
+          "中華": "Chinoise",
+          "フレンチ": "Française",
+          "和食": "Japonaise",
+          "韓国料理": "Coréenne",
+          "カフェ": "Café"
+        },
+        badges: {
+          "営業中": "Ouvert",
+          "予約不要": "Sans réservation",
+          "駐車場あり": "Parking disponible",
+          "個室あり": "Salles privées",
+          "高級": "Haut de gamme",
+          "予約必要": "Réservation requise",
+          "テイクアウト可": "À emporter",
+          "受賞店": "Primé",
+          "デリバリー可": "Livraison",
+          "禁煙": "Non-fumeur",
+          "高級価格帯": "Prix premium",
+          "フランス修行シェフ": "Chef formé en France",
+          "昼食専門": "Déjeuner uniquement"
+        },
+        tags: {
+          "ロマンチック": "Romantique",
+          "友人との食事": "Entre amis",
+          "店内飲食": "Sur place",
+          "車椅子対応": "Accessible PMR",
+          "賑やか": "Animé",
+          "ビジネス接待": "Affaires",
+          "観光": "Touristique",
+          "一人食事": "Solo",
+          "アットホーム": "Convivial",
+          "モダン": "Moderne",
+          "アルコール有": "Alcool disponible",
+          "カジュアル": "Décontracté",
+          "家族連れ": "Familial",
+          "伝統的": "Traditionnel",
+          "記念日": "Occasions spéciales",
+          "デート": "Rendez-vous",
+          "フォーマル": "Formel",
+          "Wi-Fi有": "WiFi disponible",
+          "ファミリー向け": "Adapté aux familles"
+        },
+        reviews: "avis"
+      }
     }
   };
 
   // Get translations for current language
   const tr = translations[currentLanguage as keyof typeof translations] || translations.ja;
 
-  // Helper function to get display name with fallback logic (en → ja → ko)
+  // Helper function to get display name with fallback logic (en → ja → ko → fr)
   const getDisplayName = useCallback((name: SpotName): string => {
     if (currentLanguage === 'ja' && name.ja) return name.ja;
     if (currentLanguage === 'en' && name.en) return name.en;
     if (currentLanguage === 'ko' && name.ko) return name.ko;
-    // Fallback order: en → ja → ko
-    return name.en || name.ja || name.ko || '';
+    if (currentLanguage === 'fr' && name.fr) return name.fr;
+    // Fallback order: en → ja → ko → fr
+    return name.en || name.ja || name.ko || name.fr || '';
   }, [currentLanguage]);
 
   // Data - moved inside useMemo to avoid dependency issues
@@ -423,7 +528,8 @@ export default function TokyoSpots() {
           name: {
             ja: "鮨麒",
             en: "Sushi Kiri",
-            ko: "스시 키리"
+            ko: "스시 키리",
+            fr: "Sushi Kiri"
           },
           rating: 4.6,
           reviews: 1461,
@@ -443,7 +549,8 @@ export default function TokyoSpots() {
           name: {
             ja: "ビストロ楽",
             en: "Bistro Raku",
-            ko: "비스트로 라쿠"
+            ko: "비스트로 라쿠",
+            fr: "Bistro Raku"
           },
           rating: 3.6,
           reviews: 2421,
@@ -463,7 +570,8 @@ export default function TokyoSpots() {
           name: {
             ja: "日本料理風",
             en: "Japanese Restaurant Kaze",
-            ko: "일본요리 카제"
+            ko: "일본요리 카제",
+            fr: "Restaurant Japonais Kaze"
           },
           rating: 3.1,
           reviews: 169,
@@ -483,7 +591,8 @@ export default function TokyoSpots() {
           name: {
             ja: "焼肉花",
             en: "BBQ Hana",
-            ko: "야키니쿠 하나"
+            ko: "야키니쿠 하나",
+            fr: "BBQ Hana"
           },
           rating: 4.5,
           reviews: 1046,
@@ -503,7 +612,8 @@ export default function TokyoSpots() {
           name: {
             ja: "麺屋寿",
             en: "Menya Kotobuki",
-            ko: "멘야 코토부키"
+            ko: "멘야 코토부키",
+            fr: "Menya Kotobuki"
           },
           rating: 3.4,
           reviews: 2554,
@@ -523,7 +633,8 @@ export default function TokyoSpots() {
           name: {
             ja: "十鳥",
             en: "Jutori",
-            ko: "주토리"
+            ko: "주토리",
+            fr: "Jutori"
           },
           rating: 4.1,
           reviews: 342,
@@ -543,7 +654,8 @@ export default function TokyoSpots() {
           name: {
             ja: "炭火焼亀",
             en: "Charcoal Grill Kame",
-            ko: "참불구이 카메"
+            ko: "참불구이 카메",
+            fr: "Grill au Charbon Kame"
           },
           rating: 3.3,
           reviews: 2394,
@@ -563,7 +675,8 @@ export default function TokyoSpots() {
           name: {
             ja: "寿製麺",
             en: "Kotobuki Seimen",
-            ko: "코토부키 세이멘"
+            ko: "코토부키 세이멘",
+            fr: "Kotobuki Seimen"
           },
           rating: 3.5,
           reviews: 1041,
@@ -583,7 +696,8 @@ export default function TokyoSpots() {
           name: {
             ja: "イタリアン四",
             en: "Italian Shi",
-            ko: "이탈리안 시"
+            ko: "이탈리안 시",
+            fr: "Italien Shi"
           },
           rating: 4.3,
           reviews: 2692,
@@ -603,7 +717,8 @@ export default function TokyoSpots() {
           name: {
             ja: "空寿司",
             en: "Sora Sushi",
-            ko: "소라 스시"
+            ko: "소라 스시",
+            fr: "Sora Sushi"
           },
           rating: 3.8,
           reviews: 2736,
@@ -623,7 +738,8 @@ export default function TokyoSpots() {
           name: {
             ja: "麺工房高",
             en: "Menkobo Taka",
-            ko: "멘코보 타카"
+            ko: "멘코보 타카",
+            fr: "Menkobo Taka"
           },
           rating: 3.8,
           reviews: 684,
@@ -643,7 +759,8 @@ export default function TokyoSpots() {
           name: {
             ja: "麺屋麟",
             en: "Menya Rin",
-            ko: "멘야 린"
+            ko: "멘야 린",
+            fr: "Menya Rin"
           },
           rating: 4.7,
           reviews: 615,
@@ -663,7 +780,8 @@ export default function TokyoSpots() {
           name: {
             ja: "カフェ清",
             en: "Cafe Sei",
-            ko: "카페 세이"
+            ko: "카페 세이",
+            fr: "Café Sei"
           },
           rating: 3.9,
           reviews: 1469,
@@ -683,7 +801,8 @@ export default function TokyoSpots() {
           name: {
             ja: "食事処夕",
             en: "Shokujidokoro Yu",
-            ko: "쇼쿠지도코로 유"
+            ko: "쇼쿠지도코로 유",
+            fr: "Restaurant Yu"
           },
           rating: 4.4,
           reviews: 2935,
@@ -703,7 +822,8 @@ export default function TokyoSpots() {
           name: {
             ja: "レストラン橙",
             en: "Restaurant Dai",
-            ko: "레스토랑 다이"
+            ko: "레스토랑 다이",
+            fr: "Restaurant Dai"
           },
           rating: 4.2,
           reviews: 1774,
@@ -717,20 +837,168 @@ export default function TokyoSpots() {
           },
           tags: ["カジュアル", "ビジネス接待", "家族連れ", "観光", "駐車場あり"],
           category: "food"
+        },
+        {
+          id: 16,
+          name: {
+            ja: "RESTAURANT PLATINUM FISH マーチエキュート神田万世橋店",
+            en: "Restaurant Platinum Fish Manseibashi",
+            ko: "레스토랑 플래티넘 피시 만세이바시점",
+            fr: "Restaurant Platinum Fish Manseibashi"
+          },
+          rating: 4.3,
+          reviews: 892,
+          image: "/images/spots/RESTAURANT_PLATINUM_FISH_マーチエキュート神田万世橋店_20250714_121132.jpg",
+          badges: ["営業中", "洋食", "予約推奨", "駅直結"],
+          info: {
+            price: "3000-5000円",
+            cuisine: "洋食",
+            distance: "0.8km",
+            openHours: "11:00 - 22:00"
+          },
+          tags: ["モダン", "デート", "ビジネス接待", "観光", "駅近"],
+          category: "food"
+        },
+        {
+          id: 17,
+          name: {
+            ja: "ブラッスリー・ヴィロン 丸の内店",
+            en: "Brasserie Viron Marunouchi",
+            ko: "브라세리 비롱 마루노우치점",
+            fr: "Brasserie Viron Marunouchi"
+          },
+          rating: 4.1,
+          reviews: 1245,
+          image: "/images/spots/ブラッスリー・ヴィロン_丸の内店_20250714_121211.jpg",
+          badges: ["営業中", "フレンチ", "ベーカリー", "テイクアウト可"],
+          info: {
+            price: "2000-4000円",
+            cuisine: "フレンチ",
+            distance: "1.2km",
+            openHours: "7:00 - 22:00"
+          },
+          tags: ["パン", "カフェ", "朝食", "フランス", "丸の内"],
+          category: "food"
+        },
+        {
+          id: 18,
+          name: {
+            ja: "中国料理「後楽園飯店」",
+            en: "Korakuen Restaurant",
+            ko: "코라쿠엔 반점",
+            fr: "Restaurant Korakuen"
+          },
+          rating: 4.0,
+          reviews: 756,
+          image: "/images/spots/中国料理「後楽園飯店」（東京ドームホテル直営）_20250715_103157.jpg",
+          badges: ["営業中", "中華", "ホテル直営", "個室あり"],
+          info: {
+            price: "4000-8000円",
+            cuisine: "中華",
+            distance: "2.1km",
+            openHours: "11:30 - 21:30"
+          },
+          tags: ["高級", "接待", "記念日", "家族連れ", "東京ドーム"],
+          category: "food"
+        },
+        {
+          id: 19,
+          name: {
+            ja: "招福樓 東京店",
+            en: "Shofukuro Tokyo",
+            ko: "쇼후쿠로 도쿄점",
+            fr: "Shofukuro Tokyo"
+          },
+          rating: 4.2,
+          reviews: 634,
+          image: "/images/spots/招福樓_東京店_20250714_121217.jpg",
+          badges: ["営業中", "中華", "高級", "予約必要"],
+          info: {
+            price: "8000-15000円",
+            cuisine: "中華",
+            distance: "1.5km",
+            openHours: "11:30 - 14:30, 17:30 - 21:30"
+          },
+          tags: ["高級中華", "接待", "記念日", "個室", "銀座"],
+          category: "food"
+        },
+        {
+          id: 20,
+          name: {
+            ja: "名代 宇奈とと 新橋店",
+            en: "Nandai Unatoto Shimbashi",
+            ko: "나다이 우나토토 신바시점",
+            fr: "Nandai Unatoto Shimbashi"
+          },
+          rating: 3.8,
+          reviews: 1156,
+          image: "/images/spots/名代_宇奈とと_新橋店_20250715_103209.jpg",
+          badges: ["営業中", "和食", "うなぎ", "リーズナブル"],
+          info: {
+            price: "1000-2500円",
+            cuisine: "和食",
+            distance: "1.8km",
+            openHours: "11:00 - 23:00"
+          },
+          tags: ["うなぎ", "カジュアル", "一人食事", "サラリーマン", "新橋"],
+          category: "food"
         }
       ],
     sights: [
         {
           id: 101,
           name: {
+            ja: "東京タワー",
+            en: "Tokyo Tower",
+            ko: "도쿠 타워",
+            fr: "Tour de Tokyo"
+          },
+          rating: 4.2,
+          reviews: 15032,
+          image: "/images/spots/東京タワー_20250714_121123.jpg",
+          badges: ["人気", "屋内", "営業中"],
+          info: {
+            duration: "2-3時間",
+            ticketRequired: "必要",
+            bestTime: "夕方",
+            crowdLevel: "普通"
+          },
+          tags: ["展望台", "夜景", "ランドマーク"],
+          category: "sights"
+        },
+        {
+          id: 102,
+          name: {
+            ja: "東京スカイツリー",
+            en: "Tokyo Skytree",
+            ko: "도쿄 스카이트리",
+            fr: "Tokyo Skytree"
+          },
+          rating: 4.1,
+          reviews: 28456,
+          image: "/images/spots/東京スカイツリー_20250714_121122.jpg",
+          badges: ["人気", "屋内", "営業中"],
+          info: {
+            duration: "2-3時間",
+            ticketRequired: "必要",
+            bestTime: "夕方",
+            crowdLevel: "普通"
+          },
+          tags: ["展望台", "モダン", "夜景"],
+          category: "sights"
+        },
+        {
+          id: 103,
+          name: {
             ja: "浅草寺",
             en: "Senso-ji Temple",
-            ko: "센소지"
+            ko: "센소지",
+            fr: "Temple Senso-ji"
           },
-          rating: 4.6,
-          reviews: 15230,
+          rating: 4.3,
+          reviews: 94587,
           image: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400",
-          badges: ["人気", "屋外"],
+          badges: ["人気", "屋外", "営業中"],
           info: {
             duration: "1-2時間",
             ticketRequired: "不要",
@@ -741,23 +1009,171 @@ export default function TokyoSpots() {
           category: "sights"
         },
         {
-          id: 102,
+          id: 104,
           name: {
-            ja: "東京スカイツリー",
-            en: "Tokyo Skytree",
-            ko: "도쿠 스카이트리"
+            ja: "渋谷スクランブル交差点",
+            en: "Shibuya Crossing",
+            ko: "시부야 스크램블 교차점",
+            fr: "Carrefour de Shibuya"
+          },
+          rating: 4.0,
+          reviews: 12843,
+          image: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=400",
+          badges: ["人気", "屋外", "24時間"],
+          info: {
+            duration: "30分-1時間",
+            ticketRequired: "不要",
+            bestTime: "夕方",
+            crowdLevel: "混雑"
+          },
+          tags: ["都市景観", "写真スポット", "モダン"],
+          category: "sights"
+        },
+        {
+          id: 105,
+          name: {
+            ja: "明治神宮",
+            en: "Meiji Shrine",
+            ko: "메이지 신궁",
+            fr: "Sanctuaire Meiji"
           },
           rating: 4.4,
-          reviews: 23400,
-          image: "https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=400",
-          badges: ["人気", "屋内"],
+          reviews: 52384,
+          image: "/images/spots/明治神宮_20250714_121123.jpg",
+          badges: ["人気", "屋外", "営業中"],
           info: {
-            duration: "2-3時間",
+            duration: "1-2時間",
+            ticketRequired: "不要",
+            bestTime: "朝",
+            crowdLevel: "普通"
+          },
+          tags: ["神社", "自然", "伝統"],
+          category: "sights"
+        },
+        {
+          id: 106,
+          name: {
+            ja: "新宿御苑",
+            en: "Shinjuku Gyoen",
+            ko: "신주쿠 교엔",
+            fr: "Jardin National de Shinjuku"
+          },
+          rating: 4.3,
+          reviews: 23847,
+          image: "/images/spots/新宿御苑_20250714_121139.jpg",
+          badges: ["人気", "屋外", "営業中"],
+          info: {
+            duration: "2-4時間",
             ticketRequired: "必要",
+            bestTime: "午前",
+            crowdLevel: "普通"
+          },
+          tags: ["庭園", "桜", "自然"],
+          category: "sights"
+        },
+        {
+          id: 107,
+          name: {
+            ja: "築地場外市場",
+            en: "Tsukiji Outer Market",
+            ko: "츠키지 장외시장",
+            fr: "Marché extérieur de Tsukiji"
+          },
+          rating: 4.1,
+          reviews: 15632,
+          image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400",
+          badges: ["人気", "屋外", "営業中"],
+          info: {
+            duration: "1-3時間",
+            ticketRequired: "不要",
+            bestTime: "朝",
+            crowdLevel: "混雑"
+          },
+          tags: ["市場", "グルメ", "文化"],
+          category: "sights"
+        },
+        {
+          id: 108,
+          name: {
+            ja: "六本木ヒルズ",
+            en: "Roppongi Hills",
+            ko: "롯폰기 힐즈",
+            fr: "Roppongi Hills"
+          },
+          rating: 4.0,
+          reviews: 28439,
+          image: "https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=400",
+          badges: ["人気", "屋内", "営業中"],
+          info: {
+            duration: "2-5時間",
+            ticketRequired: "展望台のみ必要",
             bestTime: "夕方",
             crowdLevel: "普通"
           },
-          tags: ["展望台", "モダン", "夜景"],
+          tags: ["ショッピング", "展望台", "モダン"],
+          category: "sights"
+        },
+        {
+          id: 109,
+          name: {
+            ja: "東京国立博物館",
+            en: "Tokyo National Museum",
+            ko: "도쿄국립박물관",
+            fr: "Musée National de Tokyo"
+          },
+          rating: 4.3,
+          reviews: 19847,
+          image: "/images/spots/東京国立博物館_20250714_121129.jpg",
+          badges: ["人気", "屋内", "営業中"],
+          info: {
+            duration: "2-4時間",
+            ticketRequired: "必要",
+            bestTime: "午前",
+            crowdLevel: "普通"
+          },
+          tags: ["博物館", "歴史", "文化"],
+          category: "sights"
+        },
+        {
+          id: 110,
+          name: {
+            ja: "皇居",
+            en: "Imperial Palace",
+            ko: "고쿄",
+            fr: "Palais Impérial"
+          },
+          rating: 4.2,
+          reviews: 31245,
+          image: "/images/spots/皇居_20250714_121125.jpg",
+          badges: ["人気", "屋外", "営業中"],
+          info: {
+            duration: "1-3時間",
+            ticketRequired: "東御苑は不要",
+            bestTime: "午前",
+            crowdLevel: "普通"
+          },
+          tags: ["歴史", "庭園", "皇室"],
+          category: "sights"
+        },
+        {
+          id: 111,
+          name: {
+            ja: "皇居東御苑",
+            en: "East Gardens of the Imperial Palace",
+            ko: "고쿄 히가시교엔",
+            fr: "Jardins Est du Palais Impérial"
+          },
+          rating: 4.4,
+          reviews: 18523,
+          image: "/images/spots/皇居東御苑_20250714_121142.jpg",
+          badges: ["人気", "屋外", "営業中"],
+          info: {
+            duration: "1-2時間",
+            ticketRequired: "不要",
+            bestTime: "午前",
+            crowdLevel: "普通"
+          },
+          tags: ["庭園", "歴史", "自然"],
           category: "sights"
         }
       ],
@@ -767,7 +1183,8 @@ export default function TokyoSpots() {
           name: {
             ja: "パークハイアット東京",
             en: "Park Hyatt Tokyo",
-            ko: "파크 하이엇 도쿠"
+            ko: "파크 하이엇 도쿠",
+            fr: "Park Hyatt Tokyo"
           },
           rating: 4.9,
           reviews: 3420,
@@ -787,7 +1204,8 @@ export default function TokyoSpots() {
           name: {
             ja: "東急ステイ新宿",
             en: "Tokyu Stay Shinjuku",
-            ko: "도큐 스테이 신주쿠"
+            ko: "도큐 스테이 신주쿠",
+            fr: "Tokyu Stay Shinjuku"
           },
           rating: 4.3,
           reviews: 1890,
@@ -859,7 +1277,7 @@ export default function TokyoSpots() {
 
   // Show details handler
   const showDetails = useCallback((spotId: number) => {
-    alert(`スポット ${spotId} の詳細を表示します`);
+    window.open(`/spots/${spotId}`, '_blank');
   }, []);
 
   // Render spot info based on category

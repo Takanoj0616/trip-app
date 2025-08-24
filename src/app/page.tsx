@@ -2,9 +2,110 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { heroFeatures, mainFeatures, areas, footerColumns } from '../data/homepage';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { heroFeatures } from '../data/homepage';
 
 export default function Home() {
+  const { t } = useLanguage();
+  
+  // Multilingual features data
+  const getMainFeatures = () => [
+    {
+      icon: '🌍',
+      title: t('features.multilingual.title'),
+      description: t('features.multilingual.description'),
+    },
+    {
+      icon: '📍',
+      title: t('features.areaGuide.title'),
+      description: t('features.areaGuide.description'),
+    },
+    {
+      icon: '⭐',
+      title: t('features.userExperience.title'),
+      description: t('features.userExperience.description'),
+    },
+    {
+      icon: '🤖',
+      title: t('features.aiRecommendation.title'),
+      description: t('features.aiRecommendation.description'),
+    },
+    {
+      icon: '📱',
+      title: t('features.realTimeInfo.title'),
+      description: t('features.realTimeInfo.description'),
+    },
+    {
+      icon: '💬',
+      title: t('features.community.title'),
+      description: t('features.community.description'),
+    },
+  ];
+
+  // Multilingual areas data
+  const getAreas = () => [
+    {
+      emoji: '🏙️',
+      title: t('areas.tokyo.title'),
+      description: t('areas.tokyo.description'),
+    },
+    {
+      emoji: '🗾',
+      title: t('areas.mtFuji.title'),
+      description: t('areas.mtFuji.description'),
+    },
+    {
+      emoji: '🏯',
+      title: t('areas.kyoto.title'),
+      description: t('areas.kyoto.description'),
+    },
+    {
+      emoji: '🍜',
+      title: t('areas.osaka.title'),
+      description: t('areas.osaka.description'),
+    },
+  ];
+
+  // Multilingual footer data
+  const getFooterColumns = () => [
+    {
+      title: t('footer.explore.title'),
+      links: [
+        { href: '#', label: t('footer.explore.areaGuide') },
+        { href: '#', label: t('footer.explore.categorySearch') },
+        { href: '#', label: t('footer.explore.popularSpots') },
+        { href: '#', label: t('footer.explore.whatsNew') },
+      ],
+    },
+    {
+      title: t('footer.features.title'),
+      links: [
+        { href: '#', label: t('footer.features.aiTravelPlan') },
+        { href: '#', label: t('footer.features.favorites') },
+        { href: '#', label: t('footer.features.reviews') },
+        { href: '#', label: t('footer.features.offlineFeatures') },
+      ],
+    },
+    {
+      title: t('footer.support.title'),
+      links: [
+        { href: '#', label: t('footer.support.helpCenter') },
+        { href: '#', label: t('footer.support.contactUs') },
+        { href: '#', label: t('footer.support.emergencyGuide') },
+        { href: '#', label: t('footer.support.feedback') },
+      ],
+    },
+    {
+      title: t('footer.account.title'),
+      links: [
+        { href: '#', label: t('footer.account.login') },
+        { href: '#', label: t('footer.account.signUp') },
+        { href: '#', label: t('footer.account.premium') },
+        { href: '#', label: t('footer.account.settings') },
+      ],
+    },
+  ];
+
   return (
     <div className="min-h-screen" style={{
       background: "linear-gradient(135deg, #1e3a8a 0%, #312e81 25%, #1e1b4b 50%, #0f172a 75%, #020617 100%)",
@@ -41,7 +142,7 @@ export default function Home() {
             marginBottom: '2rem'
           }}>
             <span style={{ fontWeight: 'bold' }}>✓</span>
-            Trusted by 10,000+ travelers worldwide
+            {t('home.trustedBy')}
           </div>
           
           <h1 style={{
@@ -50,7 +151,7 @@ export default function Home() {
             marginBottom: '1rem',
             lineHeight: 1.2
           }}>
-            Free AI Japan Itinerary in 1 Minute
+            {t('home.heroTitle')}
           </h1>
           
           <p style={{
@@ -58,7 +159,7 @@ export default function Home() {
             marginBottom: '2rem',
             opacity: 0.9
           }}>
-            Get personalized itineraries, hidden gems, and authentic experiences tailored just for you. Start planning in under 60 seconds!
+            {t('home.heroSubtitle')}
           </p>
           
           <div style={{
@@ -99,7 +200,7 @@ export default function Home() {
                 target.style.boxShadow = '0 8px 25px rgba(255, 255, 255, 0.2)';
               }}
             >
-              FREE AI ITINERARY NOW
+              {t('home.ctaPrimary')}
             </Link>
             <Link 
               href="#" 
@@ -131,7 +232,7 @@ export default function Home() {
                 target.style.transform = 'translateY(0)';
               }}
             >
-              DISCOVER JAPAN
+              {t('home.ctaSecondary')}
             </Link>
           </div>
           
@@ -198,14 +299,14 @@ export default function Home() {
             position: 'relative',
             zIndex: 2
           }}>
-            Our Features
+            {t('home.featuresTitle')}
           </h2>
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
             gap: '2rem'
           }}>
-            {mainFeatures.map((feature, index) => (
+            {getMainFeatures().map((feature, index) => (
               <div 
                 key={index}
                 style={{
@@ -283,14 +384,14 @@ export default function Home() {
             position: 'relative',
             zIndex: 2
           }}>
-            Popular Destinations
+            {t('home.popularDestinations')}
           </h2>
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
             gap: '2rem'
           }}>
-            {areas.map((area, index) => (
+            {getAreas().map((area, index) => (
               <div 
                 key={index}
                 style={{
@@ -368,14 +469,14 @@ export default function Home() {
             color: '#f8fafc',
             textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
           }}>
-            Experience Authentic Japan
+            {t('home.experienceTitle')}
           </h2>
           <p style={{
             fontSize: '1.2rem',
             opacity: 0.9,
             color: '#e2e8f0'
           }}>
-            Discover hidden temples, traditional streets, and unforgettable moments in the land of the rising sun.
+            {t('home.experienceSubtitle')}
           </p>
         </div>
       </section>
@@ -396,7 +497,7 @@ export default function Home() {
             gap: '3rem',
             marginBottom: '3rem'
           }}>
-            {footerColumns.map((column, index) => (
+            {getFooterColumns().map((column, index) => (
               <div key={index}>
                 <h3 style={{
                   color: '#f8fafc',
@@ -443,7 +544,7 @@ export default function Home() {
             <p style={{
               color: '#64748b',
               fontSize: '0.9rem'
-            }}>© 2025 Japan Tourism Guide. All rights reserved.</p>
+            }}>{t('home.footerCopyright')}</p>
           </div>
         </div>
       </footer>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 
 interface SpotInfo {
   price?: string;
@@ -18,9 +19,15 @@ interface SpotInfo {
   checkOut?: string;
 }
 
+interface SpotName {
+  ja: string;
+  en: string;
+  ko: string;
+}
+
 interface Spot {
   id: number;
-  name: string;
+  name: SpotName | string;
   rating: number;
   reviews: number;
   image: string;
@@ -30,202 +37,518 @@ interface Spot {
   category: 'food' | 'sights' | 'hotels';
 }
 
-const sampleData = {
-  food: [
-    {
-      id: 1,
-      name: "築地外市場 寿司大",
-      rating: 4.8,
-      reviews: 2340,
-      image: "https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=400",
-      badges: ["人気", "営業中"],
-      info: {
-        price: "¥3,000-5,000",
-        cuisine: "寿司",
-        distance: "500m",
-        openHours: "5:00-14:00"
-      },
-      tags: ["新鮮", "老舗", "早朝営業"],
-      category: "food" as const
+// All spot data from tokyo page and additional spots
+const allSpots: Spot[] = [
+  // Food spots (IDs 1-20)
+  {
+    id: 1,
+    name: "鮨麒",
+    rating: 4.6,
+    reviews: 1461,
+    image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
+    badges: ["営業中", "ビュッフェ", "予約不要", "駐車場あり"],
+    info: {
+      price: "8000-12000円",
+      cuisine: "ビュッフェ",
+      distance: "0.5km",
+      openHours: "8:00 - 20:00"
     },
-    {
-      id: 2,
-      name: "一蘭 渋谷店",
-      rating: 4.5,
-      reviews: 1876,
-      image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400",
-      badges: ["営業中"],
-      info: {
-        price: "¥1,000-2,000",
-        cuisine: "ラーメン",
-        distance: "1.2km",
-        openHours: "24時間"
-      },
-      tags: ["とんこつ", "24時間", "一人席"],
-      category: "food" as const
+    tags: ["ロマンチック", "友人との食事", "店内飲食", "車椅子対応"],
+    category: "food"
+  },
+  {
+    id: 2,
+    name: "ビストロ楽",
+    rating: 3.6,
+    reviews: 2421,
+    image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
+    badges: ["ファストフード", "予約不要", "テイクアウト可"],
+    info: {
+      price: "1000-2000円",
+      cuisine: "ファストフード",
+      distance: "0.5km",
+      openHours: "11:00 - 21:00"
     },
-    {
-      id: 7,
-      name: "すきやばし次郎",
-      rating: 4.9,
-      reviews: 890,
-      image: "https://images.unsplash.com/photo-1583623025817-d180a2221d0a?w=400",
-      badges: ["人気", "高級"],
-      info: {
-        price: "¥30,000以上",
-        cuisine: "寿司",
-        distance: "2.1km",
-        openHours: "11:30-14:00, 17:00-20:30"
-      },
-      tags: ["ミシュラン", "高級", "要予約"],
-      category: "food" as const
-    }
-  ],
-  sights: [
-    {
-      id: 3,
-      name: "浅草寺",
-      rating: 4.6,
-      reviews: 15230,
-      image: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400",
-      badges: ["人気", "屋外"],
-      info: {
-        duration: "1-2時間",
-        ticketRequired: "不要",
-        bestTime: "朝",
-        crowdLevel: "混雑"
-      },
-      tags: ["歴史", "寺院", "伝統"],
-      category: "sights" as const
+    tags: ["賑やか", "ビジネス接待", "観光", "友人との食事", "一人食事"],
+    category: "food"
+  },
+  {
+    id: 16,
+    name: "RESTAURANT PLATINUM FISH マーチエキュート神田万世橋店",
+    rating: 4.3,
+    reviews: 892,
+    image: "/images/spots/RESTAURANT_PLATINUM_FISH_マーチエキュート神田万世橋店_20250714_121132.jpg",
+    badges: ["営業中", "洋食", "予約推奨", "駅直結"],
+    info: {
+      price: "3000-5000円",
+      cuisine: "洋食",
+      distance: "0.8km",
+      openHours: "11:00 - 22:00"
     },
-    {
-      id: 4,
-      name: "東京スカイツリー",
-      rating: 4.4,
-      reviews: 23400,
-      image: "https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=400",
-      badges: ["人気", "屋内"],
-      info: {
-        duration: "2-3時間",
-        ticketRequired: "必要",
-        bestTime: "夕方",
-        crowdLevel: "普通"
-      },
-      tags: ["展望台", "モダン", "夜景"],
-      category: "sights" as const
+    tags: ["モダン", "デート", "ビジネス接待", "観光", "駅近"],
+    category: "food"
+  },
+  {
+    id: 17,
+    name: "ブラッスリー・ヴィロン 丸の内店",
+    rating: 4.1,
+    reviews: 1245,
+    image: "/images/spots/ブラッスリー・ヴィロン_丸の内店_20250714_121211.jpg",
+    badges: ["営業中", "フレンチ", "ベーカリー", "テイクアウト可"],
+    info: {
+      price: "2000-4000円",
+      cuisine: "フレンチ",
+      distance: "1.2km",
+      openHours: "7:00 - 22:00"
     },
-    {
-      id: 8,
-      name: "明治神宮",
-      rating: 4.7,
-      reviews: 8920,
-      image: "https://images.unsplash.com/photo-1590253230532-a67f6bc61f14?w=400",
-      badges: ["人気", "屋外"],
-      info: {
-        duration: "1-2時間",
-        ticketRequired: "不要",
-        bestTime: "午前",
-        crowdLevel: "普通"
-      },
-      tags: ["神社", "自然", "静寂"],
-      category: "sights" as const
-    }
-  ],
-  hotels: [
-    {
-      id: 5,
-      name: "パークハイアット東京",
-      rating: 4.9,
-      reviews: 3420,
-      image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400",
-      badges: ["5つ星", "空室あり"],
-      info: {
-        pricePerNight: "¥45,000-80,000",
-        stars: 5,
-        checkIn: "15:00",
-        checkOut: "12:00"
-      },
-      tags: ["ラグジュアリー", "シティビュー", "スパ"],
-      category: "hotels" as const
+    tags: ["パン", "カフェ", "朝食", "フランス", "丸の内"],
+    category: "food"
+  },
+  {
+    id: 18,
+    name: "中国料理「後楽園飯店」",
+    rating: 4.0,
+    reviews: 756,
+    image: "/images/spots/中国料理「後楽園飯店」（東京ドームホテル直営）_20250715_103157.jpg",
+    badges: ["営業中", "中華", "ホテル直営", "個室あり"],
+    info: {
+      price: "4000-8000円",
+      cuisine: "中華",
+      distance: "2.1km",
+      openHours: "11:30 - 21:30"
     },
-    {
-      id: 6,
-      name: "東急ステイ新宿",
-      rating: 4.3,
-      reviews: 1890,
-      image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400",
-      badges: ["4つ星", "空室あり"],
-      info: {
-        pricePerNight: "¥12,000-18,000",
-        stars: 4,
-        checkIn: "15:00",
-        checkOut: "11:00"
-      },
-      tags: ["ビジネス", "駅近", "洗濯機付"],
-      category: "hotels" as const
+    tags: ["高級", "接待", "記念日", "家族連れ", "東京ドーム"],
+    category: "food"
+  },
+  {
+    id: 19,
+    name: "招福樓 東京店",
+    rating: 4.2,
+    reviews: 634,
+    image: "/images/spots/招福樓_東京店_20250714_121217.jpg",
+    badges: ["営業中", "中華", "高級", "予約必要"],
+    info: {
+      price: "8000-15000円",
+      cuisine: "中華",
+      distance: "1.5km",
+      openHours: "11:30 - 14:30, 17:30 - 21:30"
     },
-    {
-      id: 9,
-      name: "帝国ホテル東京",
-      rating: 4.8,
-      reviews: 5670,
-      image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400",
-      badges: ["5つ星", "空室あり"],
-      info: {
-        pricePerNight: "¥35,000-60,000",
-        stars: 5,
-        checkIn: "15:00",
-        checkOut: "12:00"
-      },
-      tags: ["クラシック", "伝統", "皇居近く"],
-      category: "hotels" as const
-    }
-  ]
-};
+    tags: ["高級中華", "接待", "記念日", "個室", "銀座"],
+    category: "food"
+  },
+  {
+    id: 20,
+    name: "名代 宇奈とと 新橋店",
+    rating: 3.8,
+    reviews: 1156,
+    image: "/images/spots/名代_宇奈とと_新橋店_20250715_103209.jpg",
+    badges: ["営業中", "和食", "うなぎ", "リーズナブル"],
+    info: {
+      price: "1000-2500円",
+      cuisine: "和食",
+      distance: "1.8km",
+      openHours: "11:00 - 23:00"
+    },
+    tags: ["うなぎ", "カジュアル", "一人食事", "サラリーマン", "新橋"],
+    category: "food"
+  },
+  // Tokyo Sights (IDs 101-111)
+  {
+    id: 101,
+    name: {
+      ja: "東京タワー",
+      en: "Tokyo Tower",
+      ko: "도쿄 타워"
+    },
+    rating: 4.2,
+    reviews: 15032,
+    image: "/images/spots/東京タワー_20250714_121123.jpg",
+    badges: ["人気", "屋内", "営業中"],
+    info: {
+      duration: "2-3時間",
+      ticketRequired: "必要",
+      bestTime: "夕方",
+      crowdLevel: "普通"
+    },
+    tags: ["展望台", "夜景", "ランドマーク"],
+    category: "sights"
+  },
+  {
+    id: 102,
+    name: {
+      ja: "東京スカイツリー",
+      en: "Tokyo Skytree",
+      ko: "도쿄 스카이트리"
+    },
+    rating: 4.1,
+    reviews: 28456,
+    image: "/images/spots/東京スカイツリー_20250714_121122.jpg",
+    badges: ["人気", "屋内", "営業中"],
+    info: {
+      duration: "2-3時間",
+      ticketRequired: "必要",
+      bestTime: "夕方",
+      crowdLevel: "普通"
+    },
+    tags: ["展望台", "モダン", "夜景"],
+    category: "sights"
+  },
+  {
+    id: 103,
+    name: {
+      ja: "浅草寺",
+      en: "Senso-ji Temple",
+      ko: "센소지"
+    },
+    rating: 4.3,
+    reviews: 94587,
+    image: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400",
+    badges: ["人気", "屋外", "営業中"],
+    info: {
+      duration: "1-2時間",
+      ticketRequired: "不要",
+      bestTime: "朝",
+      crowdLevel: "混雑"
+    },
+    tags: ["歴史", "寺院", "伝統"],
+    category: "sights"
+  },
+  {
+    id: 104,
+    name: {
+      ja: "渋谷スクランブル交差点",
+      en: "Shibuya Crossing",
+      ko: "시부야 스크램블 교차점"
+    },
+    rating: 4.0,
+    reviews: 12843,
+    image: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=400",
+    badges: ["人気", "屋外", "24時間"],
+    info: {
+      duration: "30分-1時間",
+      ticketRequired: "不要",
+      bestTime: "夕方",
+      crowdLevel: "混雑"
+    },
+    tags: ["都市景観", "写真スポット", "モダン"],
+    category: "sights"
+  },
+  {
+    id: 105,
+    name: {
+      ja: "明治神宮",
+      en: "Meiji Shrine",
+      ko: "메이지 신궁"
+    },
+    rating: 4.4,
+    reviews: 52384,
+    image: "/images/spots/明治神宮_20250714_121123.jpg",
+    badges: ["人気", "屋外", "営業中"],
+    info: {
+      duration: "1-2時間",
+      ticketRequired: "不要",
+      bestTime: "朝",
+      crowdLevel: "普通"
+    },
+    tags: ["神社", "自然", "伝統"],
+    category: "sights"
+  },
+  {
+    id: 106,
+    name: {
+      ja: "新宿御苑",
+      en: "Shinjuku Gyoen",
+      ko: "신주쿠 교엔"
+    },
+    rating: 4.3,
+    reviews: 23847,
+    image: "/images/spots/新宿御苑_20250714_121139.jpg",
+    badges: ["人気", "屋外", "営業中"],
+    info: {
+      duration: "2-4時間",
+      ticketRequired: "必要",
+      bestTime: "午前",
+      crowdLevel: "普通"
+    },
+    tags: ["庭園", "桜", "自然"],
+    category: "sights"
+  },
+  {
+    id: 107,
+    name: {
+      ja: "築地場外市場",
+      en: "Tsukiji Outer Market",
+      ko: "츠키지 장외시장"
+    },
+    rating: 4.1,
+    reviews: 15632,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400",
+    badges: ["人気", "屋外", "営業中"],
+    info: {
+      duration: "1-3時間",
+      ticketRequired: "不要",
+      bestTime: "朝",
+      crowdLevel: "混雑"
+    },
+    tags: ["市場", "グルメ", "文化"],
+    category: "sights"
+  },
+  {
+    id: 108,
+    name: {
+      ja: "六本木ヒルズ",
+      en: "Roppongi Hills",
+      ko: "롯폰기 힐즈"
+    },
+    rating: 4.0,
+    reviews: 28439,
+    image: "https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=400",
+    badges: ["人気", "屋内", "営業中"],
+    info: {
+      duration: "2-5時間",
+      ticketRequired: "展望台のみ必要",
+      bestTime: "夕方",
+      crowdLevel: "普通"
+    },
+    tags: ["ショッピング", "展望台", "モダン"],
+    category: "sights"
+  },
+  {
+    id: 109,
+    name: {
+      ja: "東京国立博物館",
+      en: "Tokyo National Museum",
+      ko: "도쿄국립박물관"
+    },
+    rating: 4.3,
+    reviews: 19847,
+    image: "/images/spots/東京国立博物館_20250714_121129.jpg",
+    badges: ["人気", "屋内", "営業中"],
+    info: {
+      duration: "2-4時間",
+      ticketRequired: "必要",
+      bestTime: "午前",
+      crowdLevel: "普通"
+    },
+    tags: ["博物館", "歴史", "文化"],
+    category: "sights"
+  },
+  {
+    id: 110,
+    name: {
+      ja: "皇居",
+      en: "Imperial Palace",
+      ko: "고쿄"
+    },
+    rating: 4.2,
+    reviews: 31245,
+    image: "/images/spots/皇居_20250714_121125.jpg",
+    badges: ["人気", "屋外", "営業中"],
+    info: {
+      duration: "1-3時間",
+      ticketRequired: "東御苑は不要",
+      bestTime: "午前",
+      crowdLevel: "普通"
+    },
+    tags: ["歴史", "庭園", "皇室"],
+    category: "sights"
+  },
+  {
+    id: 111,
+    name: {
+      ja: "皇居東御苑",
+      en: "East Gardens of the Imperial Palace",
+      ko: "고쿄 히가시교엔"
+    },
+    rating: 4.4,
+    reviews: 18523,
+    image: "/images/spots/皇居東御苑_20250714_121142.jpg",
+    badges: ["人気", "屋外", "営業中"],
+    info: {
+      duration: "1-2時間",
+      ticketRequired: "不要",
+      bestTime: "午前",
+      crowdLevel: "普通"
+    },
+    tags: ["庭園", "歴史", "自然"],
+    category: "sights"
+  },
+  // Hotels (IDs 201-202)
+  {
+    id: 201,
+    name: "パークハイアット東京",
+    rating: 4.9,
+    reviews: 3420,
+    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400",
+    badges: ["5つ星", "空室あり"],
+    info: {
+      pricePerNight: "¥45,000-80,000",
+      stars: 5,
+      checkIn: "15:00",
+      checkOut: "12:00"
+    },
+    tags: ["ラグジュアリー", "シティビュー", "スパ"],
+    category: "hotels"
+  },
+  {
+    id: 202,
+    name: "東急ステイ新宿",
+    rating: 4.3,
+    reviews: 1890,
+    image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400",
+    badges: ["4つ星", "空室あり"],
+    info: {
+      pricePerNight: "¥12,000-18,000",
+      stars: 4,
+      checkIn: "15:00",
+      checkOut: "11:00"
+    },
+    tags: ["ビジネス", "駅近", "洗濯機付"],
+    category: "hotels"
+  }
+];
 
-const SkeletonCard = () => (
-  <div className="relative bg-white/20 backdrop-blur-lg rounded-2xl overflow-hidden">
-    <div className="animate-pulse">
-      <div className="h-48 bg-white/10 rounded-t-2xl"></div>
-      <div className="p-5 space-y-3">
-        <div className="h-4 bg-white/10 rounded w-3/4"></div>
-        <div className="h-3 bg-white/10 rounded w-1/2"></div>
-        <div className="h-3 bg-white/10 rounded w-full"></div>
+export default function SpotDetail() {
+  const params = useParams();
+  const [spot, setSpot] = useState<Spot | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [currentLanguage, setCurrentLanguage] = useState<'ja' | 'en' | 'ko'>('ja');
+
+  // Get display name with fallback logic
+  const getDisplayName = (name: SpotName | string): string => {
+    if (typeof name === 'string') return name;
+    
+    if (currentLanguage === 'ja' && name.ja) return name.ja;
+    if (currentLanguage === 'en' && name.en) return name.en;
+    if (currentLanguage === 'ko' && name.ko) return name.ko;
+    // Fallback order: en → ja → ko
+    return name.en || name.ja || name.ko || '';
+  };
+
+  // Detect language from header
+  useEffect(() => {
+    const checkLanguage = () => {
+      const activeLangBtn = document.querySelector('.lang-btn.active');
+      if (activeLangBtn) {
+        const lang = activeLangBtn.getAttribute('data-lang') as 'ja' | 'en' | 'ko' | 'fr';
+        if (lang && ['ja', 'en', 'ko'].includes(lang) && lang !== currentLanguage) {
+          setCurrentLanguage(lang as 'ja' | 'en' | 'ko');
+        }
+      }
+    };
+
+    // Initial check
+    checkLanguage();
+
+    // Create observer to watch for class changes on language buttons
+    const observer = new MutationObserver(() => {
+      checkLanguage();
+    });
+
+    // Start observing
+    const langSelector = document.querySelector('.lang-selector');
+    if (langSelector) {
+      observer.observe(langSelector, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
+
+    // Cleanup
+    return () => observer.disconnect();
+  }, [currentLanguage]);
+
+  useEffect(() => {
+    if (params?.id) {
+      const spotId = parseInt(params.id as string);
+      const foundSpot = allSpots.find(s => s.id === spotId);
+      setSpot(foundSpot || null);
+      setLoading(false);
+    }
+  }, [params]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
+        <div className="text-white text-xl">読み込み中...</div>
       </div>
-    </div>
-  </div>
-);
+    );
+  }
 
-const SpotCard = ({ spot }: { spot: Spot }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  if (!spot) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
+        <div className="text-white text-center">
+          <h1 className="text-2xl font-bold mb-4">スポットが見つかりません</h1>
+          <a href="/spots/tokyo" className="text-blue-300 hover:text-blue-400 underline">
+            東京スポット一覧に戻る
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   const renderSpotInfo = () => {
     switch(spot.category) {
       case 'food':
         return (
-          <>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">💰 {spot.info.price}</div>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">🍽️ {spot.info.cuisine}</div>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">📍 {spot.info.distance}</div>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">🕐 {spot.info.openHours}</div>
-          </>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>💰</span> 
+              <span className="text-sm">{spot.info.price}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>🍽️</span> 
+              <span className="text-sm">{spot.info.cuisine}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>📍</span> 
+              <span className="text-sm">{spot.info.distance}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>🕐</span> 
+              <span className="text-sm">{spot.info.openHours}</span>
+            </div>
+          </div>
         );
       case 'sights':
         return (
-          <>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">⏱️ {spot.info.duration}</div>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">🎫 {spot.info.ticketRequired}</div>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">🌅 {spot.info.bestTime}</div>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">👥 {spot.info.crowdLevel}</div>
-          </>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>⏱️</span> 
+              <span className="text-sm">{spot.info.duration}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>🎫</span> 
+              <span className="text-sm">{spot.info.ticketRequired}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>🌅</span> 
+              <span className="text-sm">{spot.info.bestTime}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>👥</span> 
+              <span className="text-sm">{spot.info.crowdLevel}</span>
+            </div>
+          </div>
         );
       case 'hotels':
         return (
-          <>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">💰 {spot.info.pricePerNight}</div>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">⭐ {spot.info.stars}つ星</div>
-            <div className="flex items-center gap-1 text-gray-700 text-xs">🕐 {spot.info.checkIn}-{spot.info.checkOut}</div>
-          </>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>💰</span> 
+              <span className="text-sm">{spot.info.pricePerNight}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>⭐</span> 
+              <span className="text-sm">{spot.info.stars}つ星</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>🕐</span> 
+              <span className="text-sm">{spot.info.checkIn} - {spot.info.checkOut}</span>
+            </div>
+          </div>
         );
       default:
         return null;
@@ -233,227 +556,99 @@ const SpotCard = ({ spot }: { spot: Spot }) => {
   };
 
   return (
-    <div className="group relative bg-white/20 backdrop-blur-lg rounded-2xl overflow-hidden transition-all duration-300 hover:transform hover:-translate-y-2 hover:scale-105 hover:bg-white/30 cursor-pointer border border-white/30">
-      <div className="relative h-48 overflow-hidden">
-        <Image
-          src={spot.image}
-          alt={spot.name}
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-        <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
-          {spot.badges.map((badge, index) => (
-            <span 
-              key={index}
-              className={`px-2 py-1 rounded-full text-xs font-medium ${
-                badge === '営業中' ? 'bg-green-500 text-white' :
-                badge === '人気' ? 'bg-orange-500 text-white' :
-                'bg-black/70 text-white'
-              }`}
-            >
-              {badge}
-            </span>
-          ))}
-        </div>
-        <button
-          onClick={() => setIsFavorite(!isFavorite)}
-          className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all ${
-            isFavorite ? 'bg-red-500 text-white' : 'bg-white/90 text-gray-600 hover:bg-white'
-          }`}
-        >
-          {isFavorite ? '♥' : '♡'}
-        </button>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 relative">
+      {/* Background overlay */}
+      <div className="absolute inset-0 bg-black/30"></div>
       
-      <div className="p-5">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-lg font-bold text-gray-900 line-clamp-2">{spot.name}</h3>
-        </div>
-        
-        <div className="flex items-center gap-2 mb-3">
-          <div className="text-yellow-500 text-sm">
-            {'★'.repeat(Math.floor(spot.rating))}{'☆'.repeat(5-Math.floor(spot.rating))}
-          </div>
-          <span className="text-sm font-semibold text-gray-700">{spot.rating}</span>
-          <span className="text-xs text-gray-600">({spot.reviews}件)</span>
-        </div>
-        
-        <div className="grid grid-cols-1 gap-1 mb-4">
-          {renderSpotInfo()}
-        </div>
-        
-        <div className="flex flex-wrap gap-1 mb-4">
-          {spot.tags.map((tag, index) => (
-            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
-              {tag}
-            </span>
-          ))}
-        </div>
-        
-        <button className="w-full py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow">
-          詳細を見る
+      {/* Header */}
+      <div className="relative z-10 p-4">
+        <button 
+          onClick={() => window.history.back()}
+          className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6"
+        >
+          ← 戻る
         </button>
       </div>
-    </div>
-  );
-};
 
-export default function Home() {
-  const [currentCategory, setCurrentCategory] = useState<'food' | 'sights' | 'hotels'>('food');
-  const [currentData, setCurrentData] = useState<Spot[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('ja');
-
-  useEffect(() => {
-    loadData(currentCategory);
-  }, [currentCategory]);
-
-  const loadData = (category: 'food' | 'sights' | 'hotels') => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setCurrentData(sampleData[category] || []);
-      setIsLoading(false);
-    }, 800);
-  };
-
-  const switchCategory = (category: 'food' | 'sights' | 'hotels') => {
-    setCurrentCategory(category);
-  };
-
-  const filteredData = currentData.filter(spot => 
-    spot.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    spot.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
-  return (
-    <div className="min-h-screen relative overflow-x-hidden">
-      {/* Hero Background */}
-      <div 
-        className="fixed top-0 left-0 w-full h-screen z-[-2] bg-cover bg-center bg-fixed"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1490761668535-35497054764d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2092&q=80'), linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%)`
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/50"></div>
-      </div>
-
-      {/* Header */}
-      <header className="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-lg shadow-lg">
-        <nav className="max-w-6xl mx-auto flex justify-between items-center p-4">
-          <div className="text-2xl font-bold text-blue-600">Trip On</div>
-          <ul className="hidden md:flex space-x-8">
-            <li><a href="#home" className="text-gray-700 hover:text-blue-600 font-medium">Home</a></li>
-            <li><a href="#areas" className="text-gray-700 hover:text-blue-600 font-medium">Areas</a></li>
-            <li><a href="#itinerary" className="text-gray-700 hover:text-blue-600 font-medium">AI Itinerary</a></li>
-            <li><a href="#about" className="text-gray-700 hover:text-blue-600 font-medium">About</a></li>
-          </ul>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setCurrentLanguage(currentLanguage === 'ja' ? 'en' : 'ja')}
-              className="px-4 py-2 border border-gray-300 rounded-full bg-white hover:bg-gray-50"
-            >
-              {currentLanguage === 'ja' ? 'EN / 日本語' : 'JP / English'}
-            </button>
-            <div className="text-gray-700">Login</div>
-          </div>
-        </nav>
-      </header>
-
-      {/* Main Content */}
-      <main className="pt-24 pb-8">
-        <div className="max-w-6xl mx-auto px-4">
-          {/* Page Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">Tokyo Spots</h1>
-            <p className="text-lg text-white/90 drop-shadow">Discover the best dining, sightseeing, and hotels in Tokyo</p>
-          </div>
-
-          {/* Category Tabs */}
-          <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-2 mb-6 border border-white/20">
-            <div className="flex gap-2">
-              <button
-                onClick={() => switchCategory('food')}
-                className={`flex-1 p-4 rounded-xl transition-all ${
-                  currentCategory === 'food' 
-                    ? 'bg-white/25 text-white shadow-lg' 
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                <span className="block text-xl mb-1">🍜</span>
-                <span className="font-semibold">飲食</span>
-              </button>
-              <button
-                onClick={() => switchCategory('sights')}
-                className={`flex-1 p-4 rounded-xl transition-all ${
-                  currentCategory === 'sights' 
-                    ? 'bg-white/25 text-white shadow-lg' 
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                <span className="block text-xl mb-1">🏯</span>
-                <span className="font-semibold">観光スポット</span>
-              </button>
-              <button
-                onClick={() => switchCategory('hotels')}
-                className={`flex-1 p-4 rounded-xl transition-all ${
-                  currentCategory === 'hotels' 
-                    ? 'bg-white/25 text-white shadow-lg' 
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                <span className="block text-xl mb-1">🏨</span>
-                <span className="font-semibold">ホテル</span>
-              </button>
+      {/* Main content */}
+      <div className="relative z-10 max-w-4xl mx-auto px-4 pb-8">
+        <div className="bg-white/95 backdrop-blur-lg rounded-2xl overflow-hidden shadow-2xl">
+          {/* Hero image */}
+          <div className="relative h-64 md:h-80 w-full">
+            <Image
+              src={spot.image}
+              alt={getDisplayName(spot.name)}
+              fill
+              style={{ objectFit: 'cover' }}
+              className="rounded-t-2xl"
+            />
+            <div className="absolute top-4 left-4">
+              <div className="flex flex-wrap gap-2">
+                {spot.badges.map((badge, index) => (
+                  <span 
+                    key={index}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      badge === '営業中' ? 'bg-green-500 text-white' : 
+                      badge === '人気' ? 'bg-orange-500 text-white' : 
+                      'bg-black/70 text-white'
+                    }`}
+                  >
+                    {badge}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Filters */}
-          <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1">
-                <input
-                  type="text"
-                  placeholder="キーワードで検索..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full p-3 rounded-xl bg-white/90 border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div className="flex gap-4">
-                <select className="p-3 rounded-xl bg-white/90 border border-white/30 min-w-32">
-                  <option>人気</option>
-                  <option>評価</option>
-                  <option>距離</option>
-                  <option>価格</option>
-                </select>
-                <div className="flex bg-white/15 rounded-lg p-1">
-                  <button className="p-2 bg-white/25 rounded text-white">📋</button>
-                  <button className="p-2 text-white/70">🗺️</button>
+          {/* Content */}
+          <div className="p-6">
+            {/* Title and rating */}
+            <div className="mb-6">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                {getDisplayName(spot.name)}
+              </h1>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <span className="text-yellow-400 text-lg">★</span>
+                  <span className="font-semibold text-gray-800">{spot.rating}</span>
                 </div>
+                <span className="text-gray-600">({spot.reviews.toLocaleString()} レビュー)</span>
               </div>
             </div>
-          </div>
 
-          {/* Results Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {isLoading ? (
-              Array(6).fill(0).map((_, i) => <SkeletonCard key={i} />)
-            ) : (
-              filteredData.map((spot) => (
-                <SpotCard key={spot.id} spot={spot} />
-              ))
-            )}
-          </div>
+            {/* Info */}
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-3">基本情報</h2>
+              {renderSpotInfo()}
+            </div>
 
-          {/* Load More */}
-          <div className="text-center">
-            <button className="px-8 py-3 bg-white/20 text-white border border-white/30 rounded-xl font-semibold hover:bg-white/30 transition-colors backdrop-blur-lg">
-              さらに表示
-            </button>
+            {/* Tags */}
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-3">特徴</h2>
+              <div className="flex flex-wrap gap-2">
+                {spot.tags.map((tag, index) => (
+                  <span 
+                    key={index}
+                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-sm"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-4">
+              <button className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow">
+                詳細を見る
+              </button>
+              <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:border-gray-400 hover:bg-gray-50 transition-colors">
+                お気に入り
+              </button>
+            </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

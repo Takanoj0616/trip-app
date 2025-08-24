@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -16,6 +16,16 @@ const Header: React.FC = () => {
   const [authError, setAuthError] = useState('');
   const { user, loading, logout, signIn, signUp, signInWithGoogle } = useAuth();
   const { currentLanguage, setCurrentLanguage, t } = useLanguage();
+
+  // Check if we're running on localhost
+  const [isLocalhost, setIsLocalhost] = useState(false);
+
+  useEffect(() => {
+    setIsLocalhost(
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1'
+    );
+  }, []);
 
   const resetAuthForm = () => {
     setEmail('');
@@ -295,6 +305,15 @@ const Header: React.FC = () => {
               >
                 한국어
               </button>
+              {isLocalhost && (
+                <button 
+                  onClick={() => setCurrentLanguage('fr')}
+                  className={`lang-btn ${currentLanguage === 'fr' ? 'active' : ''}`}
+                  data-lang="fr"
+                >
+                  Français
+                </button>
+              )}
             </div>
           </div>
         </div>
