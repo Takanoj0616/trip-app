@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin, Clock, Users, Star, Calendar, Navigation } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface CourseStop {
   time: string;
@@ -37,6 +38,7 @@ interface ModelCourse {
 
 export default function ModelCoursesPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [selectedTheme, setSelectedTheme] = useState<string>('all');
 
   useEffect(() => {
@@ -946,12 +948,12 @@ export default function ModelCoursesPage() {
   ];
 
   const themes = [
-    { id: 'all', label: 'すべて', color: '#4FACFE' },
-    { id: 'アニメ・ゲーム', label: 'アニメ・ゲーム', color: '#FF6B9D' },
-    { id: '歴史・文化', label: '歴史・文化', color: '#C77DFF' },
-    { id: 'トレンド・ファッション', label: 'トレンド・ファッション', color: '#4ECDC4' },
-    { id: 'グルメ', label: 'グルメ', color: '#FF8C42' },
-    { id: '自然・散策', label: '自然・散策', color: '#7BC950' }
+    { id: 'all', label: t('courses.theme.all'), color: '#4FACFE' },
+    { id: 'アニメ・ゲーム', label: t('courses.theme.anime'), color: '#FF6B9D' },
+    { id: '歴史・文化', label: t('courses.theme.history'), color: '#C77DFF' },
+    { id: 'トレンド・ファッション', label: t('courses.theme.trends'), color: '#4ECDC4' },
+    { id: 'グルメ', label: t('courses.theme.gourmet'), color: '#FF8C42' },
+    { id: '自然・散策', label: t('courses.theme.nature'), color: '#7BC950' }
   ];
 
   const filteredCourses = selectedTheme === 'all' 
@@ -976,10 +978,10 @@ export default function ModelCoursesPage() {
                   WebkitBackgroundClip: 'text', 
                   WebkitTextFillColor: 'transparent' 
                 }}></i>
-                テーマ別モデルコース
+                {t('courses.title')}
               </h1>
               <p className="section-subtitle" style={{ color: 'black', marginBottom: '60px' }}>
-                厳選されたテーマ別コースで、効率よく観光スポットを回りましょう
+                {t('courses.subtitle')}
               </p>
             </div>
 
@@ -999,7 +1001,7 @@ export default function ModelCoursesPage() {
                 marginBottom: '20px',
                 textAlign: 'center'
               }}>
-                テーマで絞り込む
+                {t('courses.filterTitle')}
               </h2>
               
               <div className="flex flex-wrap justify-center gap-3">
@@ -1078,7 +1080,7 @@ export default function ModelCoursesPage() {
                       fontSize: '12px',
                       fontWeight: '600'
                     }}>
-                      {course.totalTime}
+                      {t('courses.totalTime')} {course.totalTime}
                     </div>
                   </div>
 
@@ -1090,7 +1092,7 @@ export default function ModelCoursesPage() {
                       fontWeight: '700',
                       marginBottom: '8px'
                     }}>
-                      {course.title}
+                      {t(`course.${course.id.split('-')[0]}.title`)}
                     </h3>
                     
                     <p style={{
@@ -1099,7 +1101,7 @@ export default function ModelCoursesPage() {
                       lineHeight: '1.6',
                       marginBottom: '15px'
                     }}>
-                      {course.subtitle}
+                      {t(`course.${course.id.split('-')[0]}.subtitle`)}
                     </p>
 
                     {/* メタ情報 */}
@@ -1107,25 +1109,25 @@ export default function ModelCoursesPage() {
                       <div className="flex items-center gap-2">
                         <i className="fas fa-map-marker-alt" style={{ color: '#FF6B9D' }}></i>
                         <span style={{ color: 'black', fontSize: '14px' }}>
-                          {course.area}
+                          {t(`courses.area.${course.area.toLowerCase()}`)}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <i className="fas fa-clock" style={{ color: '#4FACFE' }}></i>
-                        <span style={{ color: 'black', fontSize: '14px' }}>
-                          {course.duration}
-                        </span>
-                      </div>
-                      <div style={{
-                        background: getDifficultyColor(course.difficulty),
-                        color: 'white',
-                        padding: '4px 12px',
-                        borderRadius: '12px',
-                        fontSize: '12px',
-                        fontWeight: '600'
-                      }}>
-                        {getDifficultyLabel(course.difficulty)}
-                      </div>
+                                          <div className="flex items-center gap-2">
+                      <i className="fas fa-clock" style={{ color: '#4FACFE' }}></i>
+                      <span style={{ color: 'black', fontSize: '14px' }}>
+                        {t('courses.duration')}: {course.duration}
+                      </span>
+                    </div>
+                                          <div style={{
+                      background: getDifficultyColor(course.difficulty),
+                      color: 'white',
+                      padding: '4px 12px',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      fontWeight: '600'
+                    }}>
+                      {t(`courses.difficulty.${course.difficulty}`)}
+                    </div>
                     </div>
 
                     {/* タグ */}
@@ -1156,7 +1158,7 @@ export default function ModelCoursesPage() {
                       fontSize: '14px'
                     }}>
                       <i className="fas fa-route"></i>
-                      <span>{course.stops.length}つのスポットを巡ります</span>
+                      <span>{course.stops.length} {t('courses.spotsCount')}</span>
                     </div>
                   </div>
                 </Link>
@@ -1169,8 +1171,8 @@ export default function ModelCoursesPage() {
                 padding: '60px',
                 color: 'rgba(0, 0, 0, 0.6)'
               }}>
-                <p>選択されたテーマのコースが見つかりませんでした。</p>
-                <p>他のテーマを選択してください。</p>
+                <p>{t('courses.noCoursesFound')}</p>
+                <p>{t('courses.selectOtherTheme')}</p>
               </div>
             )}
 
@@ -1190,11 +1192,3 @@ function getDifficultyColor(difficulty: string): string {
   }
 }
 
-function getDifficultyLabel(difficulty: string): string {
-  switch (difficulty) {
-    case 'beginner': return '初級';
-    case 'intermediate': return '中級';
-    case 'advanced': return '上級';
-    default: return '初級';
-  }
-}
