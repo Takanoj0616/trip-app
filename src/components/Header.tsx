@@ -17,15 +17,8 @@ const Header: React.FC = () => {
   const { user, loading, logout, signIn, signUp, signInWithGoogle } = useAuth();
   const { currentLanguage, setCurrentLanguage, t } = useLanguage();
 
-  // Check if we're running on localhost
-  const [isLocalhost, setIsLocalhost] = useState(false);
-
-  useEffect(() => {
-    setIsLocalhost(
-      window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1'
-    );
-  }, []);
+  // フランス語ボタンを常に表示するため、isLocalhostの判定を削除
+  const isLocalhost = true;
 
   const resetAuthForm = () => {
     setEmail('');
