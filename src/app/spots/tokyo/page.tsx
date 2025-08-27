@@ -967,43 +967,421 @@ export default function TokyoSpots() {
         {
           id: 201,
           name: {
-            ja: "パークハイアット東京",
-            en: "Park Hyatt Tokyo",
-            ko: "파크 하이엇 도쿄",
-            fr: "Park Hyatt Tokyo"
+            ja: "Imperial Hotel Tokyo",
+            en: "Imperial Hotel Tokyo",
+            ko: "임페리얼 호텔 도쿄",
+            fr: "Imperial Hotel Tokyo"
           },
-          rating: 4.9,
-          reviewCount: 3420,
-          image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400",
-          badges: ["5つ星", "空室あり"],
+          rating: 4.5,
+          reviewCount: 11890,
+          image: "/images/tokyo/ChIJT7wVXe6LGGARpg6sWitWN8Y/photo_2.jpg",
+          badges: ["5つ星", "バンケットホール", "結婚式場"],
           info: {
-            pricePerNight: "¥45,000-80,000",
+            pricePerNight: "¥35,000-65,000",
             stars: 5,
             checkIn: "15:00",
             checkOut: "12:00"
           },
-          tags: ["ラグジュアリー", "シティビュー", "スパ"],
+          tags: ["ラグジュアリー", "内幸町", "高級"],
           category: "hotels"
         },
         {
           id: 202,
           name: {
-            ja: "東急ステイ新宿",
-            en: "Tokyu Stay Shinjuku",
-            ko: "도큐 스테이 신주쿠",
-            fr: "Tokyu Stay Shinjuku"
+            ja: "The Prince Park Tower Tokyo",
+            en: "The Prince Park Tower Tokyo",
+            ko: "더 프린스 파크 타워 도쿄",
+            fr: "The Prince Park Tower Tokyo"
+          },
+          rating: 4.2,
+          reviewCount: 6204,
+          image: "/images/tokyo/ChIJ9fTLo0TsGGAR9hOYI9J4Bus/photo_1.jpg",
+          badges: ["5つ星", "温泉", "結婚式場"],
+          info: {
+            pricePerNight: "¥25,000-45,000",
+            stars: 5,
+            checkIn: "15:00",
+            checkOut: "12:00"
+          },
+          tags: ["芝公園", "温泉", "バンケット"],
+          category: "hotels"
+        },
+        {
+          id: 203,
+          name: {
+            ja: "ANA InterContinental Tokyo",
+            en: "ANA InterContinental Tokyo",
+            ko: "ANA 인터컨티넨탈 도쿄",
+            fr: "ANA InterContinental Tokyo"
           },
           rating: 4.3,
-          reviewCount: 1890,
-          image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400",
-          badges: ["4つ星", "空室あり"],
+          reviewCount: 9241,
+          image: "/images/tokyo/ChIJSbSAbIWLGGARr4URtFXRlWk/photo_1.jpg",
+          badges: ["5つ星", "結婚式場", "イベント会場"],
           info: {
-            pricePerNight: "¥12,000-18,000",
+            pricePerNight: "¥30,000-55,000",
+            stars: 5,
+            checkIn: "15:00",
+            checkOut: "12:00"
+          },
+          tags: ["赤坂", "国際ホテル", "高級"],
+          category: "hotels"
+        },
+        {
+          id: 204,
+          name: {
+            ja: "APA HOTEL Roppongi Six",
+            en: "APA HOTEL Roppongi Six",
+            ko: "APA 호텔 롯폰기 식스",
+            fr: "APA HOTEL Roppongi Six"
+          },
+          rating: 3.9,
+          reviewCount: 2534,
+          image: "/images/tokyo/ChIJMQGioYSLGGAR_IrWM7I3zOI/photo_1.jpg",
+          badges: ["3つ星", "ビジネス"],
+          info: {
+            pricePerNight: "¥8,000-15,000",
+            stars: 3,
+            checkIn: "15:00",
+            checkOut: "11:00"
+          },
+          tags: ["六本木", "ビジネス", "アクセス良好"],
+          category: "hotels"
+        },
+        {
+          id: 205,
+          name: {
+            ja: "The Okura Tokyo",
+            en: "The Okura Tokyo",
+            ko: "더 오쿠라 도쿄",
+            fr: "The Okura Tokyo"
+          },
+          rating: 4.4,
+          reviewCount: 5290,
+          image: "/images/tokyo/ChIJuecmcH2LGGARgmOaAPaK9zA/photo_1.jpg",
+          badges: ["5つ星", "高級"],
+          info: {
+            pricePerNight: "¥40,000-70,000",
+            stars: 5,
+            checkIn: "15:00",
+            checkOut: "12:00"
+          },
+          tags: ["虎ノ門", "伝統", "日本式"],
+          category: "hotels"
+        },
+        {
+          id: 206,
+          name: {
+            ja: "APA Hotel & Resort Ryogoku Eki Tower",
+            en: "APA Hotel & Resort Ryogoku Eki Tower",
+            ko: "APA 호텔 & 리조트 료고쿠 에키 타워",
+            fr: "APA Hotel & Resort Ryogoku Eki Tower"
+          },
+          rating: 4.1,
+          reviewCount: 3561,
+          image: "/images/tokyo/ChIJZSX-tMqOGGARFgXf7I1NhcQ/photo_1.jpg",
+          badges: ["4つ星", "駅直結"],
+          info: {
+            pricePerNight: "¥10,000-18,000",
             stars: 4,
             checkIn: "15:00",
             checkOut: "11:00"
           },
-          tags: ["ビジネス", "駅近", "洗濯機付"],
+          tags: ["両国", "相撲", "駅近"],
+          category: "hotels"
+        },
+        {
+          id: 207,
+          name: {
+            ja: "Tokyo Dome Hotel",
+            en: "Tokyo Dome Hotel",
+            ko: "도쿄 돔 호텔",
+            fr: "Tokyo Dome Hotel"
+          },
+          rating: 4.2,
+          reviewCount: 8107,
+          image: "/images/tokyo/ChIJRZ_bSz-MGGARPMc7IsdsZiY/photo_2.jpg",
+          badges: ["4つ星", "24時間営業", "東京ドーム隣接"],
+          info: {
+            pricePerNight: "¥15,000-28,000",
+            stars: 4,
+            checkIn: "15:00",
+            checkOut: "12:00"
+          },
+          tags: ["後楽園", "東京ドーム", "イベント"],
+          category: "hotels"
+        },
+        {
+          id: 208,
+          name: {
+            ja: "Hotel Chinzanso Tokyo",
+            en: "Hotel Chinzanso Tokyo",
+            ko: "호텔 친잔소 도쿄",
+            fr: "Hotel Chinzanso Tokyo"
+          },
+          rating: 4.4,
+          reviewCount: 9694,
+          image: "/images/tokyo/ChIJNxw8EQSNGGART8GbVls3c4A/photo_1.jpg",
+          badges: ["5つ星", "結婚式場", "日本庭園"],
+          info: {
+            pricePerNight: "¥35,000-80,000",
+            stars: 5,
+            checkIn: "15:00",
+            checkOut: "12:00"
+          },
+          tags: ["関口", "庭園", "高級"],
+          category: "hotels"
+        },
+        {
+          id: 209,
+          name: {
+            ja: "Palace Hotel Tokyo",
+            en: "Palace Hotel Tokyo",
+            ko: "팰리스 호텔 도쿄",
+            fr: "Palace Hotel Tokyo"
+          },
+          rating: 4.5,
+          reviewCount: 6021,
+          image: "/images/tokyo/ChIJq0s44BuMGGARvBtm78mmRRg/photo_1.jpg",
+          badges: ["5つ星", "皇居前"],
+          info: {
+            pricePerNight: "¥45,000-75,000",
+            stars: 5,
+            checkIn: "15:00",
+            checkOut: "12:00"
+          },
+          tags: ["丸の内", "皇居", "ラグジュアリー"],
+          category: "hotels"
+        },
+        {
+          id: 210,
+          name: {
+            ja: "Grand Hyatt Tokyo",
+            en: "Grand Hyatt Tokyo",
+            ko: "그랜드 하이엇 도쿄",
+            fr: "Grand Hyatt Tokyo"
+          },
+          rating: 4.4,
+          reviewCount: 4775,
+          image: "/images/tokyo/ChIJSUuI2buJGGARsWTQED5lKJU/photo_1.jpg",
+          badges: ["5つ星", "リゾート", "24時間営業"],
+          info: {
+            pricePerNight: "¥38,000-65,000",
+            stars: 5,
+            checkIn: "15:00",
+            checkOut: "12:00"
+          },
+          tags: ["六本木", "ヒルズ", "国際的"],
+          category: "hotels"
+        },
+        {
+          id: 211,
+          name: {
+            ja: "Tokyo Prince Hotel",
+            en: "Tokyo Prince Hotel",
+            ko: "도쿄 프린스 호텔",
+            fr: "Tokyo Prince Hotel"
+          },
+          rating: 4.1,
+          reviewCount: 5218,
+          image: "/images/tokyo/ChIJsXO0-76LGGARAOeGIaTQg8g/photo_1.jpg",
+          badges: ["4つ星", "東京タワービュー", "バンケットホール"],
+          info: {
+            pricePerNight: "¥18,000-35,000",
+            stars: 4,
+            checkIn: "15:00",
+            checkOut: "11:00"
+          },
+          tags: ["芝公園", "東京タワー", "伝統"],
+          category: "hotels"
+        },
+        {
+          id: 212,
+          name: {
+            ja: "Conrad Tokyo",
+            en: "Conrad Tokyo",
+            ko: "콘래드 도쿄",
+            fr: "Conrad Tokyo"
+          },
+          rating: 4.5,
+          reviewCount: 4204,
+          image: "/images/tokyo/ChIJlUTqGMOLGGAR4mDGvlHTzgU/photo_1.jpg",
+          badges: ["5つ星", "スパ", "結婚式場"],
+          info: {
+            pricePerNight: "¥42,000-78,000",
+            stars: 5,
+            checkIn: "15:00",
+            checkOut: "12:00"
+          },
+          tags: ["汐留", "高層階", "ベイエリア"],
+          category: "hotels"
+        },
+        {
+          id: 213,
+          name: {
+            ja: "Hotel Metropolitan Edmont",
+            en: "Hotel Metropolitan Edmont",
+            ko: "호텔 메트로폴리탄 에드몬트",
+            fr: "Hotel Metropolitan Edmont"
+          },
+          rating: 4.2,
+          reviewCount: 6226,
+          image: "/images/tokyo/ChIJFbCrF0GMGGAR_Zb1IBySdxo/photo_1.jpg",
+          badges: ["4つ星", "24時間営業", "バンケット"],
+          info: {
+            pricePerNight: "¥12,000-22,000",
+            stars: 4,
+            checkIn: "15:00",
+            checkOut: "11:00"
+          },
+          tags: ["飯田橋", "ビジネス", "アクセス良好"],
+          category: "hotels"
+        },
+        {
+          id: 214,
+          name: {
+            ja: "Apa Hotel & Resort Roppongi-Eki-Higashi",
+            en: "Apa Hotel & Resort Roppongi-Eki-Higashi",
+            ko: "APA 호텔 & 리조트 롯폰기역 동쪽",
+            fr: "Apa Hotel & Resort Roppongi-Eki-Higashi"
+          },
+          rating: 4.1,
+          reviewCount: 1058,
+          image: "/images/tokyo/ChIJ0SWUgomLGGARFmSqytdHAEw/photo_1.jpg",
+          badges: ["3つ星", "駅近"],
+          info: {
+            pricePerNight: "¥9,000-16,000",
+            stars: 3,
+            checkIn: "15:00",
+            checkOut: "11:00"
+          },
+          tags: ["六本木", "駅東", "便利"],
+          category: "hotels"
+        },
+        {
+          id: 215,
+          name: {
+            ja: "Asakusa View Hotel",
+            en: "Asakusa View Hotel",
+            ko: "아사쿠사 뷰 호텔",
+            fr: "Asakusa View Hotel"
+          },
+          rating: 4.1,
+          reviewCount: 7419,
+          image: "/images/tokyo/ChIJq2y6aZWOGGARoNXiLxzHGcw/photo_1.jpg",
+          badges: ["4つ星", "24時間営業", "浅草"],
+          info: {
+            pricePerNight: "¥14,000-25,000",
+            stars: 4,
+            checkIn: "15:00",
+            checkOut: "11:00"
+          },
+          tags: ["浅草", "西浅草", "観光"],
+          category: "hotels"
+        },
+        {
+          id: 216,
+          name: {
+            ja: "InterContinental Tokyo Bay",
+            en: "InterContinental Tokyo Bay",
+            ko: "인터컨티넨탈 도쿄 베이",
+            fr: "InterContinental Tokyo Bay"
+          },
+          rating: 4.3,
+          reviewCount: 3970,
+          image: "/images/tokyo/ChIJxbdFcPdjGGARd9tBq9RKOVc/photo_1.jpg",
+          badges: ["5つ星", "ベイビュー", "結婚式場"],
+          info: {
+            pricePerNight: "¥28,000-50,000",
+            stars: 5,
+            checkIn: "15:00",
+            checkOut: "12:00"
+          },
+          tags: ["海岸", "湾岸", "国際的"],
+          category: "hotels"
+        },
+        {
+          id: 217,
+          name: {
+            ja: "remm Roppongi",
+            en: "remm Roppongi",
+            ko: "렘 롯폰기",
+            fr: "remm Roppongi"
+          },
+          rating: 4.3,
+          reviewCount: 2276,
+          image: "/images/tokyo/ChIJo8i9EniLGGARcMXSaSwzxxo/photo_1.jpg",
+          badges: ["4つ星", "24時間営業"],
+          info: {
+            pricePerNight: "¥15,000-28,000",
+            stars: 4,
+            checkIn: "15:00",
+            checkOut: "11:00"
+          },
+          tags: ["六本木", "モダン", "デザイン"],
+          category: "hotels"
+        },
+        {
+          id: 218,
+          name: {
+            ja: "Hotel Villa Fontaine Grand Shiodome",
+            en: "Hotel Villa Fontaine Grand Shiodome",
+            ko: "호텔 빌라 폰테인 그랜드 시오도메",
+            fr: "Hotel Villa Fontaine Grand Shiodome"
+          },
+          rating: 4.2,
+          reviewCount: 2837,
+          image: "/images/tokyo/ChIJp_uTpMOLGGARuV0qHAQguMU/photo_1.jpg",
+          badges: ["4つ星", "24時間営業", "ビュッフェ"],
+          info: {
+            pricePerNight: "¥12,000-20,000",
+            stars: 4,
+            checkIn: "15:00",
+            checkOut: "11:00"
+          },
+          tags: ["汐留", "東新橋", "ビジネス"],
+          category: "hotels"
+        },
+        {
+          id: 219,
+          name: {
+            ja: "Royal Park Hotel",
+            en: "Royal Park Hotel",
+            ko: "로열 파크 호텔",
+            fr: "Royal Park Hotel"
+          },
+          rating: 4.2,
+          reviewCount: 4733,
+          image: "/images/tokyo/ChIJdSrKTkSJGGARXoPJvUkZUT8/photo_1.jpg",
+          badges: ["4つ星", "日本橋"],
+          info: {
+            pricePerNight: "¥16,000-30,000",
+            stars: 4,
+            checkIn: "15:00",
+            checkOut: "11:00"
+          },
+          tags: ["日本橋", "中央区", "ビジネス"],
+          category: "hotels"
+        },
+        {
+          id: 220,
+          name: {
+            ja: "KOKO HOTEL Ginza 1-chome",
+            en: "KOKO HOTEL Ginza 1-chome",
+            ko: "KOKO 호텔 긴자 1초메",
+            fr: "KOKO HOTEL Ginza 1-chome"
+          },
+          rating: 3.7,
+          reviewCount: 665,
+          image: "/images/tokyo/ChIJlaVM3eOLGGARxiqelk1qzC8/photo_1.jpg",
+          badges: ["3つ星", "銀座"],
+          info: {
+            pricePerNight: "¥10,000-18,000",
+            stars: 3,
+            checkIn: "15:00",
+            checkOut: "11:00"
+          },
+          tags: ["銀座", "中央区", "アクセス"],
           category: "hotels"
         }
       ]
