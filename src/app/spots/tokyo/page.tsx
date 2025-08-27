@@ -3,46 +3,58 @@
 import Head from 'next/head';
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import Image from 'next/image';
+import { tokyoSpotsDetailed, type TokyoSpot, type SpotInfo, type SpotName } from '@/data/tokyo-spots-detailed';
 
-interface SpotInfo {
-  price?: string;
-  cuisine?: string;
-  distance?: string;
-  openHours?: string;
-  duration?: string;
-  ticketRequired?: string;
-  bestTime?: string;
-  crowdLevel?: string;
-  pricePerNight?: string;
-  stars?: number;
-  checkIn?: string;
-  checkOut?: string;
+interface Review {
+  userName: string;
+  rating: number;
+  date: string;
+  comment: string;
 }
 
-interface SpotName {
-  ja: string;
-  en: string;
-  ko: string;
-  fr: string;
+interface Location {
+  address: string;
+  nearestStation?: string;
+  accessInfo?: {
+    train?: string[];
+    bus?: string[];
+    car?: string;
+  };
+}
+
+interface Facilities {
+  wheelchairAccessible?: boolean;
+  strollerFriendly?: boolean;
+  restrooms?: boolean;
+  restaurant?: boolean;
+  souvenirShop?: boolean;
+  noSmoking?: boolean;
+  photography?: boolean;
+  freeWifi?: boolean;
 }
 
 interface Spot {
   id: number;
   name: SpotName;
   rating: number;
-  reviews: number;
+  reviews?: Review[];
+  reviewCount?: number;
   image: string;
   badges: string[];
   info: SpotInfo;
   tags: string[];
   category: 'food' | 'sights' | 'hotels';
+  description?: string;
+  location?: Location;
+  facilities?: Facilities;
+  images?: string[];
 }
 
 type Category = 'food' | 'sights' | 'hotels';
 
 export default function TokyoSpots() {
   // State management
-  const [currentCategory, setCurrentCategory] = useState<Category>('food');
+  const [currentCategory, setCurrentCategory] = useState<Category>('sights');
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [favoriteSpots, setFavoriteSpots] = useState<Set<number>>(new Set());
@@ -521,6 +533,12 @@ export default function TokyoSpots() {
 
   // Data - moved inside useMemo to avoid dependency issues
   const filteredSpots = useMemo(() => {
+    // 共有データを現在の型に適合させる
+    const sightsData = tokyoSpotsDetailed.map(spot => ({
+      ...spot,
+      reviews: spot.reviews || []
+    }));
+
     const sampleData: Record<Category, Spot[]> = {
       food: [
         {
@@ -944,250 +962,18 @@ export default function TokyoSpots() {
           category: "food"
         }
       ],
-    sights: [
-        {
-          id: 101,
-          name: {
-            ja: "東京タワー",
-            en: "Tokyo Tower",
-            ko: "도쿠 타워",
-            fr: "Tour de Tokyo"
-          },
-          rating: 4.2,
-          reviews: 15032,
-          image: "/images/spots/東京タワー_20250714_121123.jpg",
-          badges: ["人気", "屋内", "営業中"],
-          info: {
-            duration: "2-3時間",
-            ticketRequired: "必要",
-            bestTime: "夕方",
-            crowdLevel: "普通"
-          },
-          tags: ["展望台", "夜景", "ランドマーク"],
-          category: "sights"
-        },
-        {
-          id: 102,
-          name: {
-            ja: "東京スカイツリー",
-            en: "Tokyo Skytree",
-            ko: "도쿄 스카이트리",
-            fr: "Tokyo Skytree"
-          },
-          rating: 4.1,
-          reviews: 28456,
-          image: "/images/spots/東京スカイツリー_20250714_121122.jpg",
-          badges: ["人気", "屋内", "営業中"],
-          info: {
-            duration: "2-3時間",
-            ticketRequired: "必要",
-            bestTime: "夕方",
-            crowdLevel: "普通"
-          },
-          tags: ["展望台", "モダン", "夜景"],
-          category: "sights"
-        },
-        {
-          id: 103,
-          name: {
-            ja: "浅草寺",
-            en: "Senso-ji Temple",
-            ko: "센소지",
-            fr: "Temple Senso-ji"
-          },
-          rating: 4.3,
-          reviews: 94587,
-          image: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400",
-          badges: ["人気", "屋外", "営業中"],
-          info: {
-            duration: "1-2時間",
-            ticketRequired: "不要",
-            bestTime: "朝",
-            crowdLevel: "混雑"
-          },
-          tags: ["歴史", "寺院", "伝統"],
-          category: "sights"
-        },
-        {
-          id: 104,
-          name: {
-            ja: "渋谷スクランブル交差点",
-            en: "Shibuya Crossing",
-            ko: "시부야 스크램블 교차점",
-            fr: "Carrefour de Shibuya"
-          },
-          rating: 4.0,
-          reviews: 12843,
-          image: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=400",
-          badges: ["人気", "屋外", "24時間"],
-          info: {
-            duration: "30分-1時間",
-            ticketRequired: "不要",
-            bestTime: "夕方",
-            crowdLevel: "混雑"
-          },
-          tags: ["都市景観", "写真スポット", "モダン"],
-          category: "sights"
-        },
-        {
-          id: 105,
-          name: {
-            ja: "明治神宮",
-            en: "Meiji Shrine",
-            ko: "메이지 신궁",
-            fr: "Sanctuaire Meiji"
-          },
-          rating: 4.4,
-          reviews: 52384,
-          image: "/images/spots/明治神宮_20250714_121123.jpg",
-          badges: ["人気", "屋外", "営業中"],
-          info: {
-            duration: "1-2時間",
-            ticketRequired: "不要",
-            bestTime: "朝",
-            crowdLevel: "普通"
-          },
-          tags: ["神社", "自然", "伝統"],
-          category: "sights"
-        },
-        {
-          id: 106,
-          name: {
-            ja: "新宿御苑",
-            en: "Shinjuku Gyoen",
-            ko: "신주쿠 교엔",
-            fr: "Jardin National de Shinjuku"
-          },
-          rating: 4.3,
-          reviews: 23847,
-          image: "/images/spots/新宿御苑_20250714_121139.jpg",
-          badges: ["人気", "屋外", "営業中"],
-          info: {
-            duration: "2-4時間",
-            ticketRequired: "必要",
-            bestTime: "午前",
-            crowdLevel: "普通"
-          },
-          tags: ["庭園", "桜", "自然"],
-          category: "sights"
-        },
-        {
-          id: 107,
-          name: {
-            ja: "築地場外市場",
-            en: "Tsukiji Outer Market",
-            ko: "츠키지 장외시장",
-            fr: "Marché extérieur de Tsukiji"
-          },
-          rating: 4.1,
-          reviews: 15632,
-          image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400",
-          badges: ["人気", "屋外", "営業中"],
-          info: {
-            duration: "1-3時間",
-            ticketRequired: "不要",
-            bestTime: "朝",
-            crowdLevel: "混雑"
-          },
-          tags: ["市場", "グルメ", "文化"],
-          category: "sights"
-        },
-        {
-          id: 108,
-          name: {
-            ja: "六本木ヒルズ",
-            en: "Roppongi Hills",
-            ko: "롯폰기 힐즈",
-            fr: "Roppongi Hills"
-          },
-          rating: 4.0,
-          reviews: 28439,
-          image: "https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=400",
-          badges: ["人気", "屋内", "営業中"],
-          info: {
-            duration: "2-5時間",
-            ticketRequired: "展望台のみ必要",
-            bestTime: "夕方",
-            crowdLevel: "普通"
-          },
-          tags: ["ショッピング", "展望台", "モダン"],
-          category: "sights"
-        },
-        {
-          id: 109,
-          name: {
-            ja: "東京国立博物館",
-            en: "Tokyo National Museum",
-            ko: "도쿄국립박물관",
-            fr: "Musée National de Tokyo"
-          },
-          rating: 4.3,
-          reviews: 19847,
-          image: "/images/spots/東京国立博物館_20250714_121129.jpg",
-          badges: ["人気", "屋内", "営業中"],
-          info: {
-            duration: "2-4時間",
-            ticketRequired: "必要",
-            bestTime: "午前",
-            crowdLevel: "普通"
-          },
-          tags: ["博物館", "歴史", "文化"],
-          category: "sights"
-        },
-        {
-          id: 110,
-          name: {
-            ja: "皇居",
-            en: "Imperial Palace",
-            ko: "고쿄",
-            fr: "Palais Impérial"
-          },
-          rating: 4.2,
-          reviews: 31245,
-          image: "/images/spots/皇居_20250714_121125.jpg",
-          badges: ["人気", "屋外", "営業中"],
-          info: {
-            duration: "1-3時間",
-            ticketRequired: "東御苑は不要",
-            bestTime: "午前",
-            crowdLevel: "普通"
-          },
-          tags: ["歴史", "庭園", "皇室"],
-          category: "sights"
-        },
-        {
-          id: 111,
-          name: {
-            ja: "皇居東御苑",
-            en: "East Gardens of the Imperial Palace",
-            ko: "고쿄 히가시교엔",
-            fr: "Jardins Est du Palais Impérial"
-          },
-          rating: 4.4,
-          reviews: 18523,
-          image: "/images/spots/皇居東御苑_20250714_121142.jpg",
-          badges: ["人気", "屋外", "営業中"],
-          info: {
-            duration: "1-2時間",
-            ticketRequired: "不要",
-            bestTime: "午前",
-            crowdLevel: "普通"
-          },
-          tags: ["庭園", "歴史", "自然"],
-          category: "sights"
-        }
-      ],
+    sights: sightsData,
     hotels: [
         {
           id: 201,
           name: {
             ja: "パークハイアット東京",
             en: "Park Hyatt Tokyo",
-            ko: "파크 하이엇 도쿠",
+            ko: "파크 하이엇 도쿄",
             fr: "Park Hyatt Tokyo"
           },
           rating: 4.9,
-          reviews: 3420,
+          reviewCount: 3420,
           image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400",
           badges: ["5つ星", "空室あり"],
           info: {
@@ -1208,7 +994,7 @@ export default function TokyoSpots() {
             fr: "Tokyu Stay Shinjuku"
           },
           rating: 4.3,
-          reviews: 1890,
+          reviewCount: 1890,
           image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400",
           badges: ["4つ星", "空室あり"],
           info: {
@@ -1224,13 +1010,22 @@ export default function TokyoSpots() {
     };
 
     const currentData = sampleData[currentCategory] || [];
+    
+    // Debug: データの確認
+    console.log('Sample data for sights:', sampleData.sights);
+    console.log('Current category:', currentCategory);
+    console.log('Current data:', currentData);
+    
     if (!searchTerm.trim()) return currentData;
     
-    return currentData.filter(spot => {
+    const filtered = currentData.filter(spot => {
       const displayName = getDisplayName(spot.name);
       return displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         spot.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     });
+    
+    console.log('Filtered spots:', filtered);
+    return filtered;
   }, [currentCategory, searchTerm, getDisplayName]);
 
   // Initialize from URL parameters
@@ -1240,7 +1035,11 @@ export default function TokyoSpots() {
     if (category && ['food', 'sights', 'hotels'].includes(category)) {
       setCurrentCategory(category);
     }
-  }, []);
+    
+    // Debug: ログ出力を追加
+    console.log('Current category:', category);
+    console.log('Available spots:', filteredSpots);
+  }, [filteredSpots]);
 
   // Category switching handler
   const handleCategoryChange = useCallback((category: Category) => {
@@ -1331,15 +1130,21 @@ export default function TokyoSpots() {
       className="spot-card fade-in" 
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      <div className="card-image">
-        <Image
-          src={spot.image}
-          alt={getDisplayName(spot.name)}
-          width={400}
-          height={200}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          loading="lazy"
-        />
+              <div className="card-image">
+          <Image
+            src={spot.image}
+            alt={getDisplayName(spot.name)}
+            width={400}
+            height={200}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            loading="lazy"
+            onError={(e) => {
+              console.error('Image load error for:', spot.image);
+              // フォールバック画像を設定
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400';
+            }}
+          />
         <div className="card-badges">
           {spot.badges.map((badge, idx) => (
             <span 
@@ -1366,7 +1171,7 @@ export default function TokyoSpots() {
             {'★'.repeat(Math.floor(spot.rating))}{'☆'.repeat(5 - Math.floor(spot.rating))}
           </div>
           <span className="rating-text">{spot.rating}</span>
-          <span className="reviews-count">({spot.reviews}{tr.spots.reviews})</span>
+          <span className="reviews-count">({spot.reviewCount || 0}{tr.spots.reviews})</span>
         </div>
         <div className="spot-info">
           {renderSpotInfo(spot)}
@@ -1409,6 +1214,22 @@ export default function TokyoSpots() {
             <div className="page-header">
               <h1 id="pageTitle">{tr.pageTitle}</h1>
               <p id="pageSubtitle">{tr.pageSubtitle}</p>
+              
+              {/* CTAボタン群 */}
+              <div className="cta-buttons">
+                <button className="cta-btn favorite-btn-cta">
+                  <span className="btn-icon">♥</span>
+                  <span>お気に入りに追加</span>
+                </button>
+                <button className="cta-btn ai-plan-btn">
+                  <span className="btn-icon">🤖</span>
+                  <span>AI旅行プランに入れる</span>
+                </button>
+                <button className="cta-btn ticket-btn">
+                  <span className="btn-icon">🎫</span>
+                  <span>チケット予約</span>
+                </button>
+              </div>
             </div>
 
             <div className="category-tabs">
@@ -1581,11 +1402,11 @@ export default function TokyoSpots() {
         .tripon .hero-background { position: fixed; top:0; left:0; width:100%; height:100vh; z-index:-10; background: url('https://images.unsplash.com/photo-1490761668535-35497054764d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2092&q=80') center/cover, linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%); background-attachment: fixed; will-change: transform; }
         .tripon .hero-background::before { content:''; position:absolute; inset:0; background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><defs><pattern id="washi" patternUnits="userSpaceOnUse" width="40" height="40"><circle cx="10" cy="10" r="2" fill="%23ffffff"/><circle cx="30" cy="30" r="1.5" fill="%23ffffff"/><circle cx="20" cy="35" r="1" fill="%23ffffff"/></pattern></defs><rect width="200" height="200" fill="url(%23washi)"/></svg>') repeat; opacity:.1; z-index:-9; }
         .tripon .hero-background::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%); z-index:-8; }
-        .tripon .main-content { margin-top:120px; padding:2rem 0; min-height:100vh; position: relative; z-index:10; }
-        .tripon .container { max-width:1200px; margin:0 auto; padding:0 2rem; position:relative; z-index:15; }
-        .tripon .page-header{ text-align:center; margin-bottom:2rem; position:relative; z-index:16; }
-        .tripon .page-header h1{ font-size:2.5rem; color:white; margin-bottom:.5rem; text-shadow:2px 2px 8px rgba(0,0,0,.8); font-weight:700; }
-        .tripon .page-header p{ font-size:1.1rem; color:rgba(255,255,255,.9); text-shadow:1px 1px 4px rgba(0,0,0,.7); }
+        .tripon .main-content { margin-top:120px; padding:4rem 0; min-height:100vh; position: relative; z-index:10; }
+        .tripon .container { max-width:1200px; margin:0 auto; padding:0 3rem; position:relative; z-index:15; }
+        .tripon .page-header{ text-align:center; margin-bottom:6rem; position:relative; z-index:16; padding:4rem 0; }
+        .tripon .page-header h1{ font-size:4rem; color:white; margin-bottom:1rem; text-shadow:2px 2px 8px rgba(0,0,0,.8); font-weight:700; }
+        .tripon .page-header p{ font-size:1.4rem; color:rgba(255,255,255,.9); text-shadow:1px 1px 4px rgba(0,0,0,.7); margin-bottom:3rem; }
         .tripon .category-tabs{ background:rgba(255,255,255,.15); backdrop-filter: blur(20px); border-radius:16px; padding:.5rem; margin-bottom:2rem; border:1px solid rgba(255,255,255,.2); position:relative; z-index:17; }
         .tripon .tabs-container{ display:flex; gap:.5rem; }
         .tripon .tab-button{ flex:1; padding:1rem 1.5rem; border:none; background:transparent; color:rgba(255,255,255,.7); border-radius:12px; cursor:pointer; transition:all .3s ease; font-size:1rem; font-weight:600; text-align:center; position:relative; }
@@ -1643,6 +1464,15 @@ export default function TokyoSpots() {
         .tripon .load-more-section{ text-align:center; margin:2rem 0; position:relative; z-index:19; }
         .tripon .load-more-btn{ padding:1rem 2rem; background:rgba(255,255,255,.2); color:#fff; border:1px solid rgba(255,255,255,.3); border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; transition:all .3s; backdrop-filter: blur(10px); }
         .tripon .load-more-btn:hover{ background:rgba(255,255,255,.3); transform: translateY(-2px); }
+        .tripon .cta-buttons{ display:flex; align-items:center; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-top:2rem; }
+        .tripon .cta-btn{ display:inline-flex; align-items:center; gap:.75rem; padding:1rem 2rem; border:none; border-radius:50px; font-size:1.1rem; font-weight:700; cursor:pointer; transition:all .3s ease; text-align:center; box-shadow:0 8px 24px rgba(0,0,0,.2); }
+        .tripon .favorite-btn-cta{ background:linear-gradient(135deg,#ef4444 0%,#dc2626 50%,#b91c1c 100%); color:#fff; }
+        .tripon .ai-plan-btn{ background:rgba(255,255,255,.9); color:#374151; border:2px solid rgba(255,255,255,.3); }
+        .tripon .ticket-btn{ background:rgba(255,255,255,.9); color:#374151; border:2px solid rgba(255,255,255,.3); }
+        .tripon .cta-btn:hover{ transform:translateY(-2px) scale(1.05); box-shadow:0 12px 32px rgba(0,0,0,.3); }
+        .tripon .favorite-btn-cta:hover{ background:linear-gradient(135deg,#dc2626 0%,#b91c1c 50%,#991b1b 100%); }
+        .tripon .ai-plan-btn:hover, .tripon .ticket-btn:hover{ background:rgba(255,255,255,1); }
+        .tripon .btn-icon{ font-size:1.2rem; display:inline-block; }
         @media (max-width: 768px){
           .tripon .nav{ flex-direction:column; gap:1rem; padding:1rem; }
           .tripon .main-content{ margin-top:140px; padding:1rem 0; }
@@ -1653,6 +1483,8 @@ export default function TokyoSpots() {
           .tripon .filter-group{ justify-content:space-between; }
           .tripon .spots-grid{ grid-template-columns:1fr; gap:1rem; }
           .tripon .spot-card{ margin:0 .5rem; }
+          .tripon .cta-buttons{ flex-direction:column; gap:1rem; }
+          .tripon .cta-btn{ width:100%; max-width:280px; justify-content:center; }
         }
         @media (min-width: 769px) and (max-width: 1024px){
           .tripon .spots-grid{ grid-template-columns: repeat(2,1fr); }
