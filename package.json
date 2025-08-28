@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "vercel-build": "next build"
+    "vercel-build": "next build",
+    "seed:spots": "node scripts/seed-spots.js"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^3.9.0",
@@ -16,6 +17,7 @@
     "@types/leaflet": "^1.9.20",
     "autoprefixer": "^10.4.21",
     "firebase": "^12.1.0",
+    "firebase-admin": "^12.7.0",
     "i18next": "^25.3.6",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.536.0",

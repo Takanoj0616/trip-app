@@ -1,6 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { db, doc, getDoc } from '@/lib/firebase';
+import { TouristSpot } from '@/types';
+import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
 import {
   Clock,
   DollarSign,
@@ -39,18 +42,150 @@ const MapComponent = dynamic(() => import('./MapComponent'), {
 });
 
 interface MainContentProps {
+  spotId: string;
   language?: string;
   currency?: string;
   unit?: string;
 }
 
+interface SpotData {
+  name: string;
+  description: string;
+  location?: {
+    lat: number;
+    lng: number;
+    address?: string;
+  };
+  price?: string;
+  hours?: string;
+  rating?: number;
+  images?: string[];
+  contact?: {
+    phone?: string;
+    website?: string;
+  };
+  tags?: string[];
+  googlePlaceId?: string;
+  openingHours?: any;
+  priceRange?: string;
+}
+
 export default function MainContent({
+  spotId,
   language: _language = 'ja',
   currency = 'jpy',
   unit: _unit = 'metric',
 }: MainContentProps) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [activeFAQ, setActiveFAQ] = useState<number | null>(null);
+  const [spotData, setSpotData] = useState<SpotData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSpotData = async () => {
+      // First check local bookstore data
+      const localSpot = allBookstoreSpots.find(spot => 
+        spot.id === spotId || spot.googlePlaceId === spotId
+      );
+
+      if (localSpot) {
+        const convertedSpot: SpotData = {
+          name: localSpot.name,
+          description: localSpot.description || '人気のスポットです',
+          location: localSpot.location,
+          price: localSpot.priceRange === 'expensive' ? '¥3,000以上' : 
+                 localSpot.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下',
+          hours: localSpot.openingHours ? Object.values(localSpot.openingHours)[0] : '営業時間未定',
+          rating: localSpot.rating || 4.0,
+          images: localSpot.images || [],
+          contact: localSpot.contact,
+          tags: localSpot.tags || [],
+          googlePlaceId: localSpot.googlePlaceId,
+          openingHours: localSpot.openingHours,
+          priceRange: localSpot.priceRange
+        };
+        setSpotData(convertedSpot);
+        setLoading(false);
+        return;
+      }
+
+      if (!db) {
+        // Firebaseが設定されていない場合はデフォルトデータを使用
+        setSpotData({
+          name: '東京タワー',
+          description: '東京のシンボル、333mの展望タワー',
+          location: { lat: 35.6586, lng: 139.7454, address: '東京都港区芝公園4-2-8' },
+          price: '¥1,200 - ¥3,000',
+          hours: '9:00 - 23:00',
+          rating: 4.2
+        });
+        setLoading(false);
+        return;
+      }
+
+      try {
+        // Try tourist_spots collection first
+        const touristSpotRef = doc(db, 'tourist_spots', spotId);
+        const touristSpotSnap = await getDoc(touristSpotRef);
+
+        if (touristSpotSnap.exists()) {
+          const data = touristSpotSnap.data() as TouristSpot;
+          const convertedData: SpotData = {
+            name: data.name,
+            description: data.description || '人気のスポットです',
+            location: data.location,
+            price: data.priceRange === 'expensive' ? '¥3,000以上' : 
+                   data.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下',
+            hours: data.openingHours ? Object.values(data.openingHours)[0] : '営業時間未定',
+            rating: data.rating || 4.0,
+            images: data.images || [],
+            contact: data.contact,
+            tags: data.tags || [],
+            googlePlaceId: data.googlePlaceId,
+            openingHours: data.openingHours,
+            priceRange: data.priceRange
+          };
+          setSpotData(convertedData);
+          setLoading(false);
+          return;
+        }
+
+        // Fallback to legacy spots collection
+        const docRef = doc(db, 'spots', spotId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data() as SpotData;
+          setSpotData(data);
+        } else {
+          // ドキュメントが見つからない場合はデフォルトデータを使用
+          setSpotData({
+            name: '東京タワー',
+            description: '東京のシンボル、333mの展望タワー',
+            location: { lat: 35.6586, lng: 139.7454 },
+            price: '¥1,200 - ¥3,000',
+            hours: '9:00 - 23:00',
+            rating: 4.2
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching spot data:', error);
+        // エラーの場合もデフォルトデータを使用
+        setSpotData({
+          name: '東京タワー',
+          description: '東京のシンボル、333mの展望タワー',
+          location: { lat: 35.6586, lng: 139.7454 },
+          price: '¥1,200 - ¥3,000',
+          hours: '9:00 - 23:00',
+          rating: 4.2
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSpotData();
+  }, [spotId]);
 
   const openModal = (modalId: string) => {
     setActiveModal(modalId);
@@ -79,12 +214,17 @@ export default function MainContent({
 
   // 現在の営業時間を計算
   const getBusinessHours = () => {
-    // const now = new Date(); // 将来的に動的計算に使用予定
+    if (spotData?.hours) {
+      return `本日: ${spotData.hours}`;
+    }
     return '本日: 9:00 - 23:00';
   };
 
   // 料金表示
   const getPriceDisplay = () => {
+    if (spotData?.price) {
+      return spotData.price;
+    }
     if (currency === 'jpy') {
       return '¥1,200 - ¥3,000';
     }
@@ -117,14 +257,23 @@ export default function MainContent({
         </div>
 
         <div className="relative z-10 text-center max-w-4xl px-8">
-          <h1 className="mb-6 text-shadow-lg bg-gradient-to-br from-white to-slate-100 bg-clip-text text-transparent">
-            東京タワー
-            <br />
-            <span className="text-3xl opacity-90">Tokyo Tower</span>
-          </h1>
-          <p className="text-xl md:text-2xl opacity-95 mb-12 text-shadow">
-            東京のシンボル、333mの展望タワー
-          </p>
+          {loading ? (
+            <div className="animate-pulse">
+              <div className="h-16 bg-white/20 rounded mb-6"></div>
+              <div className="h-8 bg-white/20 rounded mb-12"></div>
+            </div>
+          ) : (
+            <>
+              <h1 className="mb-6 text-shadow-lg bg-gradient-to-br from-white to-slate-100 bg-clip-text text-transparent">
+                {spotData?.name || '東京タワー'}
+                <br />
+                <span className="text-3xl opacity-90">Tokyo Tower</span>
+              </h1>
+              <p className="text-xl md:text-2xl opacity-95 mb-12 text-shadow">
+                {spotData?.description || '東京のシンボル、333mの展望タワー'}
+              </p>
+            </>
+          )}
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -182,8 +331,10 @@ export default function MainContent({
                 <Star className="mx-auto mb-4 text-primary" size={40} />
                 <h3 className="font-semibold text-secondary mb-2">評価</h3>
                 <div className="flex justify-center items-center gap-2 mb-1">
-                  <span className="text-yellow-400 text-xl">★★★★☆</span>
-                  <span className="font-semibold">4.2</span>
+                  <span className="text-yellow-400 text-xl">
+                    {'★'.repeat(Math.floor(spotData?.rating || 4.2))}{'☆'.repeat(5 - Math.floor(spotData?.rating || 4.2))}
+                  </span>
+                  <span className="font-semibold">{spotData?.rating || 4.2}</span>
                 </div>
                 <small className="text-text-light">(2,847件)</small>
               </div>
@@ -214,7 +365,10 @@ export default function MainContent({
             アクセス・地図
           </h2>
 
-          <MapComponent />
+          <MapComponent 
+            location={spotData?.location || { lat: 35.6586, lng: 139.7454 }}
+            name={spotData?.name || '東京タワー'}
+          />
 
           <div className="grid md:grid-cols-2 gap-6 mt-8">
             <div className="p-6 border border-border-light rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100">

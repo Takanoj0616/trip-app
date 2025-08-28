@@ -4,6 +4,9 @@ import Head from 'next/head';
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { tokyoSpotsDetailed, type TokyoSpot, type SpotInfo, type SpotName } from '@/data/tokyo-spots-detailed';
+import { db, collection, query, onSnapshot, orderBy } from '@/lib/firebase';
+import { TouristSpot } from '@/types';
+import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
 
 interface Review {
   userName: string;
@@ -34,7 +37,8 @@ interface Facilities {
 }
 
 interface Spot {
-  id: number;
+  id: string | number; // Support both string (Firebase) and number (legacy)
+  slug?: string; // Firestore document ID
   name: SpotName;
   rating: number;
   reviews?: Review[];
@@ -57,8 +61,10 @@ export default function TokyoSpots() {
   const [currentCategory, setCurrentCategory] = useState<Category>('sights');
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [favoriteSpots, setFavoriteSpots] = useState<Set<number>>(new Set());
+  const [favoriteSpots, setFavoriteSpots] = useState<Set<string | number>>(new Set());
   const [currentLanguage, setCurrentLanguage] = useState<'ja' | 'en' | 'ko' | 'fr'>('ja');
+  const [firebaseSpots, setFirebaseSpots] = useState<TouristSpot[]>([]);
+  const [firestoreLoading, setFirestoreLoading] = useState(true);
 
   // Listen for language changes from header
   useEffect(() => {
@@ -101,6 +107,46 @@ export default function TokyoSpots() {
       langButtons.forEach(btn => btn.removeEventListener('click', handleClick));
     };
   }, [currentLanguage]);
+
+  // Fetch Firebase spots data
+  useEffect(() => {
+    if (!db) {
+      console.warn('Firebase is not initialized');
+      setFirestoreLoading(false);
+      setFirebaseSpots(allBookstoreSpots);
+      return;
+    }
+
+    try {
+      const spotsCollection = collection(db, 'tourist_spots');
+      const spotsQuery = query(spotsCollection, orderBy('rating', 'desc'));
+      
+      const unsubscribe = onSnapshot(spotsQuery, (snapshot) => {
+        const spots: TouristSpot[] = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          spots.push({
+            id: doc.id,
+            ...data
+          } as TouristSpot);
+        });
+        
+        setFirebaseSpots([...spots, ...allBookstoreSpots]);
+        setFirestoreLoading(false);
+        console.log('Firebase spots loaded:', spots.length);
+      }, (error) => {
+        console.error('Error fetching spots:', error);
+        setFirebaseSpots(allBookstoreSpots);
+        setFirestoreLoading(false);
+      });
+
+      return () => unsubscribe();
+    } catch (error) {
+      console.error('Error setting up Firebase listener:', error);
+      setFirebaseSpots(allBookstoreSpots);
+      setFirestoreLoading(false);
+    }
+  }, []);
 
   // Multi-language translations for Tokyo spots
   const translations = {
@@ -521,6 +567,54 @@ export default function TokyoSpots() {
   // Get translations for current language
   const tr = translations[currentLanguage as keyof typeof translations] || translations.ja;
 
+  // Helper function to convert TouristSpot to Spot
+  const touristSpotToSpot = useCallback((touristSpot: TouristSpot): Spot => {
+    // Convert TouristSpot name (string) to SpotName format
+    const spotName: SpotName = {
+      ja: touristSpot.name,
+      en: touristSpot.name,
+      ko: touristSpot.name,
+      fr: touristSpot.name
+    };
+
+    // Convert category
+    const categoryMap: Record<TouristSpot['category'], Category> = {
+      'sightseeing': 'sights',
+      'restaurants': 'food', 
+      'hotels': 'hotels',
+      'transportation': 'sights',
+      'entertainment': 'sights',
+      'shopping': 'sights'
+    };
+
+    // Create SpotInfo
+    const spotInfo: SpotInfo = {
+      duration: '1-2時間',
+      ticketRequired: touristSpot.priceRange ? '必要' : '不要',
+      bestTime: '平日',
+      crowdLevel: '普通',
+      openHours: touristSpot.openingHours ? Object.values(touristSpot.openingHours)[0] || '営業時間未定' : '営業時間未定',
+      price: touristSpot.priceRange === 'expensive' ? '¥3000以上' : 
+             touristSpot.priceRange === 'moderate' ? '¥1000-3000' : '¥1000以下'
+    };
+
+    return {
+      id: touristSpot.id,
+      slug: touristSpot.googlePlaceId,
+      name: spotName,
+      rating: touristSpot.rating || 4.0,
+      reviewCount: touristSpot.reviews?.length || 0,
+      reviews: touristSpot.reviews || [],
+      image: touristSpot.images?.[0] || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
+      badges: ['営業中', '人気'],
+      info: spotInfo,
+      tags: touristSpot.tags || ['観光'],
+      category: categoryMap[touristSpot.category] || 'sights',
+      description: touristSpot.description,
+      images: touristSpot.images
+    };
+  }, []);
+
   // Helper function to get display name with fallback logic (en → ja → ko → fr)
   const getDisplayName = useCallback((name: SpotName): string => {
     if (currentLanguage === 'ja' && name.ja) return name.ja;
@@ -539,6 +633,14 @@ export default function TokyoSpots() {
       reviews: spot.reviews || []
     }));
 
+    // Convert Firebase spots to legacy Spot format
+    const convertedFirebaseSpots = firebaseSpots.map(touristSpotToSpot);
+    
+    // Filter Firebase spots by category
+    const firebaseSightSpots = convertedFirebaseSpots.filter(spot => spot.category === 'sights');
+    const firebaseFoodSpots = convertedFirebaseSpots.filter(spot => spot.category === 'food');
+    const firebaseHotelSpots = convertedFirebaseSpots.filter(spot => spot.category === 'hotels');
+
     const sampleData: Record<Category, Spot[]> = {
       food: [
         {
@@ -550,7 +652,8 @@ export default function TokyoSpots() {
             fr: "Sushi Kiri"
           },
           rating: 4.6,
-          reviews: 1461,
+          reviewCount: 1461,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["営業中", "ビュッフェ", "予約不要", "駐車場あり"],
           info: {
@@ -571,7 +674,8 @@ export default function TokyoSpots() {
             fr: "Bistro Raku"
           },
           rating: 3.6,
-          reviews: 2421,
+          reviewCount: 2421,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["ファストフード", "予約不要", "テイクアウト可"],
           info: {
@@ -592,7 +696,8 @@ export default function TokyoSpots() {
             fr: "Restaurant Japonais Kaze"
           },
           rating: 3.1,
-          reviews: 169,
+          reviewCount: 169,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["ベーカリー", "予約必要", "個室あり", "高級"],
           info: {
@@ -613,7 +718,8 @@ export default function TokyoSpots() {
             fr: "BBQ Hana"
           },
           rating: 4.5,
-          reviews: 1046,
+          reviewCount: 1046,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["焼肉", "予約必要", "テイクアウト可", "受賞店"],
           info: {
@@ -634,7 +740,8 @@ export default function TokyoSpots() {
             fr: "Menya Kotobuki"
           },
           rating: 3.4,
-          reviews: 2554,
+          reviewCount: 2554,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["そば・うどん", "予約必要", "デリバリー可", "高級"],
           info: {
@@ -655,7 +762,8 @@ export default function TokyoSpots() {
             fr: "Jutori"
           },
           rating: 4.1,
-          reviews: 342,
+          reviewCount: 342,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["焼肉", "予約必要", "禁煙", "高級価格帯"],
           info: {
@@ -676,7 +784,8 @@ export default function TokyoSpots() {
             fr: "Grill au Charbon Kame"
           },
           rating: 3.3,
-          reviews: 2394,
+          reviewCount: 2394,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["焼肉", "予約不要", "テイクアウト可", "フランス修行シェフ"],
           info: {
@@ -697,7 +806,8 @@ export default function TokyoSpots() {
             fr: "Kotobuki Seimen"
           },
           rating: 3.5,
-          reviews: 1041,
+          reviewCount: 1041,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["中華", "予約必要", "個室あり", "デリバリー可"],
           info: {
@@ -718,7 +828,8 @@ export default function TokyoSpots() {
             fr: "Italien Shi"
           },
           rating: 4.3,
-          reviews: 2692,
+          reviewCount: 2692,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["ベーカリー", "予約不要", "個室あり", "テイクアウト可"],
           info: {
@@ -739,7 +850,8 @@ export default function TokyoSpots() {
             fr: "Sora Sushi"
           },
           rating: 3.8,
-          reviews: 2736,
+          reviewCount: 2736,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["そば・うどん", "予約必要", "禁煙", "受賞店"],
           info: {
@@ -760,7 +872,8 @@ export default function TokyoSpots() {
             fr: "Menkobo Taka"
           },
           rating: 3.8,
-          reviews: 684,
+          reviewCount: 684,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["韓国料理", "予約不要", "デリバリー可", "受賞店"],
           info: {
@@ -781,7 +894,8 @@ export default function TokyoSpots() {
             fr: "Menya Rin"
           },
           rating: 4.7,
-          reviews: 615,
+          reviewCount: 615,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["そば・うどん", "予約必要", "禁煙", "昼食専門"],
           info: {
@@ -802,7 +916,8 @@ export default function TokyoSpots() {
             fr: "Café Sei"
           },
           rating: 3.9,
-          reviews: 1469,
+          reviewCount: 1469,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["カフェ", "予約必要", "個室あり", "高級"],
           info: {
@@ -823,7 +938,8 @@ export default function TokyoSpots() {
             fr: "Restaurant Yu"
           },
           rating: 4.4,
-          reviews: 2935,
+          reviewCount: 2935,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["和食", "予約必要", "禁煙", "テイクアウト可"],
           info: {
@@ -844,7 +960,8 @@ export default function TokyoSpots() {
             fr: "Restaurant Dai"
           },
           rating: 4.2,
-          reviews: 1774,
+          reviewCount: 1774,
+          reviews: [],
           image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
           badges: ["フレンチ", "予約不要", "高級価格帯", "受賞店"],
           info: {
@@ -865,7 +982,8 @@ export default function TokyoSpots() {
             fr: "Restaurant Platinum Fish Manseibashi"
           },
           rating: 4.3,
-          reviews: 892,
+          reviewCount: 892,
+          reviews: [],
           image: "/images/spots/RESTAURANT_PLATINUM_FISH_マーチエキュート神田万世橋店_20250714_121132.jpg",
           badges: ["営業中", "洋食", "予約推奨", "駅直結"],
           info: {
@@ -886,7 +1004,8 @@ export default function TokyoSpots() {
             fr: "Brasserie Viron Marunouchi"
           },
           rating: 4.1,
-          reviews: 1245,
+          reviewCount: 1245,
+          reviews: [],
           image: "/images/spots/ブラッスリー・ヴィロン_丸の内店_20250714_121211.jpg",
           badges: ["営業中", "フレンチ", "ベーカリー", "テイクアウト可"],
           info: {
@@ -907,7 +1026,8 @@ export default function TokyoSpots() {
             fr: "Restaurant Korakuen"
           },
           rating: 4.0,
-          reviews: 756,
+          reviewCount: 756,
+          reviews: [],
           image: "/images/spots/中国料理「後楽園飯店」（東京ドームホテル直営）_20250715_103157.jpg",
           badges: ["営業中", "中華", "ホテル直営", "個室あり"],
           info: {
@@ -928,7 +1048,8 @@ export default function TokyoSpots() {
             fr: "Shofukuro Tokyo"
           },
           rating: 4.2,
-          reviews: 634,
+          reviewCount: 634,
+          reviews: [],
           image: "/images/spots/招福樓_東京店_20250714_121217.jpg",
           badges: ["営業中", "中華", "高級", "予約必要"],
           info: {
@@ -949,7 +1070,8 @@ export default function TokyoSpots() {
             fr: "Nandai Unatoto Shimbashi"
           },
           rating: 3.8,
-          reviews: 1156,
+          reviewCount: 1156,
+          reviews: [],
           image: "/images/spots/名代_宇奈とと_新橋店_20250715_103209.jpg",
           badges: ["営業中", "和食", "うなぎ", "リーズナブル"],
           info: {
@@ -960,9 +1082,10 @@ export default function TokyoSpots() {
           },
           tags: ["うなぎ", "カジュアル", "一人食事", "サラリーマン", "新橋"],
           category: "food"
-        }
+        },
+        ...firebaseFoodSpots // Add Firebase food spots
       ],
-    sights: sightsData,
+    sights: [...sightsData, ...firebaseSightSpots], // Add Firebase sight spots
     hotels: [
         {
           id: 201,
@@ -1383,7 +1506,8 @@ export default function TokyoSpots() {
           },
           tags: ["銀座", "中央区", "アクセス"],
           category: "hotels"
-        }
+        },
+        ...firebaseHotelSpots // Add Firebase hotel spots
       ]
     };
 
@@ -1393,6 +1517,7 @@ export default function TokyoSpots() {
     console.log('Sample data for sights:', sampleData.sights);
     console.log('Current category:', currentCategory);
     console.log('Current data:', currentData);
+    console.log('Firebase spots:', firebaseSpots);
     
     if (!searchTerm.trim()) return currentData;
     
@@ -1404,7 +1529,7 @@ export default function TokyoSpots() {
     
     console.log('Filtered spots:', filtered);
     return filtered;
-  }, [currentCategory, searchTerm, getDisplayName]);
+  }, [currentCategory, searchTerm, getDisplayName, firebaseSpots, touristSpotToSpot]);
 
   // Initialize from URL parameters
   useEffect(() => {
@@ -1440,7 +1565,7 @@ export default function TokyoSpots() {
   }, []);
 
   // Favorite toggle handler
-  const toggleFavorite = useCallback((spotId: number) => {
+  const toggleFavorite = useCallback((spotId: string | number) => {
     setFavoriteSpots(prev => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(spotId)) {
@@ -1453,7 +1578,9 @@ export default function TokyoSpots() {
   }, []);
 
   // Show details handler
-  const showDetails = useCallback((spotId: number) => {
+  const showDetails = useCallback((spot: Spot) => {
+    // Firestore document ID (slug) があればそれを使用、なければIDを使用
+    const spotId = spot.slug || spot.id;
     window.open(`/spots/${spotId}`, '_blank');
   }, []);
 
@@ -1562,7 +1689,7 @@ export default function TokyoSpots() {
           ))}
         </div>
         <div className="card-actions">
-          <button className="details-btn" onClick={() => showDetails(spot.id)}>
+          <button className="details-btn" onClick={() => showDetails(spot)}>
             {tr.actions.detailsBtn}
           </button>
         </div>

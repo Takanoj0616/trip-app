@@ -1,0 +1,522 @@
+import { TouristSpot } from '@/types';
+
+
+// New Tokyo Bookstore Spots - Added from Google Maps data
+const newTokyoBookstoreSpots: TouristSpot[] = [
+  {
+    "id": "ChIJAVf7lh2MGGARJylRnQ_3dpI",
+    "name": "Animate Akihabara",
+    "description": "Animate Akihabara is a popular bookstore and entertainment spot in Tokyo with a 4.2 star rating from 11,739 reviews. Located in the heart of Tokyo, it offers a great selection of books, manga, and entertainment items.",
+    "category": "shopping",
+    "area": "tokyo",
+    "location": {
+      "lat": 35.7004944,
+      "lng": 139.7717427,
+      "address": "4-chōme-3-2 Sotokanda, Chiyoda City, Tokyo 101-0021, Japan"
+    },
+    "rating": 4.2,
+    "images": [
+      "/images/photos/ChIJAVf7lh2MGGARJylRnQ_3dpI/photo_1.jpg",
+      "/images/photos/ChIJAVf7lh2MGGARJylRnQ_3dpI/photo_2.jpg",
+      "/images/photos/ChIJAVf7lh2MGGARJylRnQ_3dpI/photo_3.jpg",
+      "/images/photos/ChIJAVf7lh2MGGARJylRnQ_3dpI/photo_4.jpg",
+      "/images/photos/ChIJAVf7lh2MGGARJylRnQ_3dpI/photo_5.jpg",
+      "/images/photos/ChIJAVf7lh2MGGARJylRnQ_3dpI/photo_6.jpg",
+      "/images/photos/ChIJAVf7lh2MGGARJylRnQ_3dpI/photo_7.jpg",
+      "/images/photos/ChIJAVf7lh2MGGARJylRnQ_3dpI/photo_8.jpg",
+      "/images/photos/ChIJAVf7lh2MGGARJylRnQ_3dpI/photo_9.jpg",
+      "/images/photos/ChIJAVf7lh2MGGARJylRnQ_3dpI/photo_10.jpg"
+    ],
+    "openingHours": {
+      "monday": "10:00 AM – 9:00 PM",
+      "tuesday": "10:00 AM – 9:00 PM",
+      "wednesday": "10:00 AM – 9:00 PM",
+      "thursday": "10:00 AM – 9:00 PM",
+      "friday": "10:00 AM – 9:00 PM",
+      "saturday": "10:00 AM – 9:00 PM",
+      "sunday": "10:00 AM – 9:00 PM"
+    },
+    "contact": {
+      "phone": "+81 3-5209-3330"
+    },
+    "priceRange": "moderate",
+    "tags": [
+      "book_store",
+      "shopping",
+      "entertainment",
+      "movie_rental",
+      "book_store",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "googlePlaceId": "ChIJAVf7lh2MGGARJylRnQ_3dpI",
+    "reviews": []
+  },
+  {
+    "id": "ChIJ2TZSCfmLGGAR26O97vWyYcE",
+    "name": "MARUZEN Marunouchi",
+    "description": "MARUZEN Marunouchi is a popular bookstore and entertainment spot in Tokyo with a 4.4 star rating from 7,765 reviews. Located in the heart of Tokyo, it offers a great selection of books, manga, and entertainment items.",
+    "category": "shopping",
+    "area": "tokyo",
+    "location": {
+      "lat": 35.6835155,
+      "lng": 139.7666676,
+      "address": "Japan, 〒100-8203 Tokyo, Chiyoda City, Marunouchi, 1-chōme−6−４ 丸の内オアゾ 1階～4階"
+    },
+    "rating": 4.4,
+    "images": [
+      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_1.jpg",
+      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_2.jpg",
+      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_3.jpg",
+      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_4.jpg",
+      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_5.jpg",
+      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_6.jpg",
+      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_7.jpg",
+      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_8.jpg",
+      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_9.jpg",
+      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_10.jpg"
+    ],
+    "openingHours": {
+      "monday": "9:00 AM – 9:00 PM",
+      "tuesday": "9:00 AM – 9:00 PM",
+      "wednesday": "9:00 AM – 9:00 PM",
+      "thursday": "9:00 AM – 9:00 PM",
+      "friday": "9:00 AM – 9:00 PM",
+      "saturday": "9:00 AM – 9:00 PM",
+      "sunday": "9:00 AM – 9:00 PM"
+    },
+    "contact": {
+      "phone": "+81 3-5288-8881"
+    },
+    "priceRange": "moderate",
+    "tags": [
+      "book_store",
+      "shopping",
+      "entertainment",
+      "book_store",
+      "cafe",
+      "point_of_interest",
+      "food",
+      "store",
+      "establishment"
+    ],
+    "googlePlaceId": "ChIJ2TZSCfmLGGAR26O97vWyYcE",
+    "reviews": []
+  },
+  {
+    "id": "ChIJ3_cRBqiOGGARoybcgAdwGgc",
+    "name": "BOOKOFF Akihabara Ekimae Store",
+    "description": "BOOKOFF Akihabara Ekimae Store is a popular bookstore and entertainment spot in Tokyo with a 3.8 star rating from 2,084 reviews. Located in the heart of Tokyo, it offers a great selection of books, manga, and entertainment items.",
+    "category": "shopping",
+    "area": "tokyo",
+    "location": {
+      "lat": 35.6977342,
+      "lng": 139.7734748,
+      "address": "1-chōme-6-4 Kanda Sakumachō, Chiyoda City, Tokyo 101-0025, Japan"
+    },
+    "rating": 3.8,
+    "images": [
+      "/images/photos/ChIJ3_cRBqiOGGARoybcgAdwGgc/photo_1.jpg",
+      "/images/photos/ChIJ3_cRBqiOGGARoybcgAdwGgc/photo_2.jpg",
+      "/images/photos/ChIJ3_cRBqiOGGARoybcgAdwGgc/photo_3.jpg",
+      "/images/photos/ChIJ3_cRBqiOGGARoybcgAdwGgc/photo_4.jpg",
+      "/images/photos/ChIJ3_cRBqiOGGARoybcgAdwGgc/photo_5.jpg",
+      "/images/photos/ChIJ3_cRBqiOGGARoybcgAdwGgc/photo_6.jpg",
+      "/images/photos/ChIJ3_cRBqiOGGARoybcgAdwGgc/photo_7.jpg",
+      "/images/photos/ChIJ3_cRBqiOGGARoybcgAdwGgc/photo_8.jpg",
+      "/images/photos/ChIJ3_cRBqiOGGARoybcgAdwGgc/photo_9.jpg",
+      "/images/photos/ChIJ3_cRBqiOGGARoybcgAdwGgc/photo_10.jpg"
+    ],
+    "openingHours": {
+      "monday": "10:00 AM – 10:00 PM",
+      "tuesday": "10:00 AM – 10:00 PM",
+      "wednesday": "10:00 AM – 10:00 PM",
+      "thursday": "10:00 AM – 10:00 PM",
+      "friday": "10:00 AM – 10:00 PM",
+      "saturday": "10:00 AM – 10:00 PM",
+      "sunday": "10:00 AM – 10:00 PM"
+    },
+    "contact": {
+      "phone": "+81 3-5207-6206"
+    },
+    "priceRange": "budget",
+    "tags": [
+      "book_store",
+      "shopping",
+      "entertainment",
+      "book_store",
+      "movie_rental",
+      "discount_store",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "establishment"
+    ],
+    "googlePlaceId": "ChIJ3_cRBqiOGGARoybcgAdwGgc",
+    "reviews": []
+  },
+  {
+    "id": "ChIJm3WItR2MGGAR05t5cpt7U4w",
+    "name": "Mandarake Complex",
+    "description": "Mandarake Complex is a popular bookstore and entertainment spot in Tokyo with a 4.2 star rating from 5,215 reviews. Located in the heart of Tokyo, it offers a great selection of books, manga, and entertainment items.",
+    "category": "shopping",
+    "area": "tokyo",
+    "location": {
+      "lat": 35.700373299999995,
+      "lng": 139.77050309999998,
+      "address": "3-chōme-11-12 Sotokanda, Chiyoda City, Tokyo 101-0021, Japan"
+    },
+    "rating": 4.2,
+    "images": [
+      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_1.jpg",
+      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_2.jpg",
+      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_3.jpg",
+      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_4.jpg",
+      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_5.jpg",
+      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_6.jpg",
+      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_7.jpg",
+      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_8.jpg",
+      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_9.jpg",
+      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_10.jpg"
+    ],
+    "openingHours": {
+      "monday": "12:00 – 8:00 PM",
+      "tuesday": "12:00 – 8:00 PM",
+      "wednesday": "12:00 – 8:00 PM",
+      "thursday": "12:00 – 8:00 PM",
+      "friday": "12:00 – 8:00 PM",
+      "saturday": "12:00 – 8:00 PM",
+      "sunday": "12:00 – 8:00 PM"
+    },
+    "contact": {
+      "phone": "+81 3-3252-7007"
+    },
+    "priceRange": "moderate",
+    "tags": [
+      "book_store",
+      "shopping",
+      "entertainment",
+      "movie_rental",
+      "book_store",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "establishment"
+    ],
+    "googlePlaceId": "ChIJm3WItR2MGGAR05t5cpt7U4w",
+    "reviews": []
+  },
+  {
+    "id": "ChIJH6YwSOaLGGAR_LGfsNivcXE",
+    "name": "GINZA TSUTAYA BOOKS",
+    "description": "GINZA TSUTAYA BOOKS is a popular bookstore and entertainment spot in Tokyo with a 4.3 star rating from 7,442 reviews. Located in the heart of Tokyo, it offers a great selection of books, manga, and entertainment items.",
+    "category": "shopping",
+    "area": "tokyo",
+    "location": {
+      "lat": 35.6694161,
+      "lng": 139.7642674,
+      "address": "Japan, 〒104-0061 Tokyo, Chuo City, Ginza, 6-chōme−10−１ ＳＩＸ６階"
+    },
+    "rating": 4.3,
+    "images": [
+      "/images/photos/ChIJH6YwSOaLGGAR_LGfsNivcXE/photo_1.jpg",
+      "/images/photos/ChIJH6YwSOaLGGAR_LGfsNivcXE/photo_2.jpg",
+      "/images/photos/ChIJH6YwSOaLGGAR_LGfsNivcXE/photo_3.jpg",
+      "/images/photos/ChIJH6YwSOaLGGAR_LGfsNivcXE/photo_4.jpg",
+      "/images/photos/ChIJH6YwSOaLGGAR_LGfsNivcXE/photo_5.jpg",
+      "/images/photos/ChIJH6YwSOaLGGAR_LGfsNivcXE/photo_6.jpg",
+      "/images/photos/ChIJH6YwSOaLGGAR_LGfsNivcXE/photo_7.jpg",
+      "/images/photos/ChIJH6YwSOaLGGAR_LGfsNivcXE/photo_8.jpg",
+      "/images/photos/ChIJH6YwSOaLGGAR_LGfsNivcXE/photo_9.jpg",
+      "/images/photos/ChIJH6YwSOaLGGAR_LGfsNivcXE/photo_10.jpg"
+    ],
+    "openingHours": {
+      "monday": "10:30 AM – 9:00 PM",
+      "tuesday": "10:30 AM – 9:00 PM",
+      "wednesday": "10:30 AM – 9:00 PM",
+      "thursday": "10:30 AM – 9:00 PM",
+      "friday": "10:30 AM – 9:00 PM",
+      "saturday": "10:30 AM – 9:00 PM",
+      "sunday": "10:30 AM – 9:00 PM"
+    },
+    "contact": {
+      "phone": "+81 3-3575-7755"
+    },
+    "priceRange": "moderate",
+    "tags": [
+      "book_store",
+      "shopping",
+      "entertainment",
+      "book_store",
+      "art_gallery",
+      "home_goods_store",
+      "point_of_interest",
+      "store",
+      "establishment"
+    ],
+    "googlePlaceId": "ChIJH6YwSOaLGGAR_LGfsNivcXE",
+    "reviews": []
+  },
+  {
+    "id": "ChIJ-VRm_52LGGARQQy2OZs3mpk",
+    "name": "Roppongi Tsutaya Books",
+    "description": "Roppongi Tsutaya Books is a popular bookstore and entertainment spot in Tokyo with a 4.2 star rating from 2,010 reviews. Located in the heart of Tokyo, it offers a great selection of books, manga, and entertainment items.",
+    "category": "shopping",
+    "area": "tokyo",
+    "location": {
+      "lat": 35.6586837,
+      "lng": 139.7319453,
+      "address": "Japan, 〒106-0032 Tokyo, Minato City, Roppongi, 6-chōme−11−１ 六本木ヒルズ 六本木 けやき坂通り"
+    },
+    "rating": 4.2,
+    "images": [
+      "/images/photos/ChIJ-VRm_52LGGARQQy2OZs3mpk/photo_1.jpg",
+      "/images/photos/ChIJ-VRm_52LGGARQQy2OZs3mpk/photo_2.jpg",
+      "/images/photos/ChIJ-VRm_52LGGARQQy2OZs3mpk/photo_3.jpg",
+      "/images/photos/ChIJ-VRm_52LGGARQQy2OZs3mpk/photo_4.jpg",
+      "/images/photos/ChIJ-VRm_52LGGARQQy2OZs3mpk/photo_5.jpg",
+      "/images/photos/ChIJ-VRm_52LGGARQQy2OZs3mpk/photo_6.jpg",
+      "/images/photos/ChIJ-VRm_52LGGARQQy2OZs3mpk/photo_7.jpg",
+      "/images/photos/ChIJ-VRm_52LGGARQQy2OZs3mpk/photo_8.jpg",
+      "/images/photos/ChIJ-VRm_52LGGARQQy2OZs3mpk/photo_9.jpg",
+      "/images/photos/ChIJ-VRm_52LGGARQQy2OZs3mpk/photo_10.jpg"
+    ],
+    "openingHours": {
+      "monday": "9:00 AM – 11:00 PM",
+      "tuesday": "9:00 AM – 11:00 PM",
+      "wednesday": "9:00 AM – 11:00 PM",
+      "thursday": "9:00 AM – 11:00 PM",
+      "friday": "9:00 AM – 11:00 PM",
+      "saturday": "9:00 AM – 11:00 PM",
+      "sunday": "9:00 AM – 11:00 PM"
+    },
+    "contact": {
+      "phone": "+81 3-5775-1515"
+    },
+    "priceRange": "moderate",
+    "tags": [
+      "book_store",
+      "shopping",
+      "entertainment",
+      "cafe",
+      "book_store",
+      "art_gallery",
+      "bar",
+      "store",
+      "food",
+      "point_of_interest",
+      "establishment"
+    ],
+    "googlePlaceId": "ChIJ-VRm_52LGGARQQy2OZs3mpk",
+    "reviews": []
+  },
+  {
+    "id": "ChIJhTzCxUiNGGARfWRafi-eBys",
+    "name": "SURUGA-YA Akihabara Main Building",
+    "description": "SURUGA-YA Akihabara Main Building is a popular bookstore and entertainment spot in Tokyo with a 2.9 star rating from 313 reviews. Located in the heart of Tokyo, it offers a great selection of books, manga, and entertainment items.",
+    "category": "shopping",
+    "area": "tokyo",
+    "location": {
+      "lat": 35.70064,
+      "lng": 139.7705493,
+      "address": "3-chōme-11-3 Sotokanda, Chiyoda City, Tokyo 101-0021, Japan"
+    },
+    "rating": 2.9,
+    "images": [
+      "/images/photos/ChIJhTzCxUiNGGARfWRafi-eBys/photo_1.jpg",
+      "/images/photos/ChIJhTzCxUiNGGARfWRafi-eBys/photo_2.jpg",
+      "/images/photos/ChIJhTzCxUiNGGARfWRafi-eBys/photo_3.jpg",
+      "/images/photos/ChIJhTzCxUiNGGARfWRafi-eBys/photo_4.jpg",
+      "/images/photos/ChIJhTzCxUiNGGARfWRafi-eBys/photo_5.jpg",
+      "/images/photos/ChIJhTzCxUiNGGARfWRafi-eBys/photo_6.jpg",
+      "/images/photos/ChIJhTzCxUiNGGARfWRafi-eBys/photo_7.jpg",
+      "/images/photos/ChIJhTzCxUiNGGARfWRafi-eBys/photo_8.jpg",
+      "/images/photos/ChIJhTzCxUiNGGARfWRafi-eBys/photo_9.jpg",
+      "/images/photos/ChIJhTzCxUiNGGARfWRafi-eBys/photo_10.jpg"
+    ],
+    "openingHours": {
+      "monday": "11:00 AM – 9:00 PM",
+      "tuesday": "11:00 AM – 9:00 PM",
+      "wednesday": "11:00 AM – 9:00 PM",
+      "thursday": "11:00 AM – 9:00 PM",
+      "friday": "11:00 AM – 9:00 PM",
+      "saturday": "10:00 AM – 9:00 PM",
+      "sunday": "10:00 AM – 9:00 PM"
+    },
+    "contact": {
+      "phone": "+81 3-6634-0989"
+    },
+    "priceRange": "budget",
+    "tags": [
+      "book_store",
+      "shopping",
+      "entertainment",
+      "discount_store",
+      "food_store",
+      "book_store",
+      "store",
+      "food",
+      "point_of_interest",
+      "establishment"
+    ],
+    "googlePlaceId": "ChIJhTzCxUiNGGARfWRafi-eBys",
+    "reviews": []
+  },
+  {
+    "id": "ChIJH1Vbe_2LGGARGM_uSaiLVVY",
+    "name": "MARUZEN Nihombashi",
+    "description": "MARUZEN Nihombashi is a popular bookstore and entertainment spot in Tokyo with a 4.2 star rating from 531 reviews. Located in the heart of Tokyo, it offers a great selection of books, manga, and entertainment items.",
+    "category": "shopping",
+    "area": "tokyo",
+    "location": {
+      "lat": 35.680952999999995,
+      "lng": 139.7724752,
+      "address": "2-chōme-3-10 Nihonbashi, Chuo City, Tokyo 103-8245, Japan"
+    },
+    "rating": 4.2,
+    "images": [
+      "/images/photos/ChIJH1Vbe_2LGGARGM_uSaiLVVY/photo_1.jpg",
+      "/images/photos/ChIJH1Vbe_2LGGARGM_uSaiLVVY/photo_2.jpg",
+      "/images/photos/ChIJH1Vbe_2LGGARGM_uSaiLVVY/photo_3.jpg",
+      "/images/photos/ChIJH1Vbe_2LGGARGM_uSaiLVVY/photo_4.jpg",
+      "/images/photos/ChIJH1Vbe_2LGGARGM_uSaiLVVY/photo_5.jpg",
+      "/images/photos/ChIJH1Vbe_2LGGARGM_uSaiLVVY/photo_6.jpg",
+      "/images/photos/ChIJH1Vbe_2LGGARGM_uSaiLVVY/photo_7.jpg",
+      "/images/photos/ChIJH1Vbe_2LGGARGM_uSaiLVVY/photo_8.jpg",
+      "/images/photos/ChIJH1Vbe_2LGGARGM_uSaiLVVY/photo_9.jpg",
+      "/images/photos/ChIJH1Vbe_2LGGARGM_uSaiLVVY/photo_10.jpg"
+    ],
+    "openingHours": {
+      "monday": "9:30 AM – 8:30 PM",
+      "tuesday": "9:30 AM – 8:30 PM",
+      "wednesday": "9:30 AM – 8:30 PM",
+      "thursday": "9:30 AM – 8:30 PM",
+      "friday": "9:30 AM – 8:30 PM",
+      "saturday": "9:30 AM – 8:30 PM",
+      "sunday": "9:30 AM – 8:30 PM"
+    },
+    "contact": {
+      "phone": "+81 3-6214-2001"
+    },
+    "priceRange": "moderate",
+    "tags": [
+      "book_store",
+      "shopping",
+      "entertainment",
+      "book_store",
+      "cafe",
+      "store",
+      "health",
+      "food",
+      "point_of_interest",
+      "establishment"
+    ],
+    "googlePlaceId": "ChIJH1Vbe_2LGGARGM_uSaiLVVY",
+    "reviews": []
+  },
+  {
+    "id": "ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y",
+    "name": "Akihabara Gamers",
+    "description": "Akihabara Gamers is a popular bookstore and entertainment spot in Tokyo with a 4.2 star rating from 2,293 reviews. Located in the heart of Tokyo, it offers a great selection of books, manga, and entertainment items.",
+    "category": "shopping",
+    "area": "tokyo",
+    "location": {
+      "lat": 35.6983011,
+      "lng": 139.7716604,
+      "address": "Japan, 〒101-0021 Tokyo, Chiyoda City, Sotokanda, 1-chōme−14−７ 宝田中央通りビル"
+    },
+    "rating": 4.2,
+    "images": [
+      "/images/photos/ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y/photo_1.jpg",
+      "/images/photos/ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y/photo_2.jpg",
+      "/images/photos/ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y/photo_3.jpg",
+      "/images/photos/ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y/photo_4.jpg",
+      "/images/photos/ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y/photo_5.jpg",
+      "/images/photos/ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y/photo_6.jpg",
+      "/images/photos/ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y/photo_7.jpg",
+      "/images/photos/ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y/photo_8.jpg",
+      "/images/photos/ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y/photo_9.jpg",
+      "/images/photos/ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y/photo_10.jpg"
+    ],
+    "openingHours": {
+      "monday": "10:00 AM – 9:00 PM",
+      "tuesday": "10:00 AM – 9:00 PM",
+      "wednesday": "10:00 AM – 9:00 PM",
+      "thursday": "10:00 AM – 9:00 PM",
+      "friday": "10:00 AM – 9:00 PM",
+      "saturday": "10:00 AM – 9:00 PM",
+      "sunday": "10:00 AM – 9:00 PM"
+    },
+    "contact": {
+      "phone": "+81 3-5298-8720"
+    },
+    "priceRange": "moderate",
+    "tags": [
+      "book_store",
+      "shopping",
+      "entertainment",
+      "book_store",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "googlePlaceId": "ChIJS6eXQB2MGGAR9W0Xk2Q7B3Y",
+    "reviews": []
+  },
+  {
+    "id": "ChIJE-oj5p-OGGARdqME8zCJdg8",
+    "name": "BOOKOFF PLUS Ueno Hirokoji Store",
+    "description": "BOOKOFF PLUS Ueno Hirokoji Store is a popular bookstore and entertainment spot in Tokyo with a 3.7 star rating from 1,856 reviews. Located in the heart of Tokyo, it offers a great selection of books, manga, and entertainment items.",
+    "category": "shopping",
+    "area": "tokyo",
+    "location": {
+      "lat": 35.7082659,
+      "lng": 139.7734783,
+      "address": "4-chōme-4-4 Ueno, Taito City, Tokyo 110-0005, Japan"
+    },
+    "rating": 3.7,
+    "images": [
+      "/images/photos/ChIJE-oj5p-OGGARdqME8zCJdg8/photo_1.jpg",
+      "/images/photos/ChIJE-oj5p-OGGARdqME8zCJdg8/photo_2.jpg",
+      "/images/photos/ChIJE-oj5p-OGGARdqME8zCJdg8/photo_3.jpg",
+      "/images/photos/ChIJE-oj5p-OGGARdqME8zCJdg8/photo_4.jpg",
+      "/images/photos/ChIJE-oj5p-OGGARdqME8zCJdg8/photo_5.jpg",
+      "/images/photos/ChIJE-oj5p-OGGARdqME8zCJdg8/photo_6.jpg",
+      "/images/photos/ChIJE-oj5p-OGGARdqME8zCJdg8/photo_7.jpg",
+      "/images/photos/ChIJE-oj5p-OGGARdqME8zCJdg8/photo_8.jpg",
+      "/images/photos/ChIJE-oj5p-OGGARdqME8zCJdg8/photo_9.jpg",
+      "/images/photos/ChIJE-oj5p-OGGARdqME8zCJdg8/photo_10.jpg"
+    ],
+    "openingHours": {
+      "monday": "10:00 AM – 10:00 PM",
+      "tuesday": "10:00 AM – 10:00 PM",
+      "wednesday": "10:00 AM – 10:00 PM",
+      "thursday": "10:00 AM – 10:00 PM",
+      "friday": "10:00 AM – 10:00 PM",
+      "saturday": "10:00 AM – 10:00 PM",
+      "sunday": "10:00 AM – 10:00 PM"
+    },
+    "contact": {
+      "phone": "+81 3-5817-3817"
+    },
+    "priceRange": "budget",
+    "tags": [
+      "book_store",
+      "shopping",
+      "entertainment",
+      "movie_rental",
+      "clothing_store",
+      "home_goods_store",
+      "book_store",
+      "store",
+      "point_of_interest",
+      "establishment"
+    ],
+    "googlePlaceId": "ChIJE-oj5p-OGGARdqME8zCJdg8",
+    "reviews": []
+  }
+];
+
+// Add to the existing export
+export const allBookstoreSpots = newTokyoBookstoreSpots;

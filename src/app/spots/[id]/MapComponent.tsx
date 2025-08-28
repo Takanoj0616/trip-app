@@ -12,7 +12,15 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-export default function MapComponent() {
+interface MapComponentProps {
+  location: {
+    lat: number;
+    lng: number;
+  };
+  name: string;
+}
+
+export default function MapComponent({ location, name }: MapComponentProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
@@ -20,7 +28,7 @@ export default function MapComponent() {
     if (!mapContainerRef.current || mapRef.current) return;
 
     // 地図初期化
-    const map = L.map(mapContainerRef.current).setView([35.6586, 139.7454], 16);
+    const map = L.map(mapContainerRef.current).setView([location.lat, location.lng], 16);
     mapRef.current = map;
 
     // タイルレイヤー追加
@@ -29,13 +37,12 @@ export default function MapComponent() {
       maxZoom: 19,
     }).addTo(map);
 
-    // 東京タワーのマーカー
-    const marker = L.marker([35.6586, 139.7454]).addTo(map);
+    // スポットのマーカー
+    const marker = L.marker([location.lat, location.lng]).addTo(map);
     marker.bindPopup(`
       <div class="text-center">
-        <h3 class="font-semibold text-lg mb-2">東京タワー</h3>
-        <p class="text-sm text-gray-600">Tokyo Tower</p>
-        <p class="text-sm text-gray-600 mt-1">333m 電波塔・展望台</p>
+        <h3 class="font-semibold text-lg mb-2">${name}</h3>
+        <p class="text-sm text-gray-600">観光スポット</p>
       </div>
     `).openPopup();
 
@@ -77,7 +84,7 @@ export default function MapComponent() {
         mapRef.current = null;
       }
     };
-  }, []);
+  }, [location.lat, location.lng, name]);
 
   return (
     <div

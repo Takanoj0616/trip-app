@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Firebase
+.firebase-admin.json
+firebase-adminsdk-*.json
+service-account-*.json
+
+# Large image directories (exclude from git)
+public/images/photos/
+public/images/hotel_photos/
