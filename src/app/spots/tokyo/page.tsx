@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { tokyoSpotsDetailed, type TokyoSpot, type SpotInfo, type SpotName } from '@/data/tokyo-spots-detailed';
-import { db, collection, query, onSnapshot, orderBy } from '@/lib/firebase';
+import { db, collection, query, getDocs, orderBy, limit } from '@/lib/firebase';
 import { TouristSpot } from '@/types';
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
 
@@ -108,44 +108,107 @@ export default function TokyoSpots() {
     };
   }, [currentLanguage]);
 
-  // Fetch Firebase spots data
+  // Fetch Firebase spots data with caching
   useEffect(() => {
+    let mounted = true;
+    
+    // Check for cached data first
+    const getCachedSpots = () => {
+      try {
+        const cached = localStorage.getItem('firebase-spots-cache');
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          // Cache valid for 5 minutes
+          if (Date.now() - timestamp < 5 * 60 * 1000) {
+            return data;
+          }
+        }
+      } catch (error) {
+        console.warn('Cache read error:', error);
+      }
+      return null;
+    };
+
+    // Load cached data immediately if available
+    const cachedSpots = getCachedSpots();
+    if (cachedSpots) {
+      setFirebaseSpots([...cachedSpots, ...allBookstoreSpots]);
+      setFirestoreLoading(false);
+      console.log('Loaded cached spots:', cachedSpots.length);
+    }
+
     if (!db) {
       console.warn('Firebase is not initialized');
-      setFirestoreLoading(false);
-      setFirebaseSpots(allBookstoreSpots);
+      if (!cachedSpots) {
+        setFirestoreLoading(false);
+        setFirebaseSpots(allBookstoreSpots);
+      }
       return;
     }
 
-    try {
-      const spotsCollection = collection(db, 'tourist_spots');
-      const spotsQuery = query(spotsCollection, orderBy('rating', 'desc'));
-      
-      const unsubscribe = onSnapshot(spotsQuery, (snapshot) => {
+    const fetchSpots = async () => {
+      try {
+        const spotsCollection = collection(db, 'spots');
+        // Optimize query with ordering and limiting if needed
+        const spotsQuery = query(spotsCollection, orderBy('rating', 'desc'));
+        
+        const snapshot = await getDocs(spotsQuery);
+        
+        if (!mounted) return;
+        
         const spots: TouristSpot[] = [];
-        snapshot.forEach((doc) => {
+        snapshot.docs.forEach((doc) => {
           const data = doc.data();
           spots.push({
             id: doc.id,
+            name: data.name || 'Unknown',
+            description: data.description || 'No description available',
+            category: data.category || 'shopping',
+            area: data.area || 'tokyo',
+            location: data.location || { lat: 0, lng: 0, address: 'Unknown location' },
+            rating: data.rating || 4.0,
+            images: data.images || [],
+            reviews: data.reviews || [],
+            tags: data.tags || [],
+            googlePlaceId: data.googlePlaceId || data.id,
             ...data
           } as TouristSpot);
         });
         
+        // Cache the results
+        try {
+          localStorage.setItem('firebase-spots-cache', JSON.stringify({
+            data: spots,
+            timestamp: Date.now()
+          }));
+        } catch (error) {
+          console.warn('Cache write error:', error);
+        }
+        
         setFirebaseSpots([...spots, ...allBookstoreSpots]);
         setFirestoreLoading(false);
         console.log('Firebase spots loaded:', spots.length);
-      }, (error) => {
+        
+      } catch (error) {
         console.error('Error fetching spots:', error);
-        setFirebaseSpots(allBookstoreSpots);
+        if (!cachedSpots) {
+          setFirebaseSpots(allBookstoreSpots);
+        }
         setFirestoreLoading(false);
-      });
+      }
+    };
 
-      return () => unsubscribe();
-    } catch (error) {
-      console.error('Error setting up Firebase listener:', error);
-      setFirebaseSpots(allBookstoreSpots);
-      setFirestoreLoading(false);
+    // Only fetch from Firebase if no cache or if cache is old
+    if (!cachedSpots) {
+      fetchSpots();
+    } else {
+      // Still fetch fresh data in background but don't block UI
+      setTimeout(fetchSpots, 100);
     }
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Multi-language translations for Tokyo spots
