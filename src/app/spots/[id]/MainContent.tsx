@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { db, doc, getDoc } from '@/lib/firebase';
 import { TouristSpot } from '@/types';
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
+import { tokyoSpotsDetailed, TokyoSpot } from '@/data/tokyo-spots-detailed';
+import Image from 'next/image';
 import {
   Clock,
   DollarSign,
@@ -30,6 +32,8 @@ import {
   Map,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Map component を動的インポート（SSRを無効化）
 const MapComponent = dynamic(() => import('./MapComponent'), {
@@ -68,6 +72,10 @@ interface SpotData {
   googlePlaceId?: string;
   openingHours?: any;
   priceRange?: string;
+  reviewCount?: number;
+  crowdLevel?: '空いている' | '普通' | '混雑';
+  averageStayMinutes?: number;
+  stayRange?: string;
 }
 
 export default function MainContent({
@@ -80,9 +88,168 @@ export default function MainContent({
   const [activeFAQ, setActiveFAQ] = useState<number | null>(null);
   const [spotData, setSpotData] = useState<SpotData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // i18n labels（URLの ?lang が優先、なければ props → ja）
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const { currentLanguage: ctxLang, setCurrentLanguage } = useLanguage();
+  const langParam = searchParams?.get('lang');
+  const lang = (langParam || _language || (ctxLang as string) || 'ja') as 'ja' | 'en' | 'ko' | 'fr';
+
+  // Sync rule:
+  // - If URL has ?lang, treat it as source of truth and update context to it.
+  // - If URL doesn't have ?lang, reflect context to URL.
+  const didInitLangSync = useRef(false);
+  useEffect(() => {
+    const urlLang = searchParams?.get('lang');
+    // 1) 初回だけ: URLにlangがあればコンテキストへ反映
+    if (!didInitLangSync.current) {
+      didInitLangSync.current = true;
+      if (urlLang && urlLang !== ctxLang) {
+        setCurrentLanguage(urlLang);
+      } else if (!urlLang && ctxLang) {
+        // URLに無ければ現在の言語をURLへ反映
+        const sp = new URLSearchParams(searchParams?.toString());
+        sp.set('lang', ctxLang as string);
+        router.replace(`${pathname}?${sp.toString()}`, { scroll: false });
+      }
+      return;
+    }
+    // 2) 以降: ヘッダーの切替（ctxLang）が発生したらURLを更新
+    if (ctxLang && urlLang !== ctxLang) {
+      const sp = new URLSearchParams(searchParams?.toString());
+      sp.set('lang', ctxLang as string);
+      router.replace(`${pathname}?${sp.toString()}`, { scroll: false });
+    }
+  }, [ctxLang, langParam]);
+  const i18n = {
+    ja: {
+      gallery: '写真ギャラリー',
+      details: '詳細説明',
+      address: '住所',
+      accessMap: 'アクセス・地図',
+      hours: '営業時間',
+      hoursHint: '店舗情報に基づく目安',
+      price: '料金',
+      priceHint: '表示は目安',
+      stay: '滞在時間',
+      stayAvg: '平均的な滞在時間',
+      rating: '評価',
+      crowd: '混雑状況',
+      crowdLabels: { busy: '混雑', normal: '普通', empty: '空いている' },
+      free: '無料', paid: '有料',
+      highlights: '見どころ',
+      heroSubtitle: 'スポット詳細',
+      addToFavoritesBtn: 'お気に入りに追加',
+      addToAIPlanBtn: 'AI旅行プランに入れる',
+      ticketsBtn: 'チケット予約',
+      fallbackDescription: '人気のスポットです。見どころや歴史、周辺情報をチェックして計画に役立てましょう。',
+      reviewsTitle: '口コミ・レビュー',
+    },
+    en: {
+      gallery: 'Photo Gallery',
+      details: 'Details',
+      address: 'Address',
+      accessMap: 'Access & Map',
+      hours: 'Hours',
+      hoursHint: 'Approx. based on venue info',
+      price: 'Price',
+      priceHint: 'Approximate',
+      stay: 'Stay Time',
+      stayAvg: 'Average stay time',
+      rating: 'Rating',
+      crowd: 'Crowd Level',
+      crowdLabels: { busy: 'Busy', normal: 'Moderate', empty: 'Light' },
+      free: 'Free', paid: 'Paid',
+      highlights: 'Highlights',
+      heroSubtitle: 'Spot Details',
+      addToFavoritesBtn: 'Add to Favorites',
+      addToAIPlanBtn: 'Add to AI Plan',
+      ticketsBtn: 'Book Tickets',
+      fallbackDescription: 'A popular spot. Check highlights and info to plan your visit.',
+      reviewsTitle: 'Reviews',
+    },
+    ko: {
+      gallery: '사진 갤러리',
+      details: '상세 설명',
+      address: '주소',
+      accessMap: '오시는 길 · 지도',
+      hours: '영업시간',
+      hoursHint: '시설 정보 기준(대략)',
+      price: '요금',
+      priceHint: '대략',
+      stay: '체류 시간',
+      stayAvg: '평균 체류 시간',
+      rating: '평점',
+      crowd: '혼잡도',
+      crowdLabels: { busy: '혼잡', normal: '보통', empty: '여유' },
+      free: '무료', paid: '유료',
+      highlights: '볼거리',
+      heroSubtitle: '스팟 상세',
+      addToFavoritesBtn: '즐겨찾기에 추가',
+      addToAIPlanBtn: 'AI 여행 일정에 추가',
+      ticketsBtn: '티켓 예약',
+      fallbackDescription: '인기 있는 장소입니다. 볼거리와 정보를 확인해 일정을 계획해 보세요.',
+      reviewsTitle: '리뷰',
+    },
+    fr: {
+      gallery: 'Galerie Photo',
+      details: 'Description',
+      address: 'Adresse',
+      accessMap: 'Accès & Carte',
+      hours: 'Horaires',
+      hoursHint: 'Indication basée sur le lieu',
+      price: 'Tarifs',
+      priceHint: 'Indication',
+      stay: 'Durée de la visite',
+      stayAvg: 'Durée moyenne',
+      rating: 'Note',
+      crowd: 'Affluence',
+      crowdLabels: { busy: 'Affluence', normal: 'Modérée', empty: 'Faible' },
+      free: 'Gratuit', paid: 'Payant',
+      highlights: 'Points forts',
+      heroSubtitle: 'Détails du lieu',
+      addToFavoritesBtn: 'Ajouter aux favoris',
+      addToAIPlanBtn: "Ajouter au plan IA",
+      ticketsBtn: 'Réserver des billets',
+      fallbackDescription: "Lieu populaire. Consultez les points forts et les infos pour planifier votre visite.",
+      reviewsTitle: 'Avis',
+    },
+  }[lang];
 
   useEffect(() => {
     const fetchSpotData = async () => {
+      // 0) Check local Tokyo detailed spots (sights list)
+      const detailed = tokyoSpotsDetailed.find((s: TokyoSpot) => s.id === spotId);
+      if (detailed) {
+        const name = detailed.name?.[lang] || detailed.name?.ja || detailed.name?.en || detailed.name?.fr || detailed.name?.ko || Object.values(detailed.name || {})[0] || 'スポット';
+        const images = detailed.images?.length ? detailed.images : (detailed.image ? [detailed.image] : []);
+        const priceTextFromTicket = detailed.info?.ticketRequired === '不要' ? i18n.free : detailed.info?.ticketRequired === '必要' ? i18n.paid : undefined;
+        const convertedFromDetailed: SpotData = {
+          name,
+          description: (detailed as any)[`description_${lang}`] || detailed.description || i18n.fallbackDescription,
+          location: detailed.location ? { lat: 35.676, lng: 139.65, address: detailed.location.address } : undefined,
+          price: priceTextFromTicket,
+          hours: detailed.info?.openHours || '営業時間未定',
+          rating: detailed.rating,
+          images,
+          contact: undefined,
+          tags: detailed.tags || [],
+          googlePlaceId: undefined,
+          openingHours: undefined,
+          priceRange: undefined,
+          reviewCount: detailed.reviewCount,
+          crowdLevel: (detailed.info?.crowdLevel as any) || undefined,
+          averageStayMinutes: undefined,
+          stayRange: detailed.info?.duration
+        };
+        setSpotData(convertedFromDetailed);
+        setLoading(false);
+        return;
+      }
+
       // First check local bookstore data
       const localSpot = allBookstoreSpots.find(spot => 
         spot.id === spotId || spot.googlePlaceId === spotId
@@ -93,8 +260,8 @@ export default function MainContent({
           name: localSpot.name,
           description: localSpot.description || '人気のスポットです',
           location: localSpot.location,
-          price: localSpot.priceRange === 'expensive' ? '¥3,000以上' : 
-                 localSpot.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下',
+          price: (localSpot as any).priceText || (localSpot.priceRange === 'expensive' ? '¥3,000以上' : 
+                 localSpot.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下'),
           hours: localSpot.openingHours ? Object.values(localSpot.openingHours)[0] : '営業時間未定',
           rating: localSpot.rating || 4.0,
           images: localSpot.images || [],
@@ -102,7 +269,11 @@ export default function MainContent({
           tags: localSpot.tags || [],
           googlePlaceId: localSpot.googlePlaceId,
           openingHours: localSpot.openingHours,
-          priceRange: localSpot.priceRange
+          priceRange: localSpot.priceRange,
+          reviewCount: (localSpot as any).reviewCount,
+          crowdLevel: (localSpot as any).crowdLevel,
+          averageStayMinutes: (localSpot as any).averageStayMinutes,
+          stayRange: (localSpot as any).stayRange
         };
         setSpotData(convertedSpot);
         setLoading(false);
@@ -134,8 +305,8 @@ export default function MainContent({
             name: data.name,
             description: data.description || '人気のスポットです',
             location: data.location,
-            price: data.priceRange === 'expensive' ? '¥3,000以上' : 
-                   data.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下',
+            price: (data as any).priceText || (data.priceRange === 'expensive' ? '¥3,000以上' : 
+                   data.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下'),
             hours: data.openingHours ? Object.values(data.openingHours)[0] : '営業時間未定',
             rating: data.rating || 4.0,
             images: data.images || [],
@@ -143,7 +314,11 @@ export default function MainContent({
             tags: data.tags || [],
             googlePlaceId: data.googlePlaceId,
             openingHours: data.openingHours,
-            priceRange: data.priceRange
+            priceRange: data.priceRange,
+            reviewCount: (data as any).reviewCount,
+            crowdLevel: (data as any).crowdLevel,
+            averageStayMinutes: (data as any).averageStayMinutes,
+            stayRange: (data as any).stayRange
           };
           setSpotData(convertedData);
           setLoading(false);
@@ -193,6 +368,7 @@ export default function MainContent({
 
   const closeModal = () => {
     setActiveModal(null);
+    setSelectedImage(null);
   };
 
   const toggleFAQ = (index: number) => {
@@ -212,12 +388,37 @@ export default function MainContent({
     showNotification('AI旅行プランに追加しました！', 'success');
   };
 
+  const tagToLabel = (tag: string) => {
+    const map: Record<string, string> = {
+      book_store: '書店',
+      shopping: 'ショッピング',
+      entertainment: 'エンタメ',
+      museum: '博物館',
+      art_gallery: '美術館',
+      park: '公園',
+      temple: '寺院',
+      shrine: '神社',
+      nature: '自然',
+      culture: '文化',
+      cafe: 'カフェ',
+      food: 'グルメ',
+      store: '店舗',
+      point_of_interest: '観光',
+    };
+    return map[tag] || tag;
+  };
+
   // 現在の営業時間を計算
   const getBusinessHours = () => {
-    if (spotData?.hours) {
-      return `本日: ${spotData.hours}`;
+    const prefix = lang === 'en' ? 'Today: ' : lang === 'ko' ? '오늘: ' : lang === 'fr' ? "Aujourd'hui: " : '本日: ';
+    if (spotData?.openingHours) {
+      const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'] as const;
+      const key = days[new Date().getDay()];
+      const today = (spotData.openingHours as Record<string, string | undefined>)[key];
+      if (today) return `${prefix}${today}`;
     }
-    return '本日: 9:00 - 23:00';
+    if (spotData?.hours) return `${prefix}${spotData.hours}`;
+    return lang === 'en' ? 'Today: Hours unavailable' : lang === 'ko' ? '오늘: 영업시간 미정' : lang === 'fr' ? "Aujourd'hui: Horaires indisponibles" : '本日: 営業時間未定';
   };
 
   // 料金表示
@@ -229,6 +430,50 @@ export default function MainContent({
       return '¥1,200 - ¥3,000';
     }
     return '$8 - $20';
+  };
+
+  // 滞在時間（データ優先 → タグから推定）
+  const getStayDisplay = () => {
+    if (spotData?.stayRange) return spotData.stayRange;
+    if (spotData?.averageStayMinutes) {
+      const m = spotData.averageStayMinutes;
+      const min = Math.max(15, Math.round((m * 0.7) / 5) * 5);
+      const max = Math.round((m * 1.3) / 5) * 5;
+      return `${min} - ${max}分`;
+    }
+    const tags = spotData?.tags || [];
+    const has = (t: string) => tags.includes(t);
+    let min = 60, max = 90;
+    if (has('book_store') || has('shopping') || has('store')) { min = 30; max = 60; }
+    else if (has('art_gallery') || has('museum')) { min = 60; max = 120; }
+    return `${min} - ${max}分`;
+  };
+
+  // 混雑状況（簡易推定）
+  const getCrowd = () => {
+    if (spotData?.crowdLevel) {
+      const base = spotData.crowdLevel;
+      const score = base === '混雑' ? 4 : base === '普通' ? 3 : 2;
+      const label = score >= 4 ? i18n.crowdLabels.busy : score >= 3 ? i18n.crowdLabels.normal : i18n.crowdLabels.empty;
+      return { label, score };
+    }
+    const rating = spotData?.rating ?? 4.0;
+    const d = new Date();
+    let score = rating >= 4.4 ? 3 : rating >= 4.1 ? 2 : 1;
+    const day = d.getDay();
+    const h = d.getHours();
+    if (day === 0 || day === 6) score += 1;
+    if ((h >= 11 && h <= 13) || (h >= 16 && h <= 20)) score += 1;
+    score = Math.max(1, Math.min(5, score));
+    const label = score >= 4 ? i18n.crowdLabels.busy : score >= 3 ? i18n.crowdLabels.normal : i18n.crowdLabels.empty;
+    return { label, score };
+  };
+
+  const getReviewCountDisplay = () => {
+    if (typeof spotData?.reviewCount === 'number') return `(${spotData.reviewCount.toLocaleString()}件)`;
+    const anySpot: any = spotData as any;
+    if (anySpot?.reviews && Array.isArray(anySpot.reviews)) return `(${anySpot.reviews.length}件)`;
+    return '';
   };
 
   return (
@@ -265,12 +510,12 @@ export default function MainContent({
           ) : (
             <>
               <h1 className="mb-6 text-shadow-lg bg-gradient-to-br from-white to-slate-100 bg-clip-text text-transparent">
-                {spotData?.name || '東京タワー'}
+                {spotData?.name || 'Tokyo'}
                 <br />
-                <span className="text-3xl opacity-90">Tokyo Tower</span>
+                <span className="text-3xl opacity-90">{i18n.heroSubtitle}</span>
               </h1>
               <p className="text-xl md:text-2xl opacity-95 mb-12 text-shadow">
-                {spotData?.description || '東京のシンボル、333mの展望タワー'}
+                {spotData?.description || i18n.fallbackDescription}
               </p>
             </>
           )}
@@ -281,21 +526,21 @@ export default function MainContent({
               className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-primary to-primary-light text-white font-semibold hover:scale-105 transform transition-all duration-300 shadow-xl"
             >
               <Heart size={20} />
-              お気に入りに追加
+              {i18n.addToFavoritesBtn}
             </button>
             <button
               onClick={addToAITravelPlan}
               className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/90 text-secondary font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transform transition-all duration-300 shadow-xl"
             >
               <Bot size={20} />
-              AI旅行プランに入れる
+              {i18n.addToAIPlanBtn}
             </button>
             <a
               href="#tickets"
               className="flex items-center gap-3 px-8 py-4 rounded-2xl border-2 border-white/30 text-white font-semibold backdrop-blur-sm hover:bg-white/10 hover:border-white/50 hover:scale-105 transform transition-all duration-300"
             >
               <Ticket size={20} />
-              チケット予約
+              {i18n.ticketsBtn}
             </a>
           </div>
         </div>
@@ -308,47 +553,47 @@ export default function MainContent({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               <div className="text-center p-6 border border-border-light rounded-2xl bg-gradient-to-br from-white to-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <Clock className="mx-auto mb-4 text-primary" size={40} />
-                <h3 className="font-semibold text-secondary mb-2">営業時間</h3>
+                <h3 className="font-semibold text-secondary mb-2">{i18n.hours}</h3>
                 <p className="text-lg font-semibold mb-1">{getBusinessHours()}</p>
-                <small className="text-text-light">メインデッキ・トップデッキ</small>
+                <small className="text-text-light">{i18n.hoursHint}</small>
               </div>
 
               <div className="text-center p-6 border border-border-light rounded-2xl bg-gradient-to-br from-white to-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <DollarSign className="mx-auto mb-4 text-primary" size={40} />
-                <h3 className="font-semibold text-secondary mb-2">料金</h3>
+                <h3 className="font-semibold text-secondary mb-2">{i18n.price}</h3>
                 <p className="text-lg font-semibold mb-1">{getPriceDisplay()}</p>
-                <small className="text-text-light">メインデッキ・トップデッキ</small>
+                <small className="text-text-light">{i18n.priceHint}</small>
               </div>
 
               <div className="text-center p-6 border border-border-light rounded-2xl bg-gradient-to-br from-white to-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <Hourglass className="mx-auto mb-4 text-primary" size={40} />
-                <h3 className="font-semibold text-secondary mb-2">滞在時間</h3>
-                <p className="text-lg font-semibold mb-1">1.5 - 3時間</p>
-                <small className="text-text-light">平均的な滞在時間</small>
+                <h3 className="font-semibold text-secondary mb-2">{i18n.stay}</h3>
+                <p className="text-lg font-semibold mb-1">{getStayDisplay()}</p>
+                <small className="text-text-light">{i18n.stayAvg}</small>
               </div>
 
               <div className="text-center p-6 border border-border-light rounded-2xl bg-gradient-to-br from-white to-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <Star className="mx-auto mb-4 text-primary" size={40} />
-                <h3 className="font-semibold text-secondary mb-2">評価</h3>
+                <h3 className="font-semibold text-secondary mb-2">{i18n.rating}</h3>
                 <div className="flex justify-center items-center gap-2 mb-1">
                   <span className="text-yellow-400 text-xl">
                     {'★'.repeat(Math.floor(spotData?.rating || 4.2))}{'☆'.repeat(5 - Math.floor(spotData?.rating || 4.2))}
                   </span>
                   <span className="font-semibold">{spotData?.rating || 4.2}</span>
                 </div>
-                <small className="text-text-light">(2,847件)</small>
+                <small className="text-text-light">{getReviewCountDisplay()}</small>
               </div>
 
               <div className="text-center p-6 border border-border-light rounded-2xl bg-gradient-to-br from-white to-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <Users className="mx-auto mb-4 text-primary" size={40} />
-                <h3 className="font-semibold text-secondary mb-2">混雑状況</h3>
-                <p className="text-lg font-semibold mb-2">普通</p>
+                <h3 className="font-semibold text-secondary mb-2">{i18n.crowd}</h3>
+                <p className="text-lg font-semibold mb-2">{getCrowd().label}</p>
                 <div className="flex justify-center gap-1">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div
                       key={i}
                       className={`w-6 h-1.5 rounded-full ${
-                        i <= 2 ? 'bg-warning' : 'bg-border'
+                        i <= getCrowd().score ? 'bg-warning' : 'bg-border'
                       }`}
                     />
                   ))}
@@ -362,7 +607,7 @@ export default function MainContent({
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <MapPin className="text-primary" size={24} />
-            アクセス・地図
+            {i18n.accessMap}
           </h2>
 
           <MapComponent 
@@ -433,74 +678,98 @@ export default function MainContent({
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <Images className="text-primary" size={24} />
-            写真ギャラリー
+            {i18n.gallery}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { id: 'exterior', label: '外観' },
-              { id: 'observatory', label: '展望台' },
-              { id: 'night', label: '夜景' },
-              { id: 'interior', label: '内部' },
-            ].map((item) => (
-              <div
-                key={item.id}
-                className="aspect-[16/10] bg-gradient-to-br from-primary/20 to-primary-light/20 rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300 shadow-lg"
-                onClick={() => openModal(item.id)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    openModal(item.id);
-                  }
-                }}
-              >
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-white font-semibold text-lg">
-                    {item.label}
-                  </span>
+          {spotData?.images && spotData.images.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {spotData.images.slice(0, 8).map((src, idx) => (
+                <div
+                  key={`${src}-${idx}`}
+                  className="relative h-40 md:h-48 lg:h-52 rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300 shadow-lg bg-slate-100"
+                  onClick={() => { setSelectedImage(src); openModal('image'); }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      setSelectedImage(src);
+                      openModal('image');
+                    }
+                  }}
+                >
+                  <Image src={src} alt={`${spotData?.name || 'スポット'}の写真`} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw" />
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { id: 'exterior', label: '外観' },
+                { id: 'observatory', label: '展望台' },
+                { id: 'night', label: '夜景' },
+                { id: 'interior', label: '内部' },
+              ].map((item) => (
+                <div
+                  key={item.id}
+                  className="h-40 md:h-48 lg:h-52 bg-gradient-to-br from-primary/20 to-primary-light/20 rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300 shadow-lg"
+                  onClick={() => openModal(item.id)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      openModal(item.id);
+                    }
+                  }}
+                >
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-white font-semibold text-lg">
+                      {item.label}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* 詳細説明 */}
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <Info className="text-primary" size={24} />
-            詳細説明
+            {i18n.details}
           </h2>
 
           <div className="prose max-w-none">
             <p className="text-text-muted mb-6">
-              東京タワーは1958年に建設された東京のシンボル的な電波塔です。高さ333メートルで、東京都港区芝公園に位置しています。
+              {spotData?.description || '人気のスポットです。見どころや歴史、周辺情報をチェックして計画に役立てましょう。'}
             </p>
 
-            <h3 className="text-secondary">見どころ</h3>
-            <ul className="list-disc list-inside space-y-2 text-text-muted mb-6">
-              <li>
-                <strong className="text-secondary">メインデッキ（150m）:</strong>{' '}
-                東京の360度パノラマビューを楽しめます
-              </li>
-              <li>
-                <strong className="text-secondary">トップデッキ（250m）:</strong>{' '}
-                より高い位置からの絶景と特別な体験
-              </li>
-              <li>
-                <strong className="text-secondary">フットタウン:</strong>{' '}
-                ショッピング、レストラン、水族館
-              </li>
-              <li>
-                <strong className="text-secondary">ライトアップ:</strong>{' '}
-                季節やイベントに合わせた美しい照明
-              </li>
-            </ul>
+            {spotData?.location?.address && (
+              <p className="text-text-muted mb-6">
+                <strong className="text-secondary">{i18n.address}:</strong> {spotData.location.address}
+              </p>
+            )}
 
-            <h3 className="text-secondary">歴史</h3>
-            <p className="text-text-muted">
-              東京タワーは戦後復興のシンボルとして建設され、現在でも東京の重要なランドマークとして多くの人に愛されています。エッフェル塔をモデルにしながらも、日本独自のデザインが特徴的です。
-            </p>
+            {spotData?.tags && spotData.tags.length > 0 && (
+              <>
+                <h3 className="text-secondary">{i18n.highlights}</h3>
+                <ul className="list-disc list-inside space-y-2 text-text-muted mb-6">
+                  {spotData.tags.slice(0, 8).map((t, i) => (
+                    <li key={`${t}-${i}`}>{tagToLabel(t)}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {(!spotData?.description && !spotData?.tags?.length) && (
+              <>
+                <h3 className="text-secondary">{i18n.highlights}</h3>
+                <ul className="list-disc list-inside space-y-2 text-text-muted mb-6">
+                  <li>{lang === 'en' ? 'Panoramic views and seasonal events' : lang === 'ko' ? '전망과 계절별 행사' : lang === 'fr' ? 'Vues panoramiques et événements saisonniers' : '360度の眺望や季節ごとのイベント'}</li>
+                  <li>{lang === 'en' ? 'Plenty of shopping and dining nearby' : lang === 'ko' ? '주변 쇼핑과 식당도 풍부' : lang === 'fr' ? 'Nombreux commerces et restaurants à proximité' : '周辺のショッピングやグルメも充実'}</li>
+                </ul>
+              </>
+            )}
           </div>
         </section>
 
@@ -508,7 +777,7 @@ export default function MainContent({
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <MessageSquare className="text-primary" size={24} />
-            口コミ・レビュー
+            {i18n.reviewsTitle}
           </h2>
 
           <div className="space-y-6">
@@ -775,7 +1044,7 @@ export default function MainContent({
       </div>
 
       {/* モーダル */}
-      {activeModal && (
+      {(activeModal || selectedImage) && (
         <div
           className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={closeModal}
@@ -787,14 +1056,20 @@ export default function MainContent({
             >
               ×
             </button>
-            <div className="w-full h-96 bg-gradient-to-br from-primary/20 to-primary-light/20 flex items-center justify-center">
-              <span className="text-2xl font-semibold">
-                {activeModal === 'exterior' && '外観'}
-                {activeModal === 'observatory' && '展望台'}
-                {activeModal === 'night' && '夜景'}
-                {activeModal === 'interior' && '内部'}
-              </span>
-            </div>
+            {selectedImage ? (
+              <div className="relative w-[90vw] max-w-4xl h-[70vh]">
+                <Image src={selectedImage} alt={`${spotData?.name || 'スポット'}の写真`} fill className="object-contain bg-slate-50" sizes="90vw" />
+              </div>
+            ) : (
+              <div className="w-full h-72 md:h-80 bg-gradient-to-br from-primary/20 to-primary-light/20 flex items-center justify-center">
+                <span className="text-2xl font-semibold">
+                  {activeModal === 'exterior' && '外観'}
+                  {activeModal === 'observatory' && '展望台'}
+                  {activeModal === 'night' && '夜景'}
+                  {activeModal === 'interior' && '内部'}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       )}

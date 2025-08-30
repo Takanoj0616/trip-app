@@ -35,3 +35,31 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 # trip-app
+
+## Places Photos: Sync and Runtime Proxy
+
+There are two ways to provide place photos:
+
+- Build-time/Manual sync (low cost): use `scripts/sync-places.js` to fetch Place Details/Photos, download images into `public/images/photos/<placeId>/photo_N.jpg` and update `src/data/tokyo-bookstore-spots.json`. The app reads from this JSON via `src/data/tokyo-bookstore-spots.ts`.
+- Runtime proxy: requests to `/images/photos/:placeId/photo_N.jpg` are served by an API route that fetches the corresponding Google Place photo on demand and caches it.
+
+Setup
+- Add `GOOGLE_MAPS_API_KEY` (or `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`) to your environment.
+
+Manual sync examples
+```
+# Sync specific place IDs (comma-separated), fetch top 6 photos
+GOOGLE_MAPS_API_KEY=xxxx node scripts/sync-places.js --places ChIJm3WItR2MGGAR05t5cpt7U4w,ChIJ2TZSCfmLGGAR26O97vWyYcE --count 6
+
+# Sync all places present in the JSON
+GOOGLE_MAPS_API_KEY=xxxx node scripts/sync-places.js --from-json src/data/tokyo-bookstore-spots.json --count 6
+```
+
+Runtime proxy
+- Route handler: `src/app/images/photos/[placeId]/[file]/route.ts`
+- Accepts `photo_1.jpg` (or `1.jpg`) and uses Place Details → Photos endpoint to stream the image.
+- Falls back to local files in `public/images/photos/<placeId>/` and `public/images/tokyo/<placeId>/` if present.
+
+Notes
+- `src/data/tokyo-bookstore-spots.ts` imports the JSON as the single source of truth, so syncing JSON is enough.
+- If you use external image URLs in data, ensure the domain is allowed in `next.config.ts`.

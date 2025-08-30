@@ -1146,6 +1146,446 @@ export default function TokyoSpots() {
           tags: ["うなぎ", "カジュアル", "一人食事", "サラリーマン", "新橋"],
           category: "food"
         },
+        {
+          id: 21,
+          name: {
+            ja: "AIN SOPH. GINZA",
+            en: "AIN SOPH. GINZA",
+            ko: "아인 소프 긴자",
+            fr: "AIN SOPH. GINZA"
+          },
+          rating: 4.2,
+          reviewCount: 1320,
+          reviews: [],
+          image: "/images/spots/AIN_SOPH._GINZA_20250714_121213.jpg",
+          badges: ["営業中", "ヴィーガン", "スイーツ", "予約推奨"],
+          info: {
+            price: "2000-4000円",
+            cuisine: "スイーツ",
+            distance: "2.0km",
+            openHours: "11:00 - 21:00"
+          },
+          tags: ["カフェ", "デザート", "女子会", "ヘルシー"],
+          category: "food"
+        },
+        {
+          id: 22,
+          name: {
+            ja: "AMERICAN",
+            en: "AMERICAN",
+            ko: "아메리칸",
+            fr: "AMERICAN"
+          },
+          rating: 3.9,
+          reviewCount: 980,
+          reviews: [],
+          image: "/images/spots/AMERICAN_20250714_121216.jpg",
+          badges: ["営業中", "サンドイッチ", "テイクアウト可"],
+          info: {
+            price: "800-1500円",
+            cuisine: "カフェ",
+            distance: "2.3km",
+            openHours: "10:00 - 18:00"
+          },
+          tags: ["軽食", "カジュアル", "一人食事"],
+          category: "food"
+        },
+        {
+          id: 23,
+          name: {
+            ja: "BAR de ESPAÑA Muy",
+            en: "BAR de ESPAÑA Muy",
+            ko: "바르 데 에스파냐 무이",
+            fr: "BAR de ESPAÑA Muy"
+          },
+          rating: 4.1,
+          reviewCount: 1210,
+          reviews: [],
+          image: "/images/spots/BAR_de_ESPANA_Muy_20250714_121210.jpg",
+          badges: ["営業中", "スペイン料理", "ワイン"],
+          info: {
+            price: "3000-6000円",
+            cuisine: "スペイン",
+            distance: "1.4km",
+            openHours: "11:00 - 23:00"
+          },
+          tags: ["バル", "友人との食事", "デート"],
+          category: "food"
+        },
+        {
+          id: 24,
+          name: {
+            ja: "BREEZE OF TOKYO",
+            en: "BREEZE OF TOKYO",
+            ko: "브리즈 오브 도쿄",
+            fr: "BREEZE OF TOKYO"
+          },
+          rating: 4.3,
+          reviewCount: 1560,
+          reviews: [],
+          image: "/images/spots/BREEZE_OF_TOKYO_20250714_121218.jpg",
+          badges: ["夜景", "フレンチ", "高層階"],
+          info: {
+            price: "6000-12000円",
+            cuisine: "フレンチ",
+            distance: "1.6km",
+            openHours: "17:30 - 23:00"
+          },
+          tags: ["夜景", "記念日", "デート"],
+          category: "food"
+        },
+        {
+          id: 25,
+          name: {
+            ja: "COVA TOKYO",
+            en: "COVA TOKYO",
+            ko: "코바 도쿄",
+            fr: "COVA TOKYO"
+          },
+          rating: 4.0,
+          reviewCount: 640,
+          reviews: [],
+          image: "/images/spots/COVA_TOKYO(COVA_JAPAN株式会社）_20250714_121215.jpg",
+          badges: ["カフェ", "スイーツ", "エレガント"],
+          info: {
+            price: "1500-3000円",
+            cuisine: "カフェ",
+            distance: "1.1km",
+            openHours: "10:00 - 20:00"
+          },
+          tags: ["アフタヌーンティー", "女子会", "静か"],
+          category: "food"
+        },
+        {
+          id: 26,
+          name: {
+            ja: "Fish Bank TOKYO",
+            en: "Fish Bank TOKYO",
+            ko: "피시 뱅크 도쿄",
+            fr: "Fish Bank TOKYO"
+          },
+          rating: 4.4,
+          reviewCount: 1700,
+          reviews: [],
+          image: "/images/spots/Fish_Bank_TOKYO_20250715_103218.jpg",
+          badges: ["シーフード", "夜景", "記念日"],
+          info: {
+            price: "7000-13000円",
+            cuisine: "シーフード",
+            distance: "2.5km",
+            openHours: "17:30 - 23:00"
+          },
+          tags: ["高層階", "ワイン", "デート"],
+          category: "food"
+        },
+        {
+          id: 27,
+          name: {
+            ja: "Restaurant Air レストランエール",
+            en: "Restaurant Air",
+            ko: "레스토랑 에어",
+            fr: "Restaurant Air"
+          },
+          rating: 4.2,
+          reviewCount: 520,
+          reviews: [],
+          image: "/images/spots/Restaurant_Air_レストランエール_20250714_121220.jpg",
+          badges: ["フレンチ", "ミシュラン", "予約必須"],
+          info: {
+            price: "8000-15000円",
+            cuisine: "フレンチ",
+            distance: "2.2km",
+            openHours: "12:00 - 14:00, 18:00 - 22:00"
+          },
+          tags: ["コース料理", "記念日", "接待"],
+          category: "food"
+        },
+        {
+          id: 28,
+          name: {
+            ja: "VAMPIRE CAFE",
+            en: "VAMPIRE CAFE",
+            ko: "뱀파이어 카페",
+            fr: "VAMPIRE CAFE"
+          },
+          rating: 3.8,
+          reviewCount: 2100,
+          reviews: [],
+          image: "/images/spots/VAMPIRE_CAFE_20250714_121221.jpg",
+          badges: ["コンセプト", "ディナー", "予約推奨"],
+          info: {
+            price: "3000-6000円",
+            cuisine: "洋食",
+            distance: "3.1km",
+            openHours: "17:00 - 23:00"
+          },
+          tags: ["エンタメ", "友人との食事", "女子会"],
+          category: "food"
+        },
+        {
+          id: 29,
+          name: {
+            ja: "ブラッスリー オザミ 丸の内",
+            en: "Brasserie Aux Amis Marunouchi",
+            ko: "브라세리 오자미 마루노우치",
+            fr: "Brasserie Aux Amis Marunouchi"
+          },
+          rating: 4.0,
+          reviewCount: 890,
+          reviews: [],
+          image: "/images/spots/ブラッスリー_オザミ_丸の内_20250714_121208.jpg",
+          badges: ["ビストロ", "ワイン", "テラス"],
+          info: {
+            price: "3000-6000円",
+            cuisine: "フレンチ",
+            distance: "1.3km",
+            openHours: "11:00 - 22:00"
+          },
+          tags: ["丸の内", "ランチ", "ディナー"],
+          category: "food"
+        },
+        {
+          id: 30,
+          name: {
+            ja: "山形田（銀座そばきりや 山形田）",
+            en: "Yamagatada Ginza Soba",
+            ko: "야마가타다 긴자 소바",
+            fr: "Yamagatada Ginza Soba"
+          },
+          rating: 4.1,
+          reviewCount: 740,
+          reviews: [],
+          image: "/images/spots/山形田(銀座そばきりや山形田)_20250714_121216.jpg",
+          badges: ["和食", "そば", "老舗"],
+          info: {
+            price: "1000-2500円",
+            cuisine: "和食",
+            distance: "3.0km",
+            openHours: "11:00 - 20:00"
+          },
+          tags: ["一人食事", "ランチ", "日本酒"],
+          category: "food"
+        },
+        {
+          id: 31,
+          name: {
+            ja: "銀座の金沢",
+            en: "Ginza no Kanazawa",
+            ko: "긴자의 가나자와",
+            fr: "Ginza no Kanazawa"
+          },
+          rating: 4.2,
+          reviewCount: 620,
+          reviews: [],
+          image: "/images/spots/銀座の金沢_20250714_121149.jpg",
+          badges: ["和食", "郷土料理", "物産"],
+          info: {
+            price: "2000-5000円",
+            cuisine: "和食",
+            distance: "2.7km",
+            openHours: "11:00 - 20:00"
+          },
+          tags: ["加賀", "ランチ", "甘味"],
+          category: "food"
+        },
+        {
+          id: 32,
+          name: {
+            ja: "千房 有楽町ビックカメラ支店",
+            en: "Chibo Yurakucho BicCamera",
+            ko: "치보 유라쿠초 빅카메라점",
+            fr: "Chibo Yurakucho BicCamera"
+          },
+          rating: 3.9,
+          reviewCount: 540,
+          reviews: [],
+          image: "/images/spots/千房_有楽町ビックカメラ支店_20250714_121215.jpg",
+          badges: ["お好み焼き", "予約不要", "家族連れ"],
+          info: {
+            price: "1200-2500円",
+            cuisine: "お好み焼き",
+            distance: "2.0km",
+            openHours: "11:00 - 22:00"
+          },
+          tags: ["カジュアル", "鉄板", "ビール"],
+          category: "food"
+        },
+        {
+          id: 33,
+          name: {
+            ja: "ユイト 浮世小路千疋屋ビル",
+            en: "YUITO Annex Sembikiya",
+            ko: "유이토 안넥스 센비키야",
+            fr: "YUITO Annex Sembikiya"
+          },
+          rating: 4.0,
+          reviewCount: 410,
+          reviews: [],
+          image: "/images/spots/ユイト_アネックス浮世小路千疋屋ビル_20250714_121203.jpg",
+          badges: ["フルーツ", "カフェ", "デザート"],
+          info: {
+            price: "1500-3000円",
+            cuisine: "カフェ",
+            distance: "2.2km",
+            openHours: "10:00 - 19:00"
+          },
+          tags: ["パフェ", "女子会", "手土産"],
+          category: "food"
+        },
+        {
+          id: 34,
+          name: {
+            ja: "ブラッスリー オザミ 丸の内（別館）",
+            en: "Brasserie Aux Amis Annex",
+            ko: "브라세리 오자미 별관",
+            fr: "Brasserie Aux Amis Annexe"
+          },
+          rating: 3.9,
+          reviewCount: 380,
+          reviews: [],
+          image: "/images/spots/ブラッスリー・ヴィロン_丸の内店_20250715_103200.jpg",
+          badges: ["ビストロ", "パン", "カフェ"],
+          info: {
+            price: "1500-3000円",
+            cuisine: "フレンチ",
+            distance: "1.2km",
+            openHours: "8:00 - 21:00"
+          },
+          tags: ["テラス", "丸の内", "ランチ"],
+          category: "food"
+        },
+        {
+          id: 35,
+          name: {
+            ja: "CALLAS Cafe & BAR",
+            en: "CALLAS Cafe & BAR",
+            ko: "칼라스 카페 & 바",
+            fr: "CALLAS Cafe & BAR"
+          },
+          rating: 4.0,
+          reviewCount: 720,
+          reviews: [],
+          image: "/images/spots/CALLAS_Cafe&BAR_20250714_121157.jpg",
+          badges: ["カフェ", "バー", "夜営業"],
+          info: {
+            price: "1000-2500円",
+            cuisine: "カフェ",
+            distance: "1.1km",
+            openHours: "11:00 - 23:00"
+          },
+          tags: ["コーヒー", "デザート", "カクテル"],
+          category: "food"
+        },
+        {
+          id: 36,
+          name: {
+            ja: "山形そば処",
+            en: "Yamagata Soba",
+            ko: "야마가타 소바",
+            fr: "Soba de Yamagata"
+          },
+          rating: 4.1,
+          reviewCount: 360,
+          reviews: [],
+          image: "/images/spots/山形田(銀座そばきりや山形田)_20250714_121216.jpg",
+          badges: ["和食", "そば", "ランチ"],
+          info: {
+            price: "900-1800円",
+            cuisine: "和食",
+            distance: "3.2km",
+            openHours: "11:00 - 20:00"
+          },
+          tags: ["一人食事", "日本酒", "早めの夕食"],
+          category: "food"
+        },
+        {
+          id: 37,
+          name: {
+            ja: "グランスタ東京 フードコート",
+            en: "GRANSTA Tokyo Food Court",
+            ko: "그란스타 도쿄 푸드코트",
+            fr: "GRANSTA Tokyo Food Court"
+          },
+          rating: 4.2,
+          reviewCount: 2200,
+          reviews: [],
+          image: "/images/spots/グランスタ東京_20250714_121201.jpg",
+          badges: ["フードコート", "駅ナカ", "テイクアウト可"],
+          info: {
+            price: "1000-2000円",
+            cuisine: "多国籍",
+            distance: "0.1km",
+            openHours: "8:00 - 22:00"
+          },
+          tags: ["駅近", "さくっと", "土産"],
+          category: "food"
+        },
+        {
+          id: 38,
+          name: {
+            ja: "サイアムヘリテイジ東京",
+            en: "Siam Heritage Tokyo",
+            ko: "사이암 헤리티지 도쿄",
+            fr: "Siam Heritage Tokyo"
+          },
+          rating: 4.1,
+          reviewCount: 860,
+          reviews: [],
+          image: "/images/spots/サイアムヘリテイジ東京_20250714_121212.jpg",
+          badges: ["タイ料理", "スパイシー", "予約推奨"],
+          info: {
+            price: "2000-4000円",
+            cuisine: "タイ料理",
+            distance: "1.9km",
+            openHours: "11:00 - 22:00"
+          },
+          tags: ["エスニック", "女子会", "ランチ"],
+          category: "food"
+        },
+        {
+          id: 39,
+          name: {
+            ja: "COVA TOKYO（カフェ）",
+            en: "COVA TOKYO Cafe",
+            ko: "코바 도쿄 카페",
+            fr: "COVA TOKYO Café"
+          },
+          rating: 3.9,
+          reviewCount: 500,
+          reviews: [],
+          image: "/images/spots/COVA_TOKYO(COVA_JAPAN株式会社）_20250714_121215.jpg",
+          badges: ["カフェ", "ケーキ", "紅茶"],
+          info: {
+            price: "1500-3000円",
+            cuisine: "カフェ",
+            distance: "1.1km",
+            openHours: "10:00 - 20:00"
+          },
+          tags: ["スイーツ", "休憩", "デート"],
+          category: "food"
+        },
+        {
+          id: 40,
+          name: {
+            ja: "ワテラス ダイニング",
+            en: "WATERRAS Dining",
+            ko: "와테라스 다이닝",
+            fr: "WATERRAS Dining"
+          },
+          rating: 3.8,
+          reviewCount: 430,
+          reviews: [],
+          image: "/images/spots/WATERRAS｜ワテラス_20250714_121202.jpg",
+          badges: ["複合施設", "多国籍", "家族連れ"],
+          info: {
+            price: "1000-3000円",
+            cuisine: "多国籍",
+            distance: "2.8km",
+            openHours: "11:00 - 22:00"
+          },
+          tags: ["カジュアル", "駅近", "テイクアウト可"],
+          category: "food"
+        },
         ...firebaseFoodSpots // Add Firebase food spots
       ],
     sights: [...sightsData, ...firebaseSightSpots], // Add Firebase sight spots
@@ -1644,7 +2084,10 @@ export default function TokyoSpots() {
   const showDetails = useCallback((spot: Spot) => {
     // Firestore document ID (slug) があればそれを使用、なければIDを使用
     const spotId = spot.slug || spot.id;
-    window.open(`/spots/${spotId}`, '_blank');
+    const url = new URL(window.location.origin + `/spots/${spotId}`);
+    // 現在の言語をクエリに付与
+    url.searchParams.set('lang', currentLanguage);
+    window.open(url.toString(), '_blank');
   }, []);
 
   // Render spot info based on category

@@ -61,17 +61,14 @@
       "address": "Japan, 〒100-8203 Tokyo, Chiyoda City, Marunouchi, 1-chōme−6−４ 丸の内オアゾ 1階～4階"
     },
     "rating": 4.4,
+    "reviewCount": 7765,
     "images": [
-      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_1.jpg",
-      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_2.jpg",
-      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_3.jpg",
-      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_4.jpg",
-      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_5.jpg",
-      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_6.jpg",
-      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_7.jpg",
-      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_8.jpg",
-      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_9.jpg",
-      "/images/photos/ChIJ2TZSCfmLGGAR26O97vWyYcE/photo_10.jpg"
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1513475382585-d06e58bcb0ea?w=1200&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1200&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1200&auto=format&fit=crop&q=60"
     ],
     "openingHours": {
       "monday": "9:00 AM – 9:00 PM",
@@ -86,6 +83,10 @@
       "phone": "+81 3-5288-8881"
     },
     "priceRange": "moderate",
+    "priceText": "¥1,000-3,000",
+    "averageStayMinutes": 45,
+    "stayRange": "30 - 60分",
+    "crowdLevel": "混雑",
     "tags": [
       "book_store",
       "shopping",
@@ -165,16 +166,12 @@
     },
     "rating": 4.2,
     "images": [
-      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_1.jpg",
-      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_2.jpg",
-      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_3.jpg",
-      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_4.jpg",
-      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_5.jpg",
-      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_6.jpg",
-      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_7.jpg",
-      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_8.jpg",
-      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_9.jpg",
-      "/images/photos/ChIJm3WItR2MGGAR05t5cpt7U4w/photo_10.jpg"
+      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1513475382585-d06e58bcb0ea?w=1200&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1579370318443-66c5a4c3d5a0?w=1200&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1200&auto=format&fit=crop&q=60"
     ],
     "openingHours": {
       "monday": "12:00 – 8:00 PM",

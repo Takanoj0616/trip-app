@@ -21,6 +21,12 @@ export interface TouristSpot {
   priceRange?: 'budget' | 'moderate' | 'expensive' | 'luxury';
   tags?: string[];
   googlePlaceId?: string;
+  // Optional UI/analytics helpers
+  reviewCount?: number;
+  crowdLevel?: '空いている' | '普通' | '混雑';
+  averageStayMinutes?: number; // e.g., 45
+  stayRange?: string; // e.g., "30 - 60分"
+  priceText?: string; // e.g., "¥1,000-3,000"
 }
 
 export interface Review {
