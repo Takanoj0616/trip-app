@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRoute } from '@/contexts/RouteContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Map component を動的インポート（SSRを無効化）
@@ -89,6 +90,15 @@ export default function MainContent({
   const [spotData, setSpotData] = useState<SpotData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  // AI旅行プラン用: 選択スポットを保存
+  let addSpot: (arg: any) => void = (_: any) => {};
+  let selectedSpotsFromCtx: any[] = [];
+  try {
+    // Hooks must be called unconditionally during render
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    ({ addSpot, selectedSpots: selectedSpotsFromCtx } = useRoute() as any);
+  } catch {}
 
   // i18n labels（URLの ?lang が優先、なければ props → ja）
   const searchParams = useSearchParams();
@@ -376,8 +386,11 @@ export default function MainContent({
   };
 
   const showNotification = (message: string, _type: 'success' | 'info' = 'info') => {
-    // 通知表示のロジック（実装を簡略化）
-    alert(message);
+    setToastMsg(message);
+    try {
+      clearTimeout((window as any).__toastTimer);
+    } catch {}
+    (window as any).__toastTimer = setTimeout(() => setToastMsg(null), 2600);
   };
 
   const addToFavorites = () => {
@@ -385,8 +398,45 @@ export default function MainContent({
   };
 
   const addToAITravelPlan = () => {
-    showNotification('AI旅行プランに追加しました！', 'success');
+    if (!spotData) {
+      showNotification('スポット情報が読み込めていません', 'info');
+      return;
+    }
+    const spotForPlan = {
+      id: spotId,
+      name: spotData.name,
+      description: spotData.description || '',
+      category: 'sightseeing',
+      area: 'tokyo',
+      location: {
+        lat: spotData.location?.lat || 35.68,
+        lng: spotData.location?.lng || 139.76,
+        address: spotData.location?.address || ''
+      },
+      rating: spotData.rating,
+      images: spotData.images || [],
+      openingHours: spotData.openingHours,
+      priceRange: spotData.priceRange as any,
+      tags: spotData.tags || [],
+      googlePlaceId: spotData.googlePlaceId,
+      reviews: []
+    } as any;
+    try { addSpot(spotForPlan); } catch {}
+    // localStorageにも保存（ページ遷移直後の読み込み対策）
+    try {
+      const raw = localStorage.getItem('selected-spots');
+      const arr = raw ? JSON.parse(raw) : [];
+      const exists = Array.isArray(arr) && arr.some((s: any) => s.id === spotForPlan.id);
+      if (!exists) {
+        const next = Array.isArray(arr) ? [...arr, spotForPlan] : [spotForPlan];
+        localStorage.setItem('selected-spots', JSON.stringify(next));
+      }
+    } catch {}
+    try { sessionStorage.setItem('ai-plan-added', '1'); } catch {}
+    const total = (selectedSpotsFromCtx?.length || 0) + 1;
+    showNotification(`AI旅行プランに追加しました（合計${total}件）` , 'success');
   };
+
 
   const tagToLabel = (tag: string) => {
     const map: Record<string, string> = {
@@ -476,29 +526,207 @@ export default function MainContent({
     return '';
   };
 
+  // スポットタイプに応じたメイン写真の背景グラデーション
+  const getSpotMainPhotoGradient = (spotName: string) => {
+    const name = spotName.toLowerCase();
+    if (name.includes('タワー') || name.includes('tower')) {
+      return 'linear-gradient(135deg, #ff6b6b, #ee5a24, #ff9ff3)';
+    }
+    if (name.includes('スカイツリー') || name.includes('skytree')) {
+      return 'linear-gradient(135deg, #3742fa, #2f3542, #70a1ff)';
+    }
+    if (name.includes('寺') || name.includes('temple') || name.includes('神社') || name.includes('shrine')) {
+      return 'linear-gradient(135deg, #2ed573, #1e3799, #ffa726)';
+    }
+    if (name.includes('公園') || name.includes('park')) {
+      return 'linear-gradient(135deg, #26de81, #20bf6b, #0abde3)';
+    }
+    if (name.includes('美術館') || name.includes('博物館') || name.includes('museum')) {
+      return 'linear-gradient(135deg, #a55eea, #8854d0, #4834d4)';
+    }
+    return 'linear-gradient(135deg, #ff6b6b, #ee5a24, #ff9ff3)'; // デフォルト（東京タワー）
+  };
+
+  // スポットタイプに応じたアイコン
+  const getSpotIcon = (spotName: string) => {
+    const name = spotName.toLowerCase();
+    if (name.includes('タワー') || name.includes('tower')) {
+      return '🗼';
+    }
+    if (name.includes('スカイツリー') || name.includes('skytree')) {
+      return '🗼';
+    }
+    if (name.includes('寺') || name.includes('temple')) {
+      return '🏯';
+    }
+    if (name.includes('神社') || name.includes('shrine')) {
+      return '⛩️';
+    }
+    if (name.includes('公園') || name.includes('park')) {
+      return '🌳';
+    }
+    if (name.includes('美術館') || name.includes('museum')) {
+      return '🏛️';
+    }
+    if (name.includes('博物館')) {
+      return '🏛️';
+    }
+    if (name.includes('城') || name.includes('castle')) {
+      return '🏰';
+    }
+    return '🗼'; // デフォルト
+  };
+
+  // スポットタイプに応じた写真カテゴリを生成
+  const generateSpotPhotos = (spotName: string) => {
+    const name = spotName.toLowerCase();
+    
+    if (name.includes('タワー') || name.includes('tower')) {
+      return [
+        { id: 'exterior', label: '外観', icon: '🏢', gradient: 'linear-gradient(135deg, #ff6b6b, #ee5a24)' },
+        { id: 'observatory', label: '展望台', icon: '👁️', gradient: 'linear-gradient(135deg, #0abde3, #006ba6)' },
+        { id: 'night', label: '夜景', icon: '🌃', gradient: 'linear-gradient(135deg, #2c2c54, #40407a)' },
+        { id: 'interior', label: '内部', icon: '🚪', gradient: 'linear-gradient(135deg, #ffa726, #ff6f00)' },
+        { id: 'illumination', label: 'ライトアップ', icon: '✨', gradient: 'linear-gradient(135deg, #e056fd, #a943e8)' },
+        { id: 'view', label: '眺望', icon: '🏙️', gradient: 'linear-gradient(135deg, #26de81, #20bf6b)' },
+      ];
+    }
+    
+    if (name.includes('スカイツリー') || name.includes('skytree')) {
+      return [
+        { id: 'exterior', label: '外観', icon: '🗼', gradient: 'linear-gradient(135deg, #3742fa, #2f3542)' },
+        { id: 'deck350', label: '展望デッキ350', icon: '🔭', gradient: 'linear-gradient(135deg, #0abde3, #006ba6)' },
+        { id: 'deck450', label: '展望回廊450', icon: '👁️', gradient: 'linear-gradient(135deg, #70a1ff, #3742fa)' },
+        { id: 'night', label: '夜景', icon: '🌃', gradient: 'linear-gradient(135deg, #2c2c54, #40407a)' },
+        { id: 'solamachi', label: 'ソラマチ', icon: '🛍️', gradient: 'linear-gradient(135deg, #ffa726, #ff6f00)' },
+        { id: 'illumination', label: 'ライトアップ', icon: '🌈', gradient: 'linear-gradient(135deg, #e056fd, #a943e8)' },
+      ];
+    }
+
+    if (name.includes('寺') || name.includes('temple')) {
+      return [
+        { id: 'main_hall', label: '本堂', icon: '🏯', gradient: 'linear-gradient(135deg, #2ed573, #1e3799)' },
+        { id: 'garden', label: '庭園', icon: '🌸', gradient: 'linear-gradient(135deg, #26de81, #20bf6b)' },
+        { id: 'gate', label: '山門', icon: '⛩️', gradient: 'linear-gradient(135deg, #ffa726, #ff6f00)' },
+        { id: 'statue', label: '仏像', icon: '🧘', gradient: 'linear-gradient(135deg, #a55eea, #8854d0)' },
+        { id: 'autumn', label: '紅葉', icon: '🍁', gradient: 'linear-gradient(135deg, #ff6b6b, #ee5a24)' },
+        { id: 'night', label: '夜間ライトアップ', icon: '🏮', gradient: 'linear-gradient(135deg, #2c2c54, #40407a)' },
+      ];
+    }
+
+    if (name.includes('神社') || name.includes('shrine')) {
+      return [
+        { id: 'torii', label: '鳥居', icon: '⛩️', gradient: 'linear-gradient(135deg, #ff6b6b, #ee5a24)' },
+        { id: 'main_shrine', label: '本殿', icon: '🏛️', gradient: 'linear-gradient(135deg, #2ed573, #1e3799)' },
+        { id: 'garden', label: '境内', icon: '🌳', gradient: 'linear-gradient(135deg, #26de81, #20bf6b)' },
+        { id: 'festival', label: '祭り', icon: '🎊', gradient: 'linear-gradient(135deg, #ffa726, #ff6f00)' },
+        { id: 'omamori', label: 'お守り', icon: '🧿', gradient: 'linear-gradient(135deg, #a55eea, #8854d0)' },
+        { id: 'night', label: '夜の参拝', icon: '🏮', gradient: 'linear-gradient(135deg, #2c2c54, #40407a)' },
+      ];
+    }
+
+    if (name.includes('公園') || name.includes('park')) {
+      return [
+        { id: 'landscape', label: '風景', icon: '🌳', gradient: 'linear-gradient(135deg, #26de81, #20bf6b)' },
+        { id: 'cherry', label: '桜', icon: '🌸', gradient: 'linear-gradient(135deg, #ff9ff3, #f368e0)' },
+        { id: 'pond', label: '池', icon: '🦆', gradient: 'linear-gradient(135deg, #0abde3, #006ba6)' },
+        { id: 'playground', label: '遊具', icon: '🛝', gradient: 'linear-gradient(135deg, #ffa726, #ff6f00)' },
+        { id: 'autumn', label: '紅葉', icon: '🍁', gradient: 'linear-gradient(135deg, #ff6b6b, #ee5a24)' },
+        { id: 'walking', label: '散歩道', icon: '🚶', gradient: 'linear-gradient(135deg, #a55eea, #8854d0)' },
+      ];
+    }
+
+    if (name.includes('美術館') || name.includes('博物館') || name.includes('museum')) {
+      return [
+        { id: 'exterior', label: '外観', icon: '🏛️', gradient: 'linear-gradient(135deg, #a55eea, #8854d0)' },
+        { id: 'exhibition', label: '展示室', icon: '🖼️', gradient: 'linear-gradient(135deg, #4834d4, #2c2c54)' },
+        { id: 'artwork', label: '作品', icon: '🎨', gradient: 'linear-gradient(135deg, #ff6b6b, #ee5a24)' },
+        { id: 'lobby', label: 'ロビー', icon: '🏢', gradient: 'linear-gradient(135deg, #0abde3, #006ba6)' },
+        { id: 'shop', label: 'ミュージアムショップ', icon: '🛍️', gradient: 'linear-gradient(135deg, #ffa726, #ff6f00)' },
+        { id: 'cafe', label: 'カフェ', icon: '☕', gradient: 'linear-gradient(135deg, #26de81, #20bf6b)' },
+      ];
+    }
+
+    // デフォルト（東京タワー）
+    return [
+      { id: 'exterior', label: '外観', icon: '🏢', gradient: 'linear-gradient(135deg, #ff6b6b, #ee5a24)' },
+      { id: 'observatory', label: '展望台', icon: '👁️', gradient: 'linear-gradient(135deg, #0abde3, #006ba6)' },
+      { id: 'night', label: '夜景', icon: '🌃', gradient: 'linear-gradient(135deg, #2c2c54, #40407a)' },
+      { id: 'interior', label: '内部', icon: '🚪', gradient: 'linear-gradient(135deg, #ffa726, #ff6f00)' },
+      { id: 'illumination', label: 'ライトアップ', icon: '✨', gradient: 'linear-gradient(135deg, #e056fd, #a943e8)' },
+      { id: 'view', label: '眺望', icon: '🏙️', gradient: 'linear-gradient(135deg, #26de81, #20bf6b)' },
+    ];
+  };
+
+  // モーダル用のヘルパー関数
+  const getModalPhotoBackground = (modalId: string, spotName: string) => {
+    const photos = generateSpotPhotos(spotName);
+    const photo = photos.find(p => p.id === modalId);
+    if (photo) return photo.gradient;
+    
+    // 個別のモーダル用
+    if (modalId === 'main') return getSpotMainPhotoGradient(spotName);
+    return 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
+  };
+
+  const getModalPhotoIcon = (modalId: string, spotName: string) => {
+    const photos = generateSpotPhotos(spotName);
+    const photo = photos.find(p => p.id === modalId);
+    if (photo) return photo.icon;
+    
+    if (modalId === 'main') return getSpotIcon(spotName);
+    return '📸';
+  };
+
+  const getModalPhotoLabel = (modalId: string, spotName: string) => {
+    const photos = generateSpotPhotos(spotName);
+    const photo = photos.find(p => p.id === modalId);
+    if (photo) return photo.label;
+    
+    if (modalId === 'main') return 'メイン写真';
+    return '写真';
+  };
+
+  // ヒーローで使用する背景画像（スポット画像があれば最大3枚、なければ空のダミー3枚）
+  const fallbackSky = [
+    'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=1600&auto=format&fit=crop&q=70',
+    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&auto=format&fit=crop&q=70',
+    'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?w=1600&auto=format&fit=crop&q=70',
+  ];
+  let heroImages = Array.isArray(spotData?.images) && spotData!.images!.length > 0
+    ? spotData!.images!.slice(0, 3)
+    : [] as string[];
+  // /images/spots/ のローカル参照は未配備の可能性があるため、外部のダミーに差し替える
+  const toValidSrc = (src: string, i: number) => {
+    if (!src || src.startsWith('/images/spots/')) return fallbackSky[i % fallbackSky.length];
+    return src;
+  };
+  let heroImagesDisplay = heroImages.map((s, i) => toValidSrc(s, i));
+  const galleryImages = (spotData?.images || []).map((s, i) => toValidSrc(s, i));
+  // 3枚に満たない場合はダミーで埋める
+  for (let i = 0; heroImagesDisplay.length < 3 && i < fallbackSky.length; i++) {
+    heroImagesDisplay.push(fallbackSky[i]);
+  }
+
   return (
     <main className="min-h-screen">
       {/* ヒーローセクション */}
-      <section className="relative min-h-[80vh] bg-gradient-to-br from-primary/80 to-primary-light/60 flex items-center justify-center text-white overflow-hidden">
-        {/* 背景 */}
+      <section className="relative min-h-[80vh] flex items-center justify-center text-white overflow-hidden mt-40 md:mt-44 lg:mt-48">
+        {/* 背景（スライドショー） */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-45 from-primary/10 to-primary-light/10 backdrop-blur-sm" />
-          {/* SVGで東京タワーのシルエットを作成 */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-20">
-            <svg
-              width="400"
-              height="600"
-              viewBox="0 0 400 600"
-              className="text-white"
-            >
-              <polygon
-                fill="currentColor"
-                points="200,50 250,200 150,200"
+          {heroImagesDisplay.map((src, i) => (
+            <div key={`${src}-${i}`} className="hero-slide">
+              <Image
+                src={src}
+                alt={`背景写真${i + 1}`}
+                fill
+                priority={i === 0}
+                className="object-cover"
+                sizes="100vw"
               />
-              <rect fill="currentColor" x="175" y="200" width="50" height="300" />
-              <circle fill="currentColor" cx="200" cy="100" r="20" />
-            </svg>
-          </div>
+            </div>
+          ))}
+          {/* 可読性が必要になったら薄い暗幕を足す（デフォルトはクリア） */}
         </div>
 
         <div className="relative z-10 text-center max-w-4xl px-8">
@@ -534,7 +762,14 @@ export default function MainContent({
             >
               <Bot size={20} />
               {i18n.addToAIPlanBtn}
-            </button>
+          </button>
+            <a
+              href="/ai-plan"
+              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/90 text-secondary font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transform transition-all duration-300 shadow-xl"
+            >
+              <Bot size={20} />
+              AI旅行プランを作る
+            </a>
             <a
               href="#tickets"
               className="flex items-center gap-3 px-8 py-4 rounded-2xl border-2 border-white/30 text-white font-semibold backdrop-blur-sm hover:bg-white/10 hover:border-white/50 hover:scale-105 transform transition-all duration-300"
@@ -545,6 +780,36 @@ export default function MainContent({
           </div>
         </div>
       </section>
+
+      {/* トースト通知 */}
+      {toastMsg && (
+        <div className="fixed right-4 z-[60] top-40 md:top-44 lg:top-48">
+          <div className="flex items-center gap-3 bg-black/80 text-white px-4 py-3 rounded-xl shadow-lg backdrop-blur">
+            <span>{toastMsg}</span>
+            <a
+              href="/ai-plan"
+              className="ml-2 px-3 py-1 rounded-lg bg-white text-black text-sm hover:bg-slate-100"
+            >
+              AIプランを見る
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* 背景スライドのアニメーション（3枚・各5秒） */}
+      <style jsx>{`
+        @keyframes fadeSlide {
+          0% { opacity: 0 }
+          5% { opacity: 1 }
+          30% { opacity: 1 }
+          35% { opacity: 0 }
+          100% { opacity: 0 }
+        }
+        .hero-slide { position: absolute; inset: 0; opacity: 0; animation: fadeSlide 15s infinite ease-in-out; }
+        .hero-slide:nth-child(1) { animation-delay: 0s }
+        .hero-slide:nth-child(2) { animation-delay: 5s }
+        .hero-slide:nth-child(3) { animation-delay: 10s }
+      `}</style>
 
       <div className="container mx-auto px-6">
         {/* クイック情報 */}
@@ -681,54 +946,132 @@ export default function MainContent({
             {i18n.gallery}
           </h2>
 
-          {spotData?.images && spotData.images.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {spotData.images.slice(0, 8).map((src, idx) => (
+          {galleryImages && galleryImages.length > 0 ? (
+            <>
+              {/* メイン写真 */}
+              <div className="mb-8">
                 <div
-                  key={`${src}-${idx}`}
-                  className="relative h-40 md:h-48 lg:h-52 rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300 shadow-lg bg-slate-100"
-                  onClick={() => { setSelectedImage(src); openModal('image'); }}
+                  className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden cursor-pointer group shadow-xl bg-slate-100"
+                  onClick={() => { setSelectedImage(galleryImages[0]); openModal('image'); }}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
-                      setSelectedImage(src);
+                      setSelectedImage(galleryImages[0]);
                       openModal('image');
                     }
                   }}
                 >
-                  <Image src={src} alt={`${spotData?.name || 'スポット'}の写真`} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw" />
+                  <Image 
+                    src={galleryImages[0]} 
+                    alt={`${spotData?.name || 'スポット'}のメイン写真`} 
+                    fill 
+                    className="object-cover group-hover:scale-105 transition-transform duration-300" 
+                    sizes="100vw" 
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-lg font-semibold">メイン写真</p>
+                    <p className="text-sm opacity-90">クリックで拡大</p>
+                  </div>
                 </div>
-              ))}
-            </div>
+              </div>
+
+              {/* サムネイル写真 */}
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {galleryImages.slice(1, 13).map((src, idx) => (
+                  <div
+                    key={`${src}-${idx}`}
+                    className="relative h-24 md:h-32 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300 shadow-lg bg-slate-100 group"
+                    onClick={() => { setSelectedImage(src); openModal('image'); }}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        setSelectedImage(src);
+                        openModal('image');
+                      }
+                    }}
+                  >
+                    <Image 
+                      src={src} 
+                      alt={`${spotData?.name || 'スポット'}の写真 ${idx + 2}`} 
+                      fill 
+                      className="object-cover group-hover:scale-110 transition-transform duration-300" 
+                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw" 
+                    />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                ))}
+              </div>
+
+              {(galleryImages.length || 0) > 13 && (
+                <div className="text-center mt-6">
+                  <button 
+                    className="px-6 py-3 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-colors"
+                    onClick={() => openModal('allPhotos')}
+                  >
+                    すべての写真を見る ({galleryImages.length || 0}枚)
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { id: 'exterior', label: '外観' },
-                { id: 'observatory', label: '展望台' },
-                { id: 'night', label: '夜景' },
-                { id: 'interior', label: '内部' },
-              ].map((item) => (
+            <>
+              {/* ダミー写真ギャラリー - スポットタイプに応じて動的に生成 */}
+              <div className="mb-8">
                 <div
-                  key={item.id}
-                  className="h-40 md:h-48 lg:h-52 bg-gradient-to-br from-primary/20 to-primary-light/20 rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300 shadow-lg"
-                  onClick={() => openModal(item.id)}
+                  className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden cursor-pointer group shadow-xl"
+                  style={{
+                    background: getSpotMainPhotoGradient(spotData?.name || ''),
+                  }}
+                  onClick={() => openModal('main')}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
-                      openModal(item.id);
+                      openModal('main');
                     }
                   }}
                 >
                   <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-white font-semibold text-lg">
-                      {item.label}
-                    </span>
+                    <div className="text-center text-white">
+                      <div className="text-6xl mb-4">{getSpotIcon(spotData?.name || '')}</div>
+                      <h3 className="text-2xl font-bold mb-2">{spotData?.name || '東京タワー'}</h3>
+                      <p className="text-lg opacity-90">メイン写真</p>
+                    </div>
                   </div>
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
-              ))}
-            </div>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {generateSpotPhotos(spotData?.name || '').map((photo, idx) => (
+                  <div
+                    key={`${photo.id}-${idx}`}
+                    className="relative h-24 md:h-32 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300 shadow-lg group"
+                    style={{ background: photo.gradient }}
+                    onClick={() => openModal(photo.id)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        openModal(photo.id);
+                      }
+                    }}
+                  >
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="text-center text-white">
+                        <div className="text-2xl mb-1">{photo.icon}</div>
+                        <p className="text-xs font-medium">{photo.label}</p>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </section>
 
@@ -1061,13 +1404,18 @@ export default function MainContent({
                 <Image src={selectedImage} alt={`${spotData?.name || 'スポット'}の写真`} fill className="object-contain bg-slate-50" sizes="90vw" />
               </div>
             ) : (
-              <div className="w-full h-72 md:h-80 bg-gradient-to-br from-primary/20 to-primary-light/20 flex items-center justify-center">
-                <span className="text-2xl font-semibold">
-                  {activeModal === 'exterior' && '外観'}
-                  {activeModal === 'observatory' && '展望台'}
-                  {activeModal === 'night' && '夜景'}
-                  {activeModal === 'interior' && '内部'}
-                </span>
+              <div 
+                className="w-full h-72 md:h-80 flex items-center justify-center"
+                style={{ 
+                  background: activeModal ? getModalPhotoBackground(activeModal, spotData?.name || '') : 'linear-gradient(135deg, #ff6b6b, #ee5a24)' 
+                }}
+              >
+                <div className="text-center text-white">
+                  <div className="text-6xl mb-4">{getModalPhotoIcon(activeModal || '', spotData?.name || '')}</div>
+                  <span className="text-2xl font-semibold">
+                    {getModalPhotoLabel(activeModal || '', spotData?.name || '')}
+                  </span>
+                </div>
               </div>
             )}
           </div>

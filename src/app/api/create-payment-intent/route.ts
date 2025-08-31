@@ -1,18 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-
-if (!stripeSecretKey) {
-  throw new Error('STRIPE_SECRET_KEY is not set');
+function getStripe(): Stripe | null {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) return null;
+  try {
+    return new Stripe(key, { apiVersion: '2024-06-20' });
+  } catch {
+    return new Stripe(key as string) as any;
+  }
 }
-
-const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2024-12-18.acacia',
-});
 
 export async function POST(request: NextRequest) {
   try {
+    const stripe = getStripe();
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'Stripe is not configured' },
+        { status: 500 }
+      );
+    }
     const { amount, currency = 'jpy' } = await request.json();
 
     // コーディネーター機能の料金: 100,000円

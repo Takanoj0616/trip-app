@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 // Simple in-memory cache for image buffers during runtime
 const memoryCache = new Map<string, { buf: ArrayBuffer; contentType: string; ts: number }>();
 
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 function parseIndex(file: string): number {
@@ -15,32 +14,6 @@ function parseIndex(file: string): number {
   return isNaN(idx) ? 0 : Math.max(1, idx);
 }
 
-async function readLocalImage(placeId: string, file: string): Promise<NextResponse | null> {
-  try {
-    const base = path.join(process.cwd(), 'public', 'images');
-    const candidates = [
-      path.join(base, 'photos', placeId, file),
-      path.join(base, 'tokyo', placeId, file),
-      path.join(base, placeId, file),
-    ];
-    for (const p of candidates) {
-      try {
-        const data = await fs.readFile(p);
-        const ext = path.extname(p).slice(1).toLowerCase();
-        const type = ext === 'png' ? 'image/png' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
-        return new NextResponse(data, {
-          headers: {
-            'Content-Type': type,
-            'Cache-Control': 'public, max-age=31536000, immutable',
-          },
-        });
-      } catch (_) {
-        // try next candidate
-      }
-    }
-  } catch (_) {}
-  return null;
-}
 
 async function fetchPhotoFromGoogle(placeId: string, index: number, apiKey: string): Promise<NextResponse> {
   const cacheKey = `${placeId}-${index}`;
@@ -102,11 +75,7 @@ export async function GET(_req: NextRequest, context: { params: { placeId: strin
   const { placeId, file } = context.params;
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_API_KEY;
 
-  // 1) Try local file first (fast path, no cost)
-  const local = await readLocalImage(placeId, file);
-  if (local) return local;
-
-  // 2) If no API key, return 404 to avoid invalid image response
+  // If no API key, return 404 to avoid invalid image response
   if (!apiKey) {
     return NextResponse.json({ error: 'API key not configured' }, { status: 404 });
   }

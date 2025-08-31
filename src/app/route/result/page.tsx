@@ -26,6 +26,7 @@ interface RouteData {
   tips: string[];
   alternativeRoutes?: RouteStep[][];
   createdAt: string;
+  transportationSummary?: string;
 }
 
 function RouteResultContent() {
@@ -258,6 +259,21 @@ function RouteResultContent() {
                 </div>
               </div>
             </div>
+
+            {/* AI交通アドバイス */}
+            {route.transportationSummary && (
+              <div style={{
+                background: 'rgba(255,255,255,0.6)',
+                border: '1px solid rgba(0,0,0,0.05)',
+                borderRadius: '16px',
+                padding: '16px',
+                marginBottom: '20px',
+                color: 'black'
+              }}>
+                <h3 style={{ fontWeight: 700, marginBottom: '8px' }}>AI交通アドバイス</h3>
+                <div style={{ whiteSpace: 'pre-wrap', fontSize: '14px' }}>{route.transportationSummary}</div>
+              </div>
+            )}
 
             {/* タブ切り替え */}
             <div style={{

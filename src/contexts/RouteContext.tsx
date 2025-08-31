@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { TouristSpot } from '@/types';
 
 interface RouteContextType {
@@ -28,6 +28,19 @@ interface RouteProviderProps {
 
 export const RouteProvider: React.FC<RouteProviderProps> = ({ children }) => {
   const [selectedSpots, setSelectedSpots] = useState<TouristSpot[]>([]);
+
+  // Restore from localStorage once on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('selected-spots');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          setSelectedSpots(parsed);
+        }
+      }
+    } catch (_) {}
+  }, []);
 
   const addSpot = useCallback((spot: TouristSpot) => {
     if (process.env.NODE_ENV === 'development') {
@@ -110,6 +123,13 @@ export const RouteProvider: React.FC<RouteProviderProps> = ({ children }) => {
       }
     });
   }, []);
+
+  // Persist to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('selected-spots', JSON.stringify(selectedSpots));
+    } catch (_) {}
+  }, [selectedSpots]);
 
   const value = {
     selectedSpots,

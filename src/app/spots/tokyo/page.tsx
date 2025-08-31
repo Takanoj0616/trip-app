@@ -7,6 +7,7 @@ import { tokyoSpotsDetailed, type TokyoSpot, type SpotInfo, type SpotName } from
 import { db, collection, query, getDocs, orderBy, limit } from '@/lib/firebase';
 import { TouristSpot } from '@/types';
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
+import { allRestaurantSpots } from '@/data/tokyo-restaurant-spots';
 
 interface Review {
   userName: string;
@@ -132,7 +133,7 @@ export default function TokyoSpots() {
     // Load cached data immediately if available
     const cachedSpots = getCachedSpots();
     if (cachedSpots) {
-      setFirebaseSpots([...cachedSpots, ...allBookstoreSpots]);
+      setFirebaseSpots([...cachedSpots, ...allBookstoreSpots, ...allRestaurantSpots]);
       setFirestoreLoading(false);
       console.log('Loaded cached spots:', cachedSpots.length);
     }
@@ -185,7 +186,7 @@ export default function TokyoSpots() {
           console.warn('Cache write error:', error);
         }
         
-        setFirebaseSpots([...spots, ...allBookstoreSpots]);
+        setFirebaseSpots([...spots, ...allBookstoreSpots, ...allRestaurantSpots]);
         setFirestoreLoading(false);
         console.log('Firebase spots loaded:', spots.length);
         
@@ -2014,7 +2015,18 @@ export default function TokyoSpots() {
       ]
     };
 
-    const currentData = sampleData[currentCategory] || [];
+    // Compose current data. For food, show synced Firebase/JSON items first
+    let currentData = sampleData[currentCategory] || [];
+    if (currentCategory === 'food') {
+      const combined = [...firebaseFoodSpots, ...currentData];
+      const seen = new Set<string | number>();
+      currentData = combined.filter((s) => {
+        const key = s.id;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
     
     // Debug: データの確認
     console.log('Sample data for sights:', sampleData.sights);
@@ -2143,17 +2155,21 @@ export default function TokyoSpots() {
     >
               <div className="card-image">
           <Image
-            src={spot.image}
+            src={spot.images?.[0] || spot.image}
             alt={getDisplayName(spot.name)}
             width={400}
             height={200}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             loading="lazy"
             onError={(e) => {
-              console.error('Image load error for:', spot.image);
-              // フォールバック画像を設定
-              const target = e.target as HTMLImageElement;
-              target.src = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400';
+              const fallback = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400';
+              const tried = (e.target as HTMLImageElement).getAttribute('data-tried-fallback');
+              if (!tried) {
+                (e.target as HTMLImageElement).setAttribute('data-tried-fallback', '1');
+                (e.target as HTMLImageElement).src = fallback;
+              } else {
+                console.error('Image load error for:', spot.images?.[0] || spot.image);
+              }
             }}
           />
         <div className="card-badges">

@@ -34,6 +34,7 @@ interface RouteResponse {
   tips: string[];
   alternativeRoutes?: RouteStep[][];
   createdAt: string;
+  transportationSummary?: string;
 }
 
 interface RouteStep {
@@ -68,6 +69,32 @@ export async function POST(request: NextRequest) {
     // 高速化: すぐにレスポンスを構造化して返す
     console.log('🚀 Fast route generation for', data.selectedSpots.length, 'spots');
     const structuredRoute = generateOptimizedRoute(data);
+
+    // Optionally get AI advice on transportation between steps
+    try {
+      const client: any = await initOpenAI();
+      if (client) {
+        const legText = structuredRoute.optimizedRoute.map((s, i, arr) => {
+          const next = arr[i + 1];
+          if (!next) return '';
+          return `${i + 1}) ${s.spot.name} -> ${next.spot.name}: approx ${s.distanceFromPrevious}`;
+        }).filter(Boolean).join('\n');
+        const prompt = `You are a travel assistant for Japan. For each leg below, suggest the best transportation method (walking / train/subway / bus / taxi) considering typical Tokyo context. Output a short summary in Japanese, mentioning each leg with a recommended mode and brief reason.\n\n${legText}`;
+        const completion = await client.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: 'Japanese concise travel advisor.' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.4,
+          max_tokens: 300
+        });
+        const summary = completion?.choices?.[0]?.message?.content?.toString();
+        if (summary) structuredRoute.transportationSummary = summary;
+      }
+    } catch (e) {
+      console.warn('AI transportation summary failed:', (e as Error).message);
+    }
 
     return NextResponse.json({
       success: true,
