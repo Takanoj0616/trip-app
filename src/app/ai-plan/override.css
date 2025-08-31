@@ -1,0 +1,45 @@
+.ai-plan-scope {
+  /* Ensure readable default text color over dark gradients */
+  color: #ffffff;
+}
+
+.ai-plan-scope h1,
+.ai-plan-scope h2,
+.ai-plan-scope h3,
+.ai-plan-scope h4,
+.ai-plan-scope h5,
+.ai-plan-scope h6,
+.ai-plan-scope p,
+.ai-plan-scope span,
+.ai-plan-scope li,
+.ai-plan-scope a,
+.ai-plan-scope small {
+  color: inherit;
+}
+
+.ai-plan-scope a {
+  text-decoration: none;
+}
+
+/* Avoid unintended borders from global styles */
+.ai-plan-scope .no-global-border,
+.ai-plan-scope .chip {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Make sure our slideshows are not affected by global animations */
+.ai-plan-scope .ai-hero-slide { position: absolute; inset: 0; opacity: 0; }
+
+@keyframes fadeSlideAIPlan {
+  0% { opacity: 0 }
+  8% { opacity: 1 }
+  33% { opacity: 1 }
+  41% { opacity: 0 }
+  100% { opacity: 0 }
+}
+
+.ai-plan-scope .ai-hero-slide { animation: fadeSlideAIPlan 12s infinite ease-in-out; }
+.ai-plan-scope .ai-hero-slide:nth-child(1) { animation-delay: 0s }
+.ai-plan-scope .ai-hero-slide:nth-child(2) { animation-delay: 4s }
+.ai-plan-scope .ai-hero-slide:nth-child(3) { animation-delay: 8s }
+

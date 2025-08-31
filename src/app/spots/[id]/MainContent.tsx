@@ -15,6 +15,7 @@ import {
   MapPin,
   Heart,
   Bot,
+  Lock,
   Ticket,
   Images,
   Info,
@@ -34,6 +35,7 @@ import {
 import dynamic from 'next/dynamic';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useRoute } from '@/contexts/RouteContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Map component を動的インポート（SSRを無効化）
@@ -85,6 +87,8 @@ export default function MainContent({
   currency = 'jpy',
   unit: _unit = 'metric',
 }: MainContentProps) {
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [activeFAQ, setActiveFAQ] = useState<number | null>(null);
   const [spotData, setSpotData] = useState<SpotData | null>(null);
@@ -398,6 +402,10 @@ export default function MainContent({
   };
 
   const addToAITravelPlan = () => {
+    if (!isLoggedIn) {
+      showNotification('この機能は会員限定です。ログイン/新規登録してください');
+      return;
+    }
     if (!spotData) {
       showNotification('スポット情報が読み込めていません', 'info');
       return;
@@ -758,16 +766,19 @@ export default function MainContent({
             </button>
             <button
               onClick={addToAITravelPlan}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/90 text-secondary font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transform transition-all duration-300 shadow-xl"
+              className={`flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/90 text-secondary font-semibold backdrop-blur-sm transform transition-all duration-300 shadow-xl ${isLoggedIn ? 'hover:bg-white hover:scale-105' : 'opacity-60 cursor-not-allowed'}`}
+              aria-disabled={!isLoggedIn}
             >
-              <Bot size={20} />
+              {isLoggedIn ? <Bot size={20} /> : <Lock size={20} />}
               {i18n.addToAIPlanBtn}
-          </button>
+            </button>
             <a
-              href="/ai-plan"
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/90 text-secondary font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transform transition-all duration-300 shadow-xl"
+              href={isLoggedIn ? '/ai-plan' : undefined}
+              onClick={(e) => { if (!isLoggedIn) { e.preventDefault(); showNotification('この機能は会員限定です。ログイン/新規登録してください'); } }}
+              className={`flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/90 text-secondary font-semibold backdrop-blur-sm transform transition-all duration-300 shadow-xl ${isLoggedIn ? 'hover:bg-white hover:scale-105' : 'opacity-60 cursor-not-allowed pointer-events-auto'}`}
+              aria-disabled={!isLoggedIn}
             >
-              <Bot size={20} />
+              {isLoggedIn ? <Bot size={20} /> : <Lock size={20} />}
               AI旅行プランを作る
             </a>
             <a

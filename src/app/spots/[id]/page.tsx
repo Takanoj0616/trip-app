@@ -1,11 +1,12 @@
 import MainContent from './MainContent';
 
 interface SpotPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function SpotPage({ params, searchParams }: SpotPageProps) {
+  const { id } = await params;
   const resolvedSearchParams = await searchParams;
   const language = resolvedSearchParams.lang as string;
   const currency = resolvedSearchParams.currency as string;
@@ -13,7 +14,7 @@ export default async function SpotPage({ params, searchParams }: SpotPageProps) 
 
   return (
     <MainContent 
-      spotId={params.id}
+      spotId={id}
       language={language}
       currency={currency}
       unit={unit}

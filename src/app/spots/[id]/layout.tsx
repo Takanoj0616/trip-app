@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_JP, Geist_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import ClientProviders from "@/components/ClientProviders";
@@ -27,7 +27,6 @@ export const metadata: Metadata = {
   description: "観光スポットの詳細情報。営業時間、料金、アクセス、口コミなど観光に必要な情報をまとめています。",
   keywords: ["観光", "日本", "スポット", "詳細", "情報"],
   authors: [{ name: "Japan Spots" }],
-  viewport: "width=device-width, initial-scale=1",
   openGraph: {
     title: "観光スポット詳細",
     description: "観光スポットの詳細情報",
@@ -44,6 +43,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function SpotLayout({

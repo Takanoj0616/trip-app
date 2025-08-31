@@ -4,6 +4,8 @@ import Head from 'next/head';
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { tokyoSpotsDetailed, type TokyoSpot, type SpotInfo, type SpotName } from '@/data/tokyo-spots-detailed';
+import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
 import { db, collection, query, getDocs, orderBy, limit } from '@/lib/firebase';
 import { TouristSpot } from '@/types';
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
@@ -58,6 +60,9 @@ interface Spot {
 type Category = 'food' | 'sights' | 'hotels';
 
 export default function TokyoSpots() {
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
+  const FREE_COUNT = 9;
   // State management
   const [currentCategory, setCurrentCategory] = useState<Category>('sights');
   const [searchTerm, setSearchTerm] = useState('');
@@ -2219,6 +2224,34 @@ export default function TokyoSpots() {
     </div>
   ), [favoriteSpots, renderSpotInfo, showDetails, toggleFavorite, tr, getDisplayName]);
 
+  // Locked card component for guests beyond FREE_COUNT
+  const LockedCard = useCallback(({ index }: { index: number }) => (
+    <div className="spot-card locked fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+      <div className="card-image" style={{ filter: 'blur(6px)' }}>
+        <Image
+          src={'https://images.unsplash.com/photo-1502882705085-42674b66c07c?w=800&auto=format&fit=crop&q=70'}
+          alt="Locked"
+          width={400}
+          height={200}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          loading="lazy"
+        />
+      </div>
+      <div className="card-content" style={{ textAlign: 'center' }}>
+        <h3 className="spot-name" style={{ marginBottom: '0.5rem' }}>会員限定のコンテンツ</h3>
+        <p className="reviews-count" style={{ marginBottom: '1rem' }}>続きは無料登録で閲覧できます</p>
+        <div className="card-actions" style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+          <Link href="/register" className="details-btn" style={{ textDecoration: 'none' }}>
+            新規登録して続きを見る
+          </Link>
+          <Link href="/login" className="details-btn" style={{ textDecoration: 'none', background: '#4b5563' }}>
+            ログイン
+          </Link>
+        </div>
+      </div>
+    </div>
+  ), []);
+
   return (
     <>
       <Head>
@@ -2400,22 +2433,31 @@ export default function TokyoSpots() {
                   <LoadingSkeleton key={index} />
                 ))
               ) : (
-                filteredSpots.map((spot, index) => (
-                  <SpotCard key={spot.id} spot={spot} index={index} />
-                ))
+                filteredSpots.map((spot, index) => {
+                  // 0..FREE_COUNT-1 は常に閲覧可。以降は未ログイン時ロックを表示。
+                  if (!isLoggedIn && index >= FREE_COUNT) {
+                    return <LockedCard key={`locked-${spot.id}`} index={index} />;
+                  }
+                  return <SpotCard key={spot.id} spot={spot} index={index} />;
+                })
               )}
             </div>
 
             <div className="load-more-section">
-              <button 
-                className="load-more-btn"
-                onClick={() => {
-                  // Load more functionality can be implemented here
-                  alert(tr.actions.loadMore + (currentLanguage === 'ja' ? '機能は今後実装予定です' : currentLanguage === 'en' ? ' functionality will be implemented in the future' : ' 기능은 향후 구현 예정입니다'));
-                }}
-              >
-                {tr.actions.loadMore}
-              </button>
+              {isLoggedIn ? (
+                <button 
+                  className="load-more-btn"
+                  onClick={() => {
+                    alert(tr.actions.loadMore + (currentLanguage === 'ja' ? '機能は今後実装予定です' : currentLanguage === 'en' ? ' functionality will be implemented in the future' : ' 기능은 향후 구현 예정입니다'));
+                  }}
+                >
+                  {tr.actions.loadMore}
+                </button>
+              ) : (
+                <Link href="/register" className="load-more-btn" style={{ textDecoration: 'none', display: 'inline-block' }}>
+                  新規登録してさらに表示
+                </Link>
+              )}
             </div>
           </div>
         </main>

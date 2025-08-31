@@ -12,7 +12,8 @@ import {
   serverTimestamp,
   doc,
   addDoc,
-  deleteDoc
+  deleteDoc,
+  getDocs
 } from '@/lib/firebase';
 import { useAuth } from './AuthContext';
 
@@ -71,17 +72,40 @@ export const CheckInProvider: React.FC<{ children: React.ReactNode }> = ({ child
       limit(100)
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const checkInsData = snapshot.docs.map((doc: any) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          timestamp: data.timestamp?.toDate() || new Date()
-        } as CheckIn;
-      });
-      setCheckIns(checkInsData);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const checkInsData = snapshot.docs.map((doc: any) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            timestamp: data.timestamp?.toDate() || new Date(),
+          } as CheckIn;
+        });
+        setCheckIns(checkInsData);
+      },
+      async (error: any) => {
+        if (error?.code === 'failed-precondition') {
+          console.info('Firestore index missing for checkIns query. Falling back to unordered fetch.');
+          try {
+            const fallbackQ = query(checkInsRef, where('userId', '==', user.id), limit(100));
+            const snapshot = await getDocs(fallbackQ as any);
+            const data = snapshot.docs.map((doc: any) => {
+              const d = doc.data();
+              return { id: doc.id, ...d, timestamp: d.timestamp?.toDate?.() || new Date() } as CheckIn;
+            });
+            // Client-side sort by timestamp desc
+            data.sort((a, b) => (b.timestamp as any) - (a.timestamp as any));
+            setCheckIns(data);
+          } catch (e) {
+            console.warn('Fallback fetch for checkIns failed:', e);
+          }
+        } else {
+          console.warn('Firestore snapshot error:', error);
+        }
+      }
+    );
 
     return () => unsubscribe();
   }, [user]);
