@@ -12,11 +12,14 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    // Production is served as a static site/CDN where Next's image optimizer route
+    // (`/_next/image`) may not be available. Disable optimization to avoid 404 and delays.
+    unoptimized: true,
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      // Allow any additional CDN/image hosts if used in content
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'firebasestorage.googleapis.com' },
     ],
   },
   // Disable caching in development
