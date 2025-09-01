@@ -227,6 +227,9 @@ export default function TokyoSpots() {
         sights: "観光スポット", 
         hotels: "ホテル"
       },
+      labels: {
+        details: "詳細説明",
+      },
       filters: {
         sortBy: "並び替え:",
         budget: "予算:",
@@ -329,6 +332,9 @@ export default function TokyoSpots() {
         food: "Dining",
         sights: "Sightseeing",
         hotels: "Hotels"
+      },
+      labels: {
+        details: "Details",
       },
       filters: {
         sortBy: "Sort by:",
@@ -433,6 +439,9 @@ export default function TokyoSpots() {
         sights: "관광지",
         hotels: "호텔"
       },
+      labels: {
+        details: "상세 설명",
+      },
       filters: {
         sortBy: "정렬:",
         budget: "예산:",
@@ -535,6 +544,9 @@ export default function TokyoSpots() {
         food: "Restaurants",
         sights: "Attractions",
         hotels: "Hôtels"
+      },
+      labels: {
+        details: "Description",
       },
       filters: {
         sortBy: "Trier par:",
@@ -2208,6 +2220,16 @@ export default function TokyoSpots() {
         <div className="spot-info">
           {renderSpotInfo(spot)}
         </div>
+        {((spot as any)[`description_${currentLanguage}`] || spot.description) && (
+          <div className="spot-description" style={{ marginBottom: '0.75rem' }}>
+            <div className="desc-heading" style={{ fontWeight: 700, fontSize: '.95rem', color: '#111827', marginBottom: '.25rem' }}>
+              {tr.labels?.details || '詳細説明'}
+            </div>
+            <p className="desc-text" style={{ color: '#4b5563', fontSize: '.9rem', lineHeight: 1.6 }}>
+              {(spot as any)[`description_${currentLanguage}`] || spot.description}
+            </p>
+          </div>
+        )}
         <div className="spot-tags">
           {spot.tags.map((tag, idx) => (
             <span key={idx} className="tag">
@@ -2222,7 +2244,7 @@ export default function TokyoSpots() {
         </div>
       </div>
     </div>
-  ), [favoriteSpots, renderSpotInfo, showDetails, toggleFavorite, tr, getDisplayName]);
+  ), [favoriteSpots, renderSpotInfo, showDetails, toggleFavorite, tr, getDisplayName, currentLanguage]);
 
   // Locked card component for guests beyond FREE_COUNT
   const LockedCard = useCallback(({ index }: { index: number }) => (
