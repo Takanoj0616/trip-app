@@ -148,7 +148,7 @@ export default function ModelCoursesPage() {
       difficulty: 'beginner',
       tags: ['アニメ', 'ゲーム', '電気街', 'メイドカフェ'],
       totalTime: '約6時間',
-      image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=800&h=400&fit=crop',
+      image: '/images/courses/akihabara.jpg',
       stops: [
         {
           time: '10:00',
@@ -197,7 +197,7 @@ export default function ModelCoursesPage() {
       difficulty: 'beginner',
       tags: ['寺院', '伝統工芸', '下町', '着物'],
       totalTime: '約7時間',
-      image: 'https://images.unsplash.com/photo-1570611043142-e94640cdc5e5?w=800&h=400&fit=crop',
+      image: '/images/asakusa-temple.jpg',
       stops: [
         {
           time: '09:00',
@@ -246,7 +246,7 @@ export default function ModelCoursesPage() {
       difficulty: 'intermediate',
       tags: ['ファッション', 'トレンド', 'グルメ', '夜景'],
       totalTime: '約5時間',
-      image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=400&fit=crop',
+      image: '/images/courses/sibuya.jpg',
       stops: [
         {
           time: '14:00',
@@ -295,7 +295,7 @@ export default function ModelCoursesPage() {
       difficulty: 'intermediate',
       tags: ['市場', '寿司', '海鮮', 'グルメ'],
       totalTime: '約8時間',
-      image: 'https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=800&h=400&fit=crop',
+      image: '/images/courses/tsukiji.jpg',
       stops: [
         {
           time: '05:00',
@@ -348,7 +348,7 @@ export default function ModelCoursesPage() {
       difficulty: 'beginner',
       tags: ['美術館', '博物館', '公園', '芸術'],
       totalTime: '約7時間',
-      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=400&fit=crop',
+      image: '/images/courses/ueno.jpg',
       stops: [
         {
           time: '10:00',
@@ -454,7 +454,7 @@ export default function ModelCoursesPage() {
       difficulty: 'advanced',
       tags: ['ナイトライフ', 'バー', '居酒屋', '夜景'],
       totalTime: '約6時間',
-      image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=400&fit=crop',
+      image: '/images/courses/shinjuku.jpg',
       stops: [
         {
           time: '18:00',
@@ -507,7 +507,7 @@ export default function ModelCoursesPage() {
       difficulty: 'beginner',
       tags: ['科学館', 'テクノロジー', '未来', 'エンターテイメント'],
       totalTime: '約8時間',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=400&fit=crop',
+      image: '/images/courses/odaiba.jpg',
       stops: [
         {
           time: '10:00',
@@ -560,7 +560,7 @@ export default function ModelCoursesPage() {
       difficulty: 'beginner',
       tags: ['公園', 'カフェ', '散歩', 'ローカル'],
       totalTime: '約5時間',
-      image: 'https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=800&h=400&fit=crop',
+      image: '/images/courses/kichijoji.jpg',
       stops: [
         {
           time: '10:00',
@@ -613,7 +613,7 @@ export default function ModelCoursesPage() {
       difficulty: 'intermediate',
       tags: ['アート', '美術館', '夜景', '国際的'],
       totalTime: '約8時間',
-      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=400&fit=crop',
+      image: '/images/courses/roppongi.jpg',
       stops: [
         {
           time: '11:00',
@@ -674,7 +674,7 @@ export default function ModelCoursesPage() {
       difficulty: 'beginner',
       tags: ['下町', '伝統工芸', 'スカイツリー', '職人'],
       totalTime: '約7時間',
-      image: 'https://images.unsplash.com/photo-1554797589-7241bb691973?w=800&h=400&fit=crop',
+      image: '/images/courses/sumida.jpg',
       stops: [
         {
           time: '10:00',
@@ -727,7 +727,7 @@ export default function ModelCoursesPage() {
       difficulty: 'intermediate',
       tags: ['おしゃれ', 'セレクトショップ', 'カフェ', '大人'],
       totalTime: '約4時間',
-      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=400&fit=crop',
+      image: '/images/courses/daikanyama.jpg',
       stops: [
         {
           time: '11:00',
@@ -780,7 +780,7 @@ export default function ModelCoursesPage() {
       difficulty: 'beginner',
       tags: ['皇居', '歴史', '自然', 'ランニング'],
       totalTime: '約4時間',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=400&fit=crop',
+      image: '/images/courses/imperial.jpg',
       stops: [
         {
           time: '09:00',
@@ -833,7 +833,7 @@ export default function ModelCoursesPage() {
       difficulty: 'beginner',
       tags: ['港', '異国情緒', '夜景', '中華街'],
       totalTime: '約8時間',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=400&fit=crop',
+      image: '/images/courses/yokohama.jpg',
       stops: [
         {
           time: '10:00',
@@ -894,7 +894,7 @@ export default function ModelCoursesPage() {
       difficulty: 'intermediate',
       tags: ['禅', '寺院', '大仏', '歴史'],
       totalTime: '約7時間',
-      image: 'https://images.unsplash.com/photo-1570611043142-e94640cdc5e5?w=800&h=400&fit=crop',
+      image: '/images/courses/kamakura.jpg',
       stops: [
         {
           time: '09:00',
@@ -961,11 +961,20 @@ export default function ModelCoursesPage() {
     : modelCourses.filter(course => course.theme === selectedTheme);
 
   return (
-    <>
+    <div className="min-h-screen" style={{
+      background: "linear-gradient(135deg, #1e3a8a 0%, #312e81 25%, #1e1b4b 50%, #0f172a 75%, #020617 100%)",
+      minHeight: "100vh"
+    }}>
       <div className="animated-bg"></div>
       <div className="sakura-container" id="sakuraContainer"></div>
       
-      <section className="hero min-h-screen">
+      <section className="hero min-h-screen" style={{
+        background: 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("https://images.unsplash.com/photo-1554797589-7241bb691973?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        paddingTop: '140px'
+      }}>
         <div className="container">
           <div style={{ maxWidth: '1200px', margin: '0 auto', paddingTop: '40px' }}>
             
@@ -1179,7 +1188,7 @@ export default function ModelCoursesPage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }
 
@@ -1191,4 +1200,3 @@ function getDifficultyColor(difficulty: string): string {
     default: return '#4FACFE';
   }
 }
-

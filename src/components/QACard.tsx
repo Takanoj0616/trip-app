@@ -108,6 +108,7 @@ export default function QACard({ item }: QACardProps) {
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="w-full bg-blue-50 hover:bg-blue-100 text-blue-600 py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            suppressHydrationWarning
           >
             <span>{isExpanded ? '回答を隠す' : `${item.answers.length}件の回答を見る`}</span>
             <svg 
@@ -179,9 +180,10 @@ export default function QACard({ item }: QACardProps) {
                 className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={4}
                 placeholder="回答を入力してください..."
+                suppressHydrationWarning
               />
               <div className="flex justify-end mt-3">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors" suppressHydrationWarning>
                   回答を投稿
                 </button>
               </div>

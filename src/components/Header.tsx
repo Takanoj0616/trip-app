@@ -281,6 +281,7 @@ const Header: React.FC = () => {
                 onClick={() => setCurrentLanguage('ja')}
                 className={`lang-btn ${currentLanguage === 'ja' ? 'active' : ''}`}
                 data-lang="ja"
+                suppressHydrationWarning
               >
                 日本語
               </button>
@@ -288,6 +289,7 @@ const Header: React.FC = () => {
                 onClick={() => setCurrentLanguage('en')}
                 className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
                 data-lang="en"
+                suppressHydrationWarning
               >
                 English
               </button>
@@ -295,6 +297,7 @@ const Header: React.FC = () => {
                 onClick={() => setCurrentLanguage('ko')}
                 className={`lang-btn ${currentLanguage === 'ko' ? 'active' : ''}`}
                 data-lang="ko"
+                suppressHydrationWarning
               >
                 한국어
               </button>
@@ -303,6 +306,7 @@ const Header: React.FC = () => {
                   onClick={() => setCurrentLanguage('fr')}
                   className={`lang-btn ${currentLanguage === 'fr' ? 'active' : ''}`}
                   data-lang="fr"
+                  suppressHydrationWarning
                 >
                   Français
                 </button>

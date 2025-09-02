@@ -78,7 +78,7 @@ export default function CourseDetailPage() {
       difficulty: 'beginner',
       tags: ['アニメ', 'ゲーム', '電気街', 'メイドカフェ'],
       totalTime: '約6時間',
-      image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=800&h=400&fit=crop',
+      image: '/images/courses/akihabara.jpg',
       stops: [
         {
           time: '10:00',
@@ -131,7 +131,7 @@ export default function CourseDetailPage() {
       difficulty: 'beginner',
       tags: ['寺院', '伝統工芸', '下町', '着物'],
       totalTime: '約7時間',
-      image: 'https://images.unsplash.com/photo-1570611043142-e94640cdc5e5?w=800&h=400&fit=crop',
+      image: 'https://images.unsplash.com/photo-1590736969955-71cc94901144?w=800&h=400&fit=crop',
       stops: [
         {
           time: '09:00',
@@ -184,7 +184,7 @@ export default function CourseDetailPage() {
       difficulty: 'intermediate',
       tags: ['ファッション', 'トレンド', 'グルメ', '夜景'],
       totalTime: '約5時間',
-      image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=400&fit=crop',
+      image: '/images/courses/sibuya.jpg',
       stops: [
         {
           time: '14:00',
@@ -237,7 +237,7 @@ export default function CourseDetailPage() {
       difficulty: 'beginner',
       tags: ['寿司', '海鮮', '市場', '早朝'],
       totalTime: '約4時間',
-      image: 'https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=800&h=400&fit=crop',
+      image: '/images/courses/tsukiji.jpg',
       stops: [
         {
           time: '05:30',
