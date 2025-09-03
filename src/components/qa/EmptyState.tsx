@@ -5,25 +5,40 @@ interface EmptyStateProps {
   category?: string;
 }
 
+import { useLanguage } from '@/contexts/LanguageContext';
+
 export default function EmptyState({ searchQuery, category }: EmptyStateProps) {
+  const { currentLanguage } = useLanguage();
+  const i18n = {
+    ja: {
+      notFound: (q?: string, c?: string) => q && c && c !== 'All' ? `「${q}」に関する「${c}」カテゴリの質問が見つかりませんでした` : q ? `「${q}」に関する質問が見つかりませんでした` : c && c !== 'All' ? `「${c}」カテゴリの質問が見つかりませんでした` : '質問がまだありません',
+      suggestion: (hasFilter: boolean) => hasFilter ? '検索条件を変更して再度お試しください' : '最初の質問を投稿してみませんか？',
+      post: '質問を投稿する',
+    },
+    en: {
+      notFound: (q?: string, c?: string) => q && c && c !== 'All' ? `No questions found for “${q}” in category “${c}”.` : q ? `No questions found for “${q}”.` : c && c !== 'All' ? `No questions found in category “${c}”.` : 'No questions yet.',
+      suggestion: (hasFilter: boolean) => hasFilter ? 'Try changing your search filters and try again.' : 'Be the first to ask a question!',
+      post: 'Post a Question',
+    },
+    ko: {
+      notFound: (q?: string, c?: string) => q && c && c !== 'All' ? `"${q}" 관련 "${c}" 카테고리의 질문을 찾을 수 없어요.` : q ? `"${q}" 관련 질문을 찾을 수 없어요.` : c && c !== 'All' ? `"${c}" 카테고리의 질문을 찾을 수 없어요.` : '아직 질문이 없습니다.',
+      suggestion: (hasFilter: boolean) => hasFilter ? '검색 조건을 바꿔 다시 시도해 보세요.' : '첫 번째로 질문해 보세요!',
+      post: '질문 올리기',
+    },
+    fr: {
+      notFound: (q?: string, c?: string) => q && c && c !== 'All' ? `Aucune question trouvée pour « ${q} » dans la catégorie « ${c} ».` : q ? `Aucune question trouvée pour « ${q} ».` : c && c !== 'All' ? `Aucune question trouvée dans la catégorie « ${c} ».` : 'Pas encore de questions.',
+      suggestion: (hasFilter: boolean) => hasFilter ? 'Modifiez vos filtres de recherche et réessayez.' : 'Soyez le premier à poser une question !',
+      post: 'Publier une question',
+    },
+  } as const;
+  const tr = (i18n as any)[currentLanguage] || (i18n as any).ja;
   const getMessage = () => {
-    if (searchQuery && category && category !== 'All') {
-      return `「${searchQuery}」に関する「${category}」カテゴリの質問が見つかりませんでした`;
-    } else if (searchQuery) {
-      return `「${searchQuery}」に関する質問が見つかりませんでした`;
-    } else if (category && category !== 'All') {
-      return `「${category}」カテゴリの質問が見つかりませんでした`;
-    } else {
-      return '質問がまだありません';
-    }
+    return tr.notFound(searchQuery, category);
   };
 
   const getSubMessage = () => {
-    if (searchQuery || (category && category !== 'All')) {
-      return '検索条件を変更して再度お試しください';
-    } else {
-      return '最初の質問を投稿してみませんか？';
-    }
+    const hasFilter = Boolean(searchQuery || (category && category !== 'All'));
+    return tr.suggestion(hasFilter);
   };
 
   return (
@@ -69,7 +84,7 @@ export default function EmptyState({ searchQuery, category }: EmptyStateProps) {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            質問を投稿する
+            {tr.post}
           </button>
         )}
       </div>
