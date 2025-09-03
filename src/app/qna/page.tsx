@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import QnaPageClient from './QnaPageClient';
 
 export const metadata: Metadata = {
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function QnaPage() {
-  return <QnaPageClient />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <QnaPageClient />
+    </Suspense>
+  );
 }
