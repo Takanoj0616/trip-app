@@ -2,14 +2,13 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import AnimationClient from '@/components/AnimationClient';
 import Hero from '@/components/qa/Hero';
 import Controls from '@/components/qa/Controls';
 import Card from '@/components/qa/Card';
 import Pagination from '@/components/qa/Pagination';
 import EmptyState from '@/components/qa/EmptyState';
 import Footer from '@/components/qa/Footer';
-import SakuraAnimation from '@/components/qa/SakuraAnimation';
+import SakuraBackground from '@/components/SakuraBackground';
 import { qaData } from '@/data/qaData';
 import { Category, SortOption } from '@/types/qa';
 import '@/styles/qa-theme.css';
@@ -163,55 +162,62 @@ export default function QnaPageClient() {
 
   return (
     <>
-      <AnimationClient />
-      <SakuraAnimation />
-      
       {/* Japanese themed background */}
       <div
         aria-hidden="true"
         className="fixed inset-0 -z-10 japanese-gradient seigaiha-pattern"
       />
-      
-      {/* Sakura particles container */}
-      <div className="sakura-particles" id="sakuraParticles" aria-hidden="true" />
+      <SakuraBackground />
       
       <div className="min-h-screen" style={{ paddingTop: '120px' }}>
-        <Hero />
-        
-        <Controls 
-          searchQuery={searchQuery}
-          selectedCategory={selectedCategory}
-          selectedSort={selectedSort}
-          onSearchChange={handleSearchChange}
-          onCategoryChange={handleCategoryChange}
-          onSortChange={handleSortChange}
-        />
-
-        {/* Q&A Grid */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-20">
-          {displayPaginatedData.length > 0 ? (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                {displayPaginatedData.map((item) => (
-                  <Card key={item.id} item={item} />
-                ))}
-              </div>
-              
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            </>
-          ) : (
-            <EmptyState 
+        <div style={{ 
+          maxWidth: '1200px', 
+          margin: '0 auto', 
+          padding: '0 20px',
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: '24px',
+          border: '1px solid rgba(255, 255, 255, 0.2)'
+        }}>
+          <div style={{ padding: '40px 20px' }}>
+            <Hero />
+                
+            <Controls 
               searchQuery={searchQuery}
-              category={selectedCategory}
+              selectedCategory={selectedCategory}
+              selectedSort={selectedSort}
+              onSearchChange={handleSearchChange}
+              onCategoryChange={handleCategoryChange}
+              onSortChange={handleSortChange}
             />
-          )}
+
+            {/* Q&A Grid */}
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-20">
+              {displayPaginatedData.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    {displayPaginatedData.map((item) => (
+                      <Card key={item.id} item={item} />
+                    ))}
+                  </div>
+                  
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </>
+              ) : (
+                <EmptyState 
+                  searchQuery={searchQuery}
+                  category={selectedCategory}
+                />
+              )}
+            </div>
+            
+            <Footer />
+          </div>
         </div>
-        
-        <Footer />
       </div>
     </>
   );
