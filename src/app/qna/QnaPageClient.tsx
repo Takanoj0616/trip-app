@@ -8,10 +8,8 @@ import Card from '@/components/qa/Card';
 import Pagination from '@/components/qa/Pagination';
 import EmptyState from '@/components/qa/EmptyState';
 import Footer from '@/components/qa/Footer';
-import SakuraBackground from '@/components/SakuraBackground';
 import { qaData } from '@/data/qaData';
 import { Category, SortOption } from '@/types/qa';
-import '@/styles/qa-theme.css';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function QnaPageClient() {
@@ -162,12 +160,58 @@ export default function QnaPageClient() {
 
   return (
     <>
-      {/* Japanese themed background */}
+      {/* Tokyo Tower themed background (vivid orange-to-blue with glows) */}
       <div
         aria-hidden="true"
-        className="fixed inset-0 -z-10 japanese-gradient seigaiha-pattern"
+        className="fixed inset-0"
+        style={{
+          zIndex: -30,
+          pointerEvents: 'none',
+          background: `
+            radial-gradient(800px 400px at 15% 12%, rgba(255, 122, 0, 0.28) 0%, transparent 60%),
+            radial-gradient(800px 400px at 85% 88%, rgba(46, 134, 222, 0.28) 0%, transparent 55%),
+            linear-gradient(130deg,
+              #ff6a00 0%,
+              #ff8a00 14%,
+              #ffb347 28%,
+              #ffd194 42%,
+              #a0c4ff 58%,
+              #4e73df 74%,
+              #1b2a6b 100%
+            )
+          `,
+          backgroundAttachment: 'fixed',
+          filter: 'saturate(1.15) contrast(1.05)'
+        }}
       />
-      <SakuraBackground />
+      {/* Tokyo Tower main structure with subtle glow (kept as data-URL SVG) */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0"
+        style={{
+          zIndex: -10,
+          pointerEvents: 'none',
+          background: `
+            radial-gradient(300px 220px at 50% calc(100% - 120px), rgba(255, 120, 0, 0.35) 0%, transparent 70%),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 400'%3E%3Cg transform='translate(100,200)'%3E%3Cpath d='M-16 200 L-16 16 L-28 -124 L-10 -188 L10 -188 L28 -124 L16 16 L16 200 M-22 -84 L22 -84 M-20 16 L20 16 M-18 80 L18 80 M-16 140 L16 140' stroke='%23ff6a00' stroke-width='3.6' fill='none' opacity='0.95'/%3E%3Cpath d='M-10 -188 L0 -210 L10 -188' stroke='%23ff6a00' stroke-width='3' fill='%23ff6a00' opacity='0.95'/%3E%3C/g%3E%3C/svg%3E") no-repeat center bottom
+          `,
+          backgroundSize: '420px 640px'
+        }}
+      />
+      {/* Tokyo cityscape silhouette (darker, crisper) */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0"
+        style={{
+          zIndex: -20,
+          pointerEvents: 'none',
+          background: `
+            linear-gradient(to top, rgba(2, 6, 23, 0.65) 0%, rgba(2, 6, 23, 0) 60%),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 200'%3E%3Cpath d='M0 200 L0 160 L40 160 L40 115 L80 115 L80 140 L120 140 L120 100 L160 100 L160 130 L200 130 L200 110 L240 110 L240 150 L280 150 L280 90 L320 90 L320 170 L360 170 L360 80 L400 80 L400 160 L440 160 L440 140 L480 140 L480 120 L520 120 L520 180 L560 180 L560 100 L600 100 L600 150 L640 150 L640 130 L680 130 L680 170 L720 170 L720 110 L760 110 L760 160 L800 160 L800 200 Z' fill='%230b1220' opacity='0.55'/%3E%3C/svg%3E") repeat-x bottom
+          `,
+          backgroundSize: '900px 220px'
+        }}
+      />
       
       <div className="min-h-screen" style={{ paddingTop: '120px' }}>
         <div style={{ 

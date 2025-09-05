@@ -62,24 +62,19 @@ if (hasValidConfig) {
     // Initialize Firebase services with error handling
     auth = getAuth(app);
   
-  // Initialize Firestore with updated settings
+  // Initialize Firestore with updated settings for production
   db = getFirestore(app);
   
-  // Configure Firestore for better performance (replacing deprecated persistence)
-  if (typeof window !== 'undefined') {
-    // The new way to handle persistence is through FirestoreSettings
-    // The warning about enableIndexedDbPersistence being deprecated is expected
+  // Skip persistence configuration in production to avoid connection issues
+  if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
     try {
       import('firebase/firestore').then(({ enableIndexedDbPersistence }) => {
-        // Still use the old method for now as the new cache API is not fully stable
         enableIndexedDbPersistence(db, {
           synchronizeTabs: true
         }).catch((err) => {
           if (err.code === 'failed-precondition') {
-            // Multiple tabs open, persistence can only be enabled in one tab
             console.info('Firebase: Persistence disabled due to multiple tabs');
           } else if (err.code === 'unimplemented') {
-            // Browser doesn't support persistence
             console.info('Firebase: Persistence not supported in this browser');
           } else {
             console.warn('Firebase persistence error:', err);
