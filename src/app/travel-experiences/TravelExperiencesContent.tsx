@@ -81,7 +81,7 @@ export default function TravelExperiencesContent() {
   }
 
   return (
-    <div className="container mx-auto px-4 pt-28 pb-16">
+    <div className="container mx-auto px-4 py-8">
       {/* ヘッダー */}
       <div className="text-center mb-12">
         <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">
@@ -94,9 +94,9 @@ export default function TravelExperiencesContent() {
         {/* 投稿ボタン */}
         <button
           onClick={() => setShowCreateModal(true)}
-          className="text-lg px-8 py-3 rounded-lg font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-300"
+          className="btn-primary text-lg px-8 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
         >
-          <Plus className="w-6 h-6 mr-2 inline text-white" />
+          <Plus className="w-6 h-6 mr-2" />
           新しい旅行記を投稿
         </button>
       </div>
@@ -121,20 +121,12 @@ export default function TravelExperiencesContent() {
 
       {/* 投稿一覧 */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="glass-card animate-pulse">
-              <div className="bg-white/30 h-56 rounded-t-2xl mb-4"></div>
-              <div className="p-6">
-                <div className="bg-white/30 h-6 rounded mb-3"></div>
-                <div className="bg-white/30 h-4 rounded mb-2"></div>
-                <div className="bg-white/30 h-4 rounded w-3/4 mb-4"></div>
-                <div className="flex gap-2 mb-4">
-                  <div className="bg-white/30 h-6 w-16 rounded-full"></div>
-                  <div className="bg-white/30 h-6 w-20 rounded-full"></div>
-                </div>
-                <div className="bg-white/30 h-4 rounded w-1/2"></div>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="glass-card p-6 animate-pulse">
+              <div className="bg-white/30 h-48 rounded-lg mb-4"></div>
+              <div className="bg-white/30 h-4 rounded mb-2"></div>
+              <div className="bg-white/30 h-4 rounded w-3/4"></div>
             </div>
           ))}
         </div>
@@ -158,7 +150,7 @@ export default function TravelExperiencesContent() {
         </div>
       ) : (
         <>
-          <div className="posts-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mb-12">
             {posts.map((post, index) => (
               <TravelPostCard
                 key={post.id}

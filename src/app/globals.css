@@ -1514,57 +1514,11 @@ footer {
   opacity: 0.7;
 }
 
-/* ------------------------------ */
-/* Travel Experiences UI helpers  */
-/* ------------------------------ */
-.glass-card {
-  background: rgba(255, 255, 255, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 14px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
+/* Removed old glass-card - using the temp project version */
 
-.glass-card:hover {
-  background: rgba(255, 255, 255, 0.38);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
-}
+/* Removed old filter-pill - using the temp project version */
 
-.filter-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.18);
-  color: rgba(255, 255, 255, 0.95);
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.2px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: all 0.2s ease;
-}
-
-.filter-pill:hover {
-  background: rgba(255, 255, 255, 0.26);
-  transform: translateY(-1px);
-}
-
-.filter-pill-active {
-  background: #f97316; /* Tailwind orange-500 */
-  border-color: transparent;
-  color: #fff;
-  box-shadow: 0 10px 30px rgba(249, 115, 22, 0.45);
-}
-
-.filter-pill-inactive {
-  /* inherits from .filter-pill */
-}
+/* Removed old filter-pill-inactive - using the temp project version */
 
 .tag-pill {
   display: inline-flex;
@@ -1591,4 +1545,94 @@ footer {
 }
 @media (min-width: 1280px) { /* xl */
   .posts-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Travel experiences styles from temp project */
+.glass-card {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.glass-card-dark {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.20);
+  border: 1px solid rgba(0, 0, 0, 0.30);
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.btn-primary {
+  background-color: #ea7421;
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #db5a17;
+}
+
+.btn-secondary {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #1f2937;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.40);
+}
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.filter-pill-active {
+  background-color: #ea7421;
+  color: white;
+  box-shadow: 0 4px 15px rgba(234, 116, 33, 0.45);
+}
+
+.filter-pill-inactive {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #374151;
+}
+
+.filter-pill-inactive:hover {
+  background: rgba(255, 255, 255, 0.40);
 }

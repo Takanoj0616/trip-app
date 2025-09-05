@@ -12,12 +12,16 @@ module.exports = {
       },
       colors: {
         primary: {
-          50: '#f0f4ff',
-          100: '#e0e9ff',
-          500: '#667eea',
-          600: '#5a6fd8',
-          700: '#4c59c5',
-          900: '#2d3748',
+          50: '#fef7ee',
+          100: '#fdead6',
+          200: '#f9d2ac',
+          300: '#f5b477',
+          400: '#ef8d40',
+          500: '#ea7421',
+          600: '#db5a17',
+          700: '#b64316',
+          800: '#92361a',
+          900: '#762d17',
         },
         gray: {
           50: '#f7fafc',
@@ -58,5 +62,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 }

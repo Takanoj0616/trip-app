@@ -38,13 +38,13 @@ export default function SearchBar({
       <div className="relative flex-1">
         <div className="glass-card">
           <div className="flex items-center px-4 py-3">
-            <Search className="w-5 h-5 text-white/80 mr-3" />
+            <Search className="w-5 h-5 text-gray-400 mr-3" />
             <input
               type="text"
               placeholder="キーワードで検索（場所、グルメ、体験など）"
               value={value}
               onChange={(e) => onChange(e.target.value)}
-              className="flex-1 bg-transparent border-none outline-none text-white placeholder-white/70"
+              className="flex-1 bg-transparent border-none outline-none text-gray-800 placeholder-gray-500"
             />
           </div>
         </div>
@@ -54,7 +54,7 @@ export default function SearchBar({
       <div className="relative">
         <button
           onClick={() => setShowSortMenu(!showSortMenu)}
-          className="glass-card px-4 py-3 flex items-center space-x-2 text-white hover:bg-white/30 transition-colors w-full sm:w-auto"
+          className="glass-card px-4 py-3 flex items-center space-x-2 text-gray-700 hover:bg-white/40 transition-colors w-full sm:w-auto"
         >
           {currentOrder === 'desc' ? (
             <SortDesc className="w-5 h-5" />
@@ -76,8 +76,8 @@ export default function SearchBar({
                   }}
                   className={`w-full flex items-center px-4 py-3 text-left hover:bg-white/20 transition-colors ${
                     currentSort === option.value && currentOrder === 'desc'
-                      ? 'bg-white/30 text-white'
-                      : 'text-white'
+                      ? 'bg-white/30 text-primary-600'
+                      : 'text-gray-700'
                   }`}
                 >
                   <option.icon className="w-4 h-4 mr-3" />
@@ -91,8 +91,8 @@ export default function SearchBar({
                   }}
                   className={`w-full flex items-center px-4 py-3 text-left hover:bg-white/20 transition-colors ${
                     currentSort === option.value && currentOrder === 'asc'
-                      ? 'bg-white/30 text-white'
-                      : 'text-white'
+                      ? 'bg-white/30 text-primary-600'
+                      : 'text-gray-700'
                   }`}
                 >
                   <option.icon className="w-4 h-4 mr-3" />
