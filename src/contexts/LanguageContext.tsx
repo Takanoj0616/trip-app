@@ -24,6 +24,8 @@ const translations = {
     // Navigation
     'nav.areas': 'Areas',
     'nav.courses': 'Model Courses',
+    'nav.realtime': 'Realtime',
+    'nav.stories': 'Travel Experiences',
     
     // Courses page
     'courses.title': 'Theme-based Model Courses',
@@ -225,6 +227,8 @@ const translations = {
     // Navigation
     'nav.areas': 'エリア',
     'nav.courses': 'モデルコース',
+    'nav.realtime': 'リアルタイム',
+    'nav.stories': '旅行体験',
     
     // Courses page
     'courses.title': 'テーマ別モデルコース',
@@ -426,6 +430,8 @@ const translations = {
     // Navigation
     'nav.areas': '지역',
     'nav.courses': '모델 코스',
+    'nav.realtime': '실시간',
+    'nav.stories': '여행 경험',
     
     // Courses page
     'courses.title': '테마별 모델 코스',

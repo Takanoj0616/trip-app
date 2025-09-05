@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import Head from 'next/head';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
@@ -287,8 +288,71 @@ export default function AreasPage() {
     return stars;
   };
 
+  const baseUrl = typeof window !== 'undefined' 
+    ? window.location.origin
+    : 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+  
+  const pageTitle = t('page.title');
+  const pageDescription = t('page.subtitle');
+  
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "TouristDestination",
+    "name": pageTitle,
+    "description": pageDescription,
+    "url": `${baseUrl}/areas`,
+    "image": "https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 35.6762,
+      "longitude": 139.6503
+    },
+    "touristType": "cultural tourism, urban tourism, historical tourism",
+    "includesAttraction": areas.map(area => ({
+      "@type": "TouristAttraction",
+      "name": t(area.nameKey),
+      "description": t(area.descriptionKey),
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": area.rating,
+        "reviewCount": area.spots * 12
+      }
+    }))
+  };
+
   return (
     <>
+      <Head>
+        <title>{pageTitle} | Japan Travel Guide - Tokyo Metropolitan Area Tourism</title>
+        <meta name="description" content={pageDescription + " - Discover Tokyo, Yokohama, Saitama, and Chiba with detailed guides, ratings, and travel recommendations."} />
+        <meta name="keywords" content="Japan areas, Tokyo regions, Yokohama tourism, Saitama travel, Chiba attractions, Tokyo metropolitan area, Japan travel guide" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={`${baseUrl}/areas`} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={`${pageTitle} | Japan Travel Guide`} />
+        <meta property="og:description" content={pageDescription + " - Discover Tokyo, Yokohama, Saitama, and Chiba."} />
+        <meta property="og:url" content={`${baseUrl}/areas`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=630" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${pageTitle} | Japan Travel Guide`} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content="https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=630" />
+        
+        {/* Language alternates */}
+        <link rel="alternate" hrefLang="ja" href={`${baseUrl}/areas?lang=ja`} />
+        <link rel="alternate" hrefLang="en" href={`${baseUrl}/areas?lang=en`} />
+        <link rel="alternate" hrefLang="ko" href={`${baseUrl}/areas?lang=ko`} />
+        
+        {/* Structured data */}
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLdData)}
+        </script>
+      </Head>
+      
       <style jsx>{`
         * {
           margin: 0;

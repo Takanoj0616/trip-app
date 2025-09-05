@@ -117,7 +117,7 @@ const Header: React.FC = () => {
             <i className="fas fa-satellite-dish"></i>
             <span data-translate="nav.realtime">{t('nav.realtime')}</span>
           </Link>
-          <Link href="/stories" className="nav-link">
+          <Link href="/travel-experiences" className="nav-link">
             <i className="fas fa-book"></i>
             <span data-translate="nav.stories">{t('nav.stories')}</span>
           </Link>

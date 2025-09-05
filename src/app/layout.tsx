@@ -76,6 +76,10 @@ export const metadata: Metadata = {
   },
   verification: {
     google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+    other: {
+      'msvalidate.01': 'your-bing-verification-code',
+    },
   },
   icons: {
     icon: [
@@ -190,8 +194,30 @@ export default function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-E5ZZN1NNE9');
+              gtag('config', 'G-E5ZZN1NNE9', {
+                page_title: document.title,
+                page_location: window.location.href
+              });
             `,
+          }}
+        />
+        <Script
+          id="schema-breadcrumb"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": baseUrl
+                }
+              ]
+            })
           }}
         />
         <ClientProviders>

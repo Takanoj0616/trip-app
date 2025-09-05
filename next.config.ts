@@ -27,6 +27,13 @@ const nextConfig: NextConfig = {
     assetPrefix: '',
     generateEtags: false,
   }),
+  // SEO and performance optimizations
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
+  compress: true,
+  poweredByHeader: false,
+  trailingSlash: false,
 };
 
 export default nextConfig;
