@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useLanguage } from '@/contexts/LanguageContext'
 import { Search, SortAsc, SortDesc, Calendar, Eye, Heart } from 'lucide-react'
 import { SortBy, SortOrder } from '@/types/travel'
 
@@ -20,11 +21,12 @@ export default function SearchBar({
   currentOrder
 }: SearchBarProps) {
   const [showSortMenu, setShowSortMenu] = useState(false)
+  const { t } = useLanguage()
 
   const sortOptions = [
-    { value: 'createdAt', label: '投稿日時', icon: Calendar },
-    { value: 'viewCount', label: '閲覧数', icon: Eye },
-    { value: 'likeCount', label: 'いいね数', icon: Heart },
+    { value: 'createdAt', label: t('travel.sort.createdAt'), icon: Calendar },
+    { value: 'viewCount', label: t('travel.sort.viewCount'), icon: Eye },
+    { value: 'likeCount', label: t('travel.sort.likeCount'), icon: Heart },
   ]
 
   const getCurrentSortLabel = () => {
@@ -41,7 +43,7 @@ export default function SearchBar({
             <Search className="w-5 h-5 text-gray-400 mr-3" />
             <input
               type="text"
-              placeholder="キーワードで検索（場所、グルメ、体験など）"
+              placeholder={t('common.search')}
               value={value}
               onChange={(e) => onChange(e.target.value)}
               className="flex-1 bg-transparent border-none outline-none text-gray-800 placeholder-gray-500"

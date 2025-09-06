@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Search, Plus, Filter, MapPin, Calendar, Eye, Heart } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 import { TravelPost, TravelPostsResponse, SearchFilters, REGIONS, CATEGORIES } from '@/types/travel'
 import TravelPostCard from './components/TravelPostCard'
 import SearchBar from './components/SearchBar'
@@ -10,6 +11,7 @@ import CreatePostModal from './components/CreatePostModal'
 import Pagination from './components/Pagination'
 
 export default function TravelExperiencesContent() {
+  const { t } = useLanguage()
   const [posts, setPosts] = useState<TravelPost[]>([])
   const [loading, setLoading] = useState(true)
   const [pagination, setPagination] = useState({
@@ -85,10 +87,10 @@ export default function TravelExperiencesContent() {
       {/* ヘッダー */}
       <div className="text-center mb-12">
         <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">
-          旅の記録
+          {t('travel.title')}
         </h1>
         <p className="text-xl text-white/90 mb-8 drop-shadow-md">
-          あなたの旅の体験を共有し、新しい発見を見つけよう
+          {t('travel.subtitle')}
         </p>
         
         {/* 投稿ボタン */}
@@ -97,7 +99,7 @@ export default function TravelExperiencesContent() {
           className="btn-primary text-lg px-8 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
         >
           <Plus className="w-6 h-6 mr-2" />
-          新しい旅行記を投稿
+          {t('travel.postNew')}
         </button>
       </div>
 
@@ -134,17 +136,17 @@ export default function TravelExperiencesContent() {
         <div className="text-center py-16">
           <div className="glass-card p-12 max-w-md mx-auto">
             <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-              まだ投稿がありません
+              {t('travel.empty.title')}
             </h3>
             <p className="text-gray-600 mb-6">
-              最初の旅行記を投稿してみませんか？
+              {t('travel.empty.desc')}
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
               className="btn-primary"
             >
               <Plus className="w-5 h-5 mr-2" />
-              投稿する
+              {t('travel.empty.cta')}
             </button>
           </div>
         </div>

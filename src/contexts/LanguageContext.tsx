@@ -164,6 +164,7 @@ const translations = {
     'common.map': 'Map',
     'common.24hours': '24 hours',
     'common.closed': 'Closed',
+    'common.more': 'more',
     
     // Homepage
     'home.trustedBy': 'Trusted by 10,000+ travelers worldwide',
@@ -221,7 +222,47 @@ const translations = {
     'footer.account.login': 'Login',
     'footer.account.signUp': 'Sign Up',
     'footer.account.premium': 'Premium',
-    'footer.account.settings': 'Settings'
+    'footer.account.settings': 'Settings',
+
+    // Travel Experiences (list)
+    'travel.title': 'Travel Experiences',
+    'travel.subtitle': 'Share your journeys and discover new inspirations',
+    'travel.postNew': 'Create New Travel Post',
+    'travel.filter.region': 'Filter by Region',
+    'travel.filter.category': 'Filter by Theme',
+    'travel.filter.all': 'All',
+    'travel.sort.createdAt': 'Posted Date',
+    'travel.sort.viewCount': 'Views',
+    'travel.sort.likeCount': 'Likes',
+    'travel.empty.title': 'No posts yet',
+    'travel.empty.desc': 'Be the first to share your travel story!',
+    'travel.empty.cta': 'Post',
+    // Regions
+    'regions.hokkaido': 'Hokkaido',
+    'regions.tohoku': 'Tohoku',
+    'regions.kanto': 'Kanto',
+    'regions.chubu': 'Chubu',
+    'regions.kansai': 'Kansai',
+    'regions.chugoku': 'Chugoku',
+    'regions.shikoku': 'Shikoku',
+    'regions.kyushu_okinawa': 'Kyushu & Okinawa',
+    // Categories
+    'categories.gourmet': 'Gourmet',
+    'categories.history_culture': 'History & Culture',
+    'categories.nature': 'Nature',
+    'categories.anime_pilgrimage': 'Anime & Pilgrimage',
+    'categories.activity': 'Activity',
+    'categories.shopping': 'Shopping',
+    'categories.onsen': 'Onsen',
+    'categories.other': 'Other',
+    // Travel Experiences sample content
+    'travel.sample.title.hiroshima': 'Historic Journey through Hiroshima Peace Memorial Park and Miyajima',
+    'travel.sample.title.kanazawa': 'Savoring Winter Flavors in Kanazawa: Kenrokuen & Omicho Market',
+    'travel.sample.title.anohana': 'Anohana Pilgrimage – Chichibu, Saitama',
+    'travel.sample.excerpt': 'Sample travel diary text. A sample trip exploring various places across Japan...',
+    'tag.temple': 'Temple/Shrine',
+    'tag.nature': 'Nature',
+    'tag.shopping': 'Shopping',
   },
   ja: {
     // Navigation
@@ -367,6 +408,7 @@ const translations = {
     'common.map': '地図',
     'common.24hours': '24時間営業',
     'common.closed': '定休日',
+    'common.more': '件',
     
     // Homepage
     'home.trustedBy': '世界中の10,000人以上の旅行者に信頼されています',
@@ -424,7 +466,47 @@ const translations = {
     'footer.account.login': 'ログイン',
     'footer.account.signUp': 'サインアップ',
     'footer.account.premium': 'プレミアム',
-    'footer.account.settings': '設定'
+    'footer.account.settings': '設定',
+
+    // Travel Experiences (list)
+    'travel.title': '旅の記録',
+    'travel.subtitle': 'あなたの旅の体験を共有し、新しい発見を見つけよう',
+    'travel.postNew': '新しい旅行記を投稿',
+    'travel.filter.region': '地域で絞り込み',
+    'travel.filter.category': 'テーマで絞り込み',
+    'travel.filter.all': 'すべて',
+    'travel.sort.createdAt': '投稿日時',
+    'travel.sort.viewCount': '閲覧数',
+    'travel.sort.likeCount': 'いいね数',
+    'travel.empty.title': 'まだ投稿がありません',
+    'travel.empty.desc': '最初の旅行記を投稿してみませんか？',
+    'travel.empty.cta': '投稿する',
+    // Regions
+    'regions.hokkaido': '北海道',
+    'regions.tohoku': '東北',
+    'regions.kanto': '関東',
+    'regions.chubu': '中部',
+    'regions.kansai': '関西',
+    'regions.chugoku': '中国',
+    'regions.shikoku': '四国',
+    'regions.kyushu_okinawa': '九州・沖縄',
+    // Categories
+    'categories.gourmet': 'グルメ',
+    'categories.history_culture': '歴史・文化',
+    'categories.nature': '自然',
+    'categories.anime_pilgrimage': 'アニメ・聖地',
+    'categories.activity': 'アクティビティ',
+    'categories.shopping': 'ショッピング',
+    'categories.onsen': '温泉',
+    'categories.other': 'その他',
+    // Travel Experiences sample content
+    'travel.sample.title.hiroshima': '広島の平和記念公園と宮島を巡る歴史の旅',
+    'travel.sample.title.kanazawa': '金沢の兼六園と近江町市場で冬の味覚を堪能',
+    'travel.sample.title.anohana': 'あの花の聖地巡礼 - 埼玉県秩父市',
+    'travel.sample.excerpt': 'ダミーの旅行記本文です。日本各地を巡る旅のサンプル...',
+    'tag.temple': '寺社',
+    'tag.nature': '自然',
+    'tag.shopping': '買い物',
   },
   ko: {
     // Navigation
@@ -608,7 +690,47 @@ const translations = {
     'footer.account.login': '로그인',
     'footer.account.signUp': '회원가입',
     'footer.account.premium': '프리미엄',
-    'footer.account.settings': '설정'
+    'footer.account.settings': '설정',
+
+    // Travel Experiences (list)
+    'travel.title': '여행 기록',
+    'travel.subtitle': '여행 경험을 공유하고 새로운 영감을 발견하세요',
+    'travel.postNew': '새 여행기 작성',
+    'travel.filter.region': '지역으로 필터링',
+    'travel.filter.category': '테마로 필터링',
+    'travel.filter.all': '전체',
+    'travel.sort.createdAt': '게시일',
+    'travel.sort.viewCount': '조회수',
+    'travel.sort.likeCount': '좋아요',
+    'travel.empty.title': '아직 게시물이 없습니다',
+    'travel.empty.desc': '첫 번째 여행기를 작성해 보세요!',
+    'travel.empty.cta': '작성하기',
+    // Regions
+    'regions.hokkaido': '홋카이도',
+    'regions.tohoku': '도호쿠',
+    'regions.kanto': '간토',
+    'regions.chubu': '주부',
+    'regions.kansai': '간사이',
+    'regions.chugoku': '주고쿠',
+    'regions.shikoku': '시코쿠',
+    'regions.kyushu_okinawa': '규슈 · 오키나와',
+    // Categories
+    'categories.gourmet': '미식',
+    'categories.history_culture': '역사 · 문화',
+    'categories.nature': '자연',
+    'categories.anime_pilgrimage': '애니메이션 · 성지',
+    'categories.activity': '액티비티',
+    'categories.shopping': '쇼핑',
+    'categories.onsen': '온천',
+    'categories.other': '기타',
+    // Travel Experiences sample content
+    'travel.sample.title.hiroshima': '히로시마 평화기념공원과 미야지마를 도는 역사 여행',
+    'travel.sample.title.kanazawa': '가나자와 겐로쿠엔과 오미초 시장에서 겨울 맛 즐기기',
+    'travel.sample.title.anohana': '아노하나 성지순례 – 사이타마 치치부',
+    'travel.sample.excerpt': '샘플 여행기 본문입니다. 일본 각지를 도는 여행 샘플...',
+    'tag.temple': '신사/사찰',
+    'tag.nature': '자연',
+    'tag.shopping': '쇼핑',
   },
   fr: {
     // Navigation
@@ -754,6 +876,7 @@ const translations = {
     'common.map': 'Carte',
     'common.24hours': '24 heures',
     'common.closed': 'Fermé',
+    'common.more': 'de plus',
     
     // Homepage
     'home.trustedBy': 'Fait confiance par plus de 10 000 voyageurs dans le monde',
@@ -811,7 +934,47 @@ const translations = {
     'footer.account.login': 'Connexion',
     'footer.account.signUp': 'S\'inscrire',
     'footer.account.premium': 'Premium',
-    'footer.account.settings': 'Paramètres'
+    'footer.account.settings': 'Paramètres',
+
+    // Travel Experiences (list)
+    'travel.title': 'Carnets de voyage',
+    'travel.subtitle': 'Partagez vos voyages et trouvez de nouvelles inspirations',
+    'travel.postNew': 'Créer un nouveau récit',
+    'travel.filter.region': 'Filtrer par région',
+    'travel.filter.category': 'Filtrer par thème',
+    'travel.filter.all': 'Tous',
+    'travel.sort.createdAt': 'Date de publication',
+    'travel.sort.viewCount': 'Vues',
+    'travel.sort.likeCount': 'J’aime',
+    'travel.empty.title': 'Aucun récit pour le moment',
+    'travel.empty.desc': 'Soyez le premier à partager votre voyage !',
+    'travel.empty.cta': 'Publier',
+    // Regions
+    'regions.hokkaido': 'Hokkaidō',
+    'regions.tohoku': 'Tōhoku',
+    'regions.kanto': 'Kantō',
+    'regions.chubu': 'Chūbu',
+    'regions.kansai': 'Kansai',
+    'regions.chugoku': 'Chūgoku',
+    'regions.shikoku': 'Shikoku',
+    'regions.kyushu_okinawa': 'Kyūshū & Okinawa',
+    // Categories
+    'categories.gourmet': 'Gastronomie',
+    'categories.history_culture': 'Histoire & Culture',
+    'categories.nature': 'Nature',
+    'categories.anime_pilgrimage': 'Anime & Lieux sacrés',
+    'categories.activity': 'Activités',
+    'categories.shopping': 'Shopping',
+    'categories.onsen': 'Onsen',
+    'categories.other': 'Autre',
+    // Travel Experiences sample content
+    'travel.sample.title.hiroshima': 'Voyage historique à Hiroshima et Miyajima',
+    'travel.sample.title.kanazawa': 'Saveurs d’hiver à Kanazawa: Kenrokuen et marché Omicho',
+    'travel.sample.title.anohana': 'Pèlerinage Anohana – Chichibu, Saitama',
+    'travel.sample.excerpt': 'Texte d’exemple de carnet de voyage. Exemple de voyage à travers le Japon...',
+    'tag.temple': 'Temple/Sanctuaire',
+    'tag.nature': 'Nature',
+    'tag.shopping': 'Shopping',
   }
 };
 

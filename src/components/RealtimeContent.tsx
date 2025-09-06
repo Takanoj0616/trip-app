@@ -3,9 +3,26 @@
 import { useEffect, useState } from 'react';
 import AnimationClient from '@/components/AnimationClient';
 
+interface SpotQuery {
+  id: string;
+  name: string;
+  nameEn: string;
+  hashtags: string[];
+  keywords: string[];
+  location?: {
+    lat: number;
+    lng: number;
+    radius: number;
+  };
+  blacklistKeywords: string[];
+}
+
 interface Tweet {
   id: string;
   content: string;
+  translatedContent?: string;
+  originalLang?: string;
+  summary?: string;
   author: {
     id: string;
     username: string;
@@ -18,15 +35,31 @@ interface Tweet {
     retweets: number;
     replies: number;
     quotes: number;
+    views?: number;
   };
   hashtags: string[];
   mentions: string[];
   urls: string[];
+  media?: {
+    type: 'photo' | 'video' | 'gif';
+    url: string;
+    thumbnailUrl?: string;
+    alt?: string;
+  }[];
   contextAnnotations: any[];
   category?: 'traffic' | 'weather' | 'events' | 'food' | 'sightseeing' | 'emergency';
+  relevanceScore?: number;
+  spotId?: string;
+  lang?: string;
+  geo?: {
+    lat: number;
+    lng: number;
+  };
+  isRetweet?: boolean;
+  retweetOf?: string;
 }
 
-function TweetCard({ tweet }: { tweet: Tweet }) {
+function TweetCard({ tweet, displayLang }: { tweet: Tweet; displayLang: string }) {
   const getCategoryColor = (category?: string) => {
     switch (category) {
       case 'traffic': return 'bg-red-100 text-red-800';
@@ -61,6 +94,17 @@ function TweetCard({ tweet }: { tweet: Tweet }) {
       minute: '2-digit'
     });
   };
+  
+  const getDisplayContent = () => {
+    if (displayLang !== 'ja' && tweet.translatedContent) {
+      return tweet.translatedContent;
+    }
+    return tweet.summary || tweet.content;
+  };
+  
+  const shouldShowOriginal = () => {
+    return displayLang !== 'ja' && tweet.translatedContent && tweet.originalLang !== displayLang;
+  };
 
   return (
     <div className="feature-card fade-in">
@@ -74,54 +118,117 @@ function TweetCard({ tweet }: { tweet: Tweet }) {
             <span className="text-gray-500">@{tweet.author.username}</span>
             <span className="text-gray-400">·</span>
             <span className="text-gray-500 text-sm">{formatDate(tweet.createdAt)}</span>
+            {tweet.lang && tweet.lang !== 'ja' && (
+              <span className="px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                {tweet.lang.toUpperCase()}
+              </span>
+            )}
             {tweet.category && (
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(tweet.category)}`}>
                 {getCategoryLabel(tweet.category)}
               </span>
             )}
+            {tweet.relevanceScore && tweet.relevanceScore > 10 && (
+              <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                ★ 注目
+              </span>
+            )}
           </div>
           
-          <p className="text-gray-800 mb-4 leading-relaxed text-base">{tweet.content}</p>
+          <p className="text-gray-800 mb-2 leading-relaxed text-base">{getDisplayContent()}</p>
+          
+          {shouldShowOriginal() && (
+            <details className="mb-3">
+              <summary className="text-sm text-gray-600 cursor-pointer hover:text-gray-800">原文を表示</summary>
+              <p className="text-gray-700 text-sm mt-2 p-3 bg-gray-50 rounded">{tweet.content}</p>
+            </details>
+          )}
+          
+          {tweet.media && tweet.media.length > 0 && (
+            <div className="mb-4 grid grid-cols-2 gap-2">
+              {tweet.media.slice(0, 4).map((media, index) => (
+                <div key={index} className="relative">
+                  {media.type === 'photo' ? (
+                    <img
+                      src={media.thumbnailUrl || media.url}
+                      alt={media.alt || 'Media content'}
+                      className="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                      onClick={() => window.open(media.url, '_blank')}
+                    />
+                  ) : (
+                    <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
+                         onClick={() => window.open(media.url, '_blank')}>
+                      <span className="text-gray-600 font-medium">
+                        {media.type === 'video' ? '🎥 動画' : '🎬 GIF'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
           
           {tweet.hashtags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
-              {tweet.hashtags.map((hashtag, index) => (
+              {tweet.hashtags.slice(0, 5).map((hashtag, index) => (
                 <span key={index} className="text-blue-600 text-sm hover:text-blue-800 cursor-pointer bg-blue-50 px-2 py-1 rounded">
                   #{hashtag}
                 </span>
               ))}
+              {tweet.hashtags.length > 5 && (
+                <span className="text-gray-500 text-sm">+{tweet.hashtags.length - 5} more</span>
+              )}
             </div>
           )}
           
           {tweet.urls.length > 0 && (
             <div className="mb-4">
-              {tweet.urls.map((url, index) => (
-                <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm block truncate bg-gray-50 p-2 rounded">
+              {tweet.urls.slice(0, 2).map((url, index) => (
+                <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm block truncate bg-gray-50 p-2 rounded mb-1">
                   🔗 {url}
                 </a>
               ))}
+              {tweet.urls.length > 2 && (
+                <span className="text-gray-500 text-sm">+{tweet.urls.length - 2} more links</span>
+              )}
             </div>
           )}
           
-          <div className="flex items-center gap-8 text-gray-500 text-sm pt-3 border-t border-gray-100">
-            <div className="flex items-center gap-2 hover:text-blue-600 cursor-pointer transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              <span>{tweet.metrics.replies}</span>
+          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+            <div className="flex items-center gap-6 text-gray-500 text-sm">
+              <div className="flex items-center gap-1 hover:text-blue-600 cursor-pointer transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <span>{tweet.metrics.replies}</span>
+              </div>
+              <div className="flex items-center gap-1 hover:text-green-600 cursor-pointer transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>{tweet.metrics.retweets}</span>
+              </div>
+              <div className="flex items-center gap-1 hover:text-red-600 cursor-pointer transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <span>{tweet.metrics.likes}</span>
+              </div>
+              {tweet.metrics.views && (
+                <div className="flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  <span>{tweet.metrics.views.toLocaleString()}</span>
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-2 hover:text-green-600 cursor-pointer transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <span>{tweet.metrics.retweets}</span>
-            </div>
-            <div className="flex items-center gap-2 hover:text-red-600 cursor-pointer transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-              <span>{tweet.metrics.likes}</span>
-            </div>
+            {tweet.relevanceScore && (
+              <div className="text-xs text-gray-400">
+                Score: {tweet.relevanceScore.toFixed(1)}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -129,12 +236,86 @@ function TweetCard({ tweet }: { tweet: Tweet }) {
   );
 }
 
+const SPOTS: SpotQuery[] = [
+  {
+    id: 'tokyo',
+    name: '東京',
+    nameEn: 'Tokyo',
+    hashtags: ['#東京', '#Tokyo', '#東京観光', '#東京旅行', '#TokyoTravel'],
+    keywords: ['東京', 'Tokyo', '浅草', 'Asakusa', '新宿', 'Shinjuku', '渋谷', 'Shibuya', '原宿', 'Harajuku', '上野', 'Ueno'],
+    blacklistKeywords: ['東京駅弁当', 'スパム', '宣伝'],
+    location: { lat: 35.6762, lng: 139.6503, radius: 50000 }
+  },
+  {
+    id: 'kyoto',
+    name: '京都',
+    nameEn: 'Kyoto',
+    hashtags: ['#京都', '#Kyoto', '#京都観光', '#京都旅行', '#KyotoTravel'],
+    keywords: ['京都', 'Kyoto', '清水寺', 'Kiyomizu', '金閣寺', 'Kinkaku', '嵐山', 'Arashiyama', '祇園', 'Gion'],
+    blacklistKeywords: ['スパム', '宣伝'],
+    location: { lat: 35.0116, lng: 135.7681, radius: 30000 }
+  },
+  {
+    id: 'osaka',
+    name: '大阪',
+    nameEn: 'Osaka',
+    hashtags: ['#大阪', '#Osaka', '#大阪観光', '#大阪旅行', '#OsakaTravel'],
+    keywords: ['大阪', 'Osaka', '道頓堀', 'Dotonbori', '大阪城', 'Osaka Castle', 'USJ', 'Universal Studios'],
+    blacklistKeywords: ['スパム', '宣伝'],
+    location: { lat: 34.6937, lng: 135.5023, radius: 30000 }
+  },
+  {
+    id: 'yokohama',
+    name: '横浜',
+    nameEn: 'Yokohama',
+    hashtags: ['#横浜', '#Yokohama', '#横浜観光', '#横浜旅行'],
+    keywords: ['横浜', 'Yokohama', 'みなとみらい', 'Minato Mirai', '赤レンガ', '中華街', 'Chinatown'],
+    blacklistKeywords: ['スパム', '宣伝'],
+    location: { lat: 35.4438, lng: 139.6380, radius: 20000 }
+  },
+  {
+    id: 'nara',
+    name: '奈良',
+    nameEn: 'Nara',
+    hashtags: ['#奈良', '#Nara', '#奈良観光', '#奈良旅行'],
+    keywords: ['奈良', 'Nara', '奈良公園', 'Nara Park', '東大寺', 'Todaiji', '春日大社', 'Kasuga'],
+    blacklistKeywords: ['スパム', '宣伝'],
+    location: { lat: 34.6851, lng: 135.8050, radius: 20000 }
+  }
+];
+
+interface FilterOptions {
+  languages: string[];
+  hasMedia: boolean;
+  minLikes: number;
+  minRetweets: number;
+  showRetweets: boolean;
+  sortBy: 'recent' | 'popular' | 'relevant';
+}
+
 export default function RealtimeContent() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedSpot, setSelectedSpot] = useState<string>('tokyo');
   const [lastUpdate, setLastUpdate] = useState<string>('');
+  const [autoUpdate, setAutoUpdate] = useState<boolean>(true);
+  const [displayLang, setDisplayLang] = useState<string>('ja');
+  const [spotSearch, setSpotSearch] = useState<string>('');
+  const [isSpotDropdownOpen, setIsSpotDropdownOpen] = useState<boolean>(false);
+  const [eventSource, setEventSource] = useState<EventSource | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected'>('disconnected');
+  const [filters, setFilters] = useState<FilterOptions>({
+    languages: ['ja', 'en'],
+    hasMedia: false,
+    minLikes: 0,
+    minRetweets: 0,
+    showRetweets: true,
+    sortBy: 'recent'
+  });
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
 
   const categorizeByKeywords = (content: string, hashtags: string[]): Tweet['category'] => {
     const text = content.toLowerCase() + ' ' + hashtags.join(' ').toLowerCase();
@@ -157,10 +338,139 @@ export default function RealtimeContent() {
     return undefined;
   };
 
-  const fetchTweets = async () => {
+  const getCurrentSpot = () => SPOTS.find(spot => spot.id === selectedSpot) || SPOTS[0];
+  
+  const buildSearchQuery = (spot: SpotQuery) => {
+    const hashtagQuery = spot.hashtags.join(' OR ');
+    const keywordQuery = spot.keywords.map(k => `"${k}"`).join(' OR ');
+    const blacklistQuery = spot.blacklistKeywords.map(k => `-"${k}"`).join(' ');
+    return `(${hashtagQuery}) OR (${keywordQuery}) ${blacklistQuery}`;
+  };
+  
+  const calculateRelevanceScore = (tweet: Tweet, spot: SpotQuery): number => {
+    let score = 0;
+    const content = (tweet.content + ' ' + tweet.hashtags.join(' ')).toLowerCase();
+    
+    // Hashtag matches (highest weight)
+    spot.hashtags.forEach(hashtag => {
+      if (content.includes(hashtag.toLowerCase().replace('#', ''))) {
+        score += 10;
+      }
+    });
+    
+    // Keyword matches
+    spot.keywords.forEach(keyword => {
+      if (content.includes(keyword.toLowerCase())) {
+        score += 5;
+      }
+    });
+    
+    // Engagement score
+    score += (tweet.metrics.likes * 0.1) + (tweet.metrics.retweets * 0.2);
+    
+    // Recency score (newer tweets get higher score)
+    const hoursAgo = (Date.now() - new Date(tweet.createdAt).getTime()) / (1000 * 60 * 60);
+    score += Math.max(0, 24 - hoursAgo) * 0.5;
+    
+    // Media bonus
+    if (tweet.media && tweet.media.length > 0) {
+      score += 3;
+    }
+    
+    // Blacklist penalty
+    spot.blacklistKeywords.forEach(keyword => {
+      if (content.includes(keyword.toLowerCase())) {
+        score -= 20;
+      }
+    });
+    
+    return Math.max(0, score);
+  };
+  
+  const translateContent = async (content: string, fromLang: string, toLang: string): Promise<string> => {
+    if (fromLang === toLang) return content;
+    
     try {
-      setLoading(true);
-      const response = await fetch('/api/twitter?q=#東京 OR #横浜 OR #Tokyo OR #Yokohama OR #東京観光 OR #横浜観光 OR #東京旅行 OR #横浜旅行&count=10');
+      const response = await fetch('/api/translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: content,
+          from: fromLang,
+          to: toLang
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.translatedText || content;
+      }
+    } catch (error) {
+      console.log('Translation API not available, using original content');
+    }
+    
+    return content;
+  };
+  
+  const summarizeContent = (content: string): string => {
+    if (content.length <= 140) return content;
+    
+    // Remove hashtags and mentions for summary
+    let summary = content.replace(/#\w+/g, '').replace(/@\w+/g, '').trim();
+    
+    // Truncate to approximately 140 characters
+    if (summary.length > 140) {
+      summary = summary.substring(0, 137) + '...';
+    }
+    
+    return summary;
+  };
+  
+  const processTweets = async (rawTweets: any[]): Promise<Tweet[]> => {
+    const spot = getCurrentSpot();
+    
+    const processedTweets = await Promise.all(
+      rawTweets.map(async (tweet) => {
+        const relevanceScore = calculateRelevanceScore(tweet, spot);
+        const category = categorizeByKeywords(tweet.content, tweet.hashtags);
+        
+        let translatedContent = tweet.content;
+        if (displayLang !== 'ja' && tweet.lang && tweet.lang !== displayLang) {
+          translatedContent = await translateContent(tweet.content, tweet.lang, displayLang);
+        }
+        
+        return {
+          ...tweet,
+          category,
+          relevanceScore,
+          spotId: spot.id,
+          translatedContent,
+          summary: summarizeContent(translatedContent),
+        };
+      })
+    );
+    
+    // Filter out low relevance tweets
+    return processedTweets.filter(tweet => tweet.relevanceScore && tweet.relevanceScore > 2);
+  };
+  
+  const fetchTweets = async (pageNum: number = 1, append: boolean = false) => {
+    try {
+      if (!append) {
+        setLoading(true);
+      }
+      
+      const spot = getCurrentSpot();
+      const query = buildSearchQuery(spot);
+      
+      const params = new URLSearchParams({
+        q: query,
+        count: '20'
+      });
+      
+      const response = await fetch(`/api/twitter?${params}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch tweets');
@@ -169,15 +479,17 @@ export default function RealtimeContent() {
       const data = await response.json();
       
       if (data.tweets) {
-        const categorizedTweets = data.tweets.map((tweet: Tweet) => ({
-          ...tweet,
-          category: categorizeByKeywords(tweet.content, tweet.hashtags)
-        }));
+        const processedTweets = await processTweets(data.tweets);
         
-        setTweets(categorizedTweets);
+        if (append) {
+          setTweets(prev => [...prev, ...processedTweets]);
+        } else {
+          setTweets(processedTweets);
+        }
+        
         setLastUpdate(new Date().toLocaleString('ja-JP'));
+        setHasMore(data.has_more || false);
         
-        // フォールバックデータを使用している場合の通知
         if (data.fallback) {
           console.log('Using fallback data:', data.error || 'Twitter API not available');
         }
@@ -192,18 +504,121 @@ export default function RealtimeContent() {
     }
   };
 
+  const setupSSE = () => {
+    if (eventSource) {
+      eventSource.close();
+    }
+    
+    if (!autoUpdate) {
+      setConnectionStatus('disconnected');
+      return;
+    }
+    
+    // For now, use polling instead of SSE since the endpoint doesn't exist yet
+    setConnectionStatus('connected');
+    
+    const pollForUpdates = async () => {
+      try {
+        await fetchTweets(1, false);
+        setConnectionStatus('connected');
+      } catch (error) {
+        console.error('Polling error:', error);
+        setConnectionStatus('disconnected');
+      }
+    };
+    
+    // Poll every 2 minutes when auto-update is enabled
+    const interval = setInterval(pollForUpdates, 2 * 60 * 1000);
+    
+    // Store interval ID in eventSource for cleanup
+    setEventSource({ close: () => clearInterval(interval) } as EventSource);
+  };
+  
+  const loadMore = () => {
+    if (hasMore && !loading) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchTweets(nextPage, true);
+    }
+  };
+  
   useEffect(() => {
-    fetchTweets();
+    fetchTweets(1, false);
     
-    // 15分ごとに自動更新（レート制限を回避）
-    const interval = setInterval(fetchTweets, 15 * 60 * 1000);
+    if (autoUpdate) {
+      setupSSE();
+    }
     
-    return () => clearInterval(interval);
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
+  }, [selectedSpot, filters, autoUpdate]);
+  
+  useEffect(() => {
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
   }, []);
 
-  const filteredTweets = selectedCategory === 'all' 
-    ? tweets 
-    : tweets.filter(tweet => tweet.category === selectedCategory);
+  const sortTweets = (tweetsToSort: Tweet[]) => {
+    const sorted = [...tweetsToSort].sort((a, b) => {
+      switch (filters.sortBy) {
+        case 'popular':
+          const aEngagement = (a.metrics.likes || 0) + (a.metrics.retweets || 0) * 2;
+          const bEngagement = (b.metrics.likes || 0) + (b.metrics.retweets || 0) * 2;
+          return bEngagement - aEngagement;
+        case 'relevant':
+          return (b.relevanceScore || 0) - (a.relevanceScore || 0);
+        case 'recent':
+        default:
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+    });
+    return sorted;
+  };
+  
+  const applyFilters = (tweetsToFilter: Tweet[]) => {
+    let filtered = tweetsToFilter;
+    
+    // Category filter
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(tweet => tweet.category === selectedCategory);
+    }
+    
+    // Engagement filters
+    if (filters.minLikes > 0) {
+      filtered = filtered.filter(tweet => (tweet.metrics.likes || 0) >= filters.minLikes);
+    }
+    
+    if (filters.minRetweets > 0) {
+      filtered = filtered.filter(tweet => (tweet.metrics.retweets || 0) >= filters.minRetweets);
+    }
+    
+    // Media filter
+    if (filters.hasMedia) {
+      filtered = filtered.filter(tweet => tweet.media && tweet.media.length > 0);
+    }
+    
+    // Retweet filter
+    if (!filters.showRetweets) {
+      filtered = filtered.filter(tweet => !tweet.isRetweet);
+    }
+    
+    // Language filter
+    if (filters.languages.length > 0) {
+      filtered = filtered.filter(tweet => 
+        !tweet.lang || filters.languages.includes(tweet.lang)
+      );
+    }
+    
+    return filtered;
+  };
+  
+  const filteredTweets = sortTweets(applyFilters(tweets));
 
   return (
     <>
@@ -224,11 +639,163 @@ export default function RealtimeContent() {
       {/* Features Section */}
       <section className="features">
         <div className="container">
-          {/* Filter Section */}
+          {/* Spot Selection */}
+          <div className="feature-card fade-in" style={{ marginBottom: '40px' }}>
+            <div className="feature-icon">📍</div>
+            <h3>観光地選択</h3>
+            <div className="relative" style={{ marginTop: '20px' }}>
+              <button
+                onClick={() => setIsSpotDropdownOpen(!isSpotDropdownOpen)}
+                className="w-full max-w-md mx-auto flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 focus:outline-none focus:border-blue-500 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{SPOTS.find(s => s.id === selectedSpot)?.id === 'tokyo' ? '🗼' : SPOTS.find(s => s.id === selectedSpot)?.id === 'kyoto' ? '⛩️' : SPOTS.find(s => s.id === selectedSpot)?.id === 'osaka' ? '🏯' : SPOTS.find(s => s.id === selectedSpot)?.id === 'yokohama' ? '🌉' : '🦌'}</span>
+                  <div className="text-left">
+                    <div className="font-semibold text-gray-900">{getCurrentSpot().name}</div>
+                    <div className="text-sm text-gray-500">{getCurrentSpot().nameEn}</div>
+                  </div>
+                </div>
+                <svg className={`w-5 h-5 text-gray-400 transition-transform ${isSpotDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isSpotDropdownOpen && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                  {SPOTS.filter(spot => 
+                    spotSearch === '' || 
+                    spot.name.toLowerCase().includes(spotSearch.toLowerCase()) ||
+                    spot.nameEn.toLowerCase().includes(spotSearch.toLowerCase())
+                  ).map((spot) => (
+                    <button
+                      key={spot.id}
+                      onClick={() => {
+                        setSelectedSpot(spot.id);
+                        setIsSpotDropdownOpen(false);
+                        setPage(1);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                        selectedSpot === spot.id ? 'bg-blue-50 text-blue-600' : 'text-gray-900'
+                      }`}
+                    >
+                      <span className="text-2xl">{spot.id === 'tokyo' ? '🗼' : spot.id === 'kyoto' ? '⛩️' : spot.id === 'osaka' ? '🏯' : spot.id === 'yokohama' ? '🌉' : '🦌'}</span>
+                      <div>
+                        <div className="font-semibold">{spot.name}</div>
+                        <div className="text-sm text-gray-500">{spot.nameEn}</div>
+                        <div className="text-xs text-gray-400">{spot.hashtags.slice(0, 3).join(' ')}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Language & Filter Options */}
+          <div className="feature-card fade-in" style={{ marginBottom: '40px' }}>
+            <div className="feature-icon">🔧</div>
+            <h3>表示設定</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ marginTop: '20px' }}>
+              {/* Language Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">表示言語</label>
+                <select
+                  value={displayLang}
+                  onChange={(e) => setDisplayLang(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
+                >
+                  <option value="ja">日本語</option>
+                  <option value="en">English</option>
+                  <option value="ko">한국어</option>
+                  <option value="zh">中文</option>
+                </select>
+              </div>
+              
+              {/* Auto Update Toggle */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">自動更新</label>
+                <button
+                  onClick={() => setAutoUpdate(!autoUpdate)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    autoUpdate 
+                      ? 'bg-green-100 text-green-800 border border-green-200' 
+                      : 'bg-gray-100 text-gray-700 border border-gray-200'
+                  }`}
+                >
+                  <div className={`w-3 h-3 rounded-full ${autoUpdate ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+                  <span>{autoUpdate ? 'ON' : 'OFF'}</span>
+                </button>
+              </div>
+            </div>
+            
+            {/* Advanced Filters */}
+            <div className="mt-6 space-y-4">
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={filters.hasMedia}
+                    onChange={(e) => setFilters(prev => ({ ...prev, hasMedia: e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">画像・動画付き優先</span>
+                </label>
+                
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!filters.showRetweets}
+                    onChange={(e) => setFilters(prev => ({ ...prev, showRetweets: !e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">リツイート除外</span>
+                </label>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">最小いいね数</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={filters.minLikes}
+                    onChange={(e) => setFilters(prev => ({ ...prev, minLikes: parseInt(e.target.value) || 0 }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">最小RT数</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={filters.minRetweets}
+                    onChange={(e) => setFilters(prev => ({ ...prev, minRetweets: parseInt(e.target.value) || 0 }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">並び順</label>
+                  <select
+                    value={filters.sortBy}
+                    onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value as FilterOptions['sortBy'] }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="recent">新着順</option>
+                    <option value="popular">人気順</option>
+                    <option value="relevant">関連度順</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Category Filter */}
           <div className="feature-card fade-in" style={{ marginBottom: '40px', textAlign: 'center' }}>
             <div className="feature-icon">🔍</div>
             <h3>カテゴリーフィルター</h3>
-            <div className="flex flex-wrap gap-4 justify-center" style={{ marginTop: '20px' }}>
+            <div className="flex flex-wrap gap-3 justify-center" style={{ marginTop: '20px' }}>
               <button 
                 onClick={() => setSelectedCategory('all')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -296,16 +863,26 @@ export default function RealtimeContent() {
           <div className="feature-card fade-in" style={{ marginBottom: '40px', textAlign: 'center' }}>
             <div className="feature-icon">🔄</div>
             <h3>更新ステータス</h3>
-            <div className="flex items-center justify-center gap-3" style={{ marginTop: '20px' }}>
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-blue-800 font-medium">リアルタイム更新中</span>
+            <div className="flex flex-wrap items-center justify-center gap-3" style={{ marginTop: '20px' }}>
+              <div className="flex items-center gap-2">
+                <div className={`w-3 h-3 rounded-full ${
+                  connectionStatus === 'connected' ? 'bg-green-500 animate-pulse' :
+                  connectionStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' :
+                  'bg-red-500'
+                }`}></div>
+                <span className="text-blue-800 font-medium">
+                  {connectionStatus === 'connected' && autoUpdate ? 'リアルタイム更新中' :
+                   connectionStatus === 'connecting' ? '接続中...' :
+                   autoUpdate ? '再接続中...' : 'オフライン'}
+                </span>
+              </div>
               {lastUpdate && (
                 <span className="text-blue-600 text-sm">最終更新: {lastUpdate}</span>
               )}
               <button 
-                onClick={fetchTweets}
+                onClick={() => fetchTweets(1, false)}
                 disabled={loading}
-                className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50 transition-colors"
               >
                 {loading ? '更新中...' : '手動更新'}
               </button>
@@ -337,13 +914,28 @@ export default function RealtimeContent() {
               <h2 className="section-title fade-in">最新のツイート情報</h2>
               <p className="section-subtitle fade-in">旅行に役立つリアルタイム情報をお届けします</p>
               
-              {/* デバッグ情報 */}
+              {/* Stats */}
               <div className="feature-card fade-in" style={{ textAlign: 'center', marginBottom: '40px' }}>
                 <div className="feature-icon">📊</div>
                 <h3>データ状況</h3>
-                <p style={{ marginTop: '10px' }}>
-                  総ツイート数: {tweets.length} | フィルター後: {filteredTweets.length} | 選択中: {selectedCategory}
-                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4" style={{ marginTop: '20px' }}>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">{tweets.length}</div>
+                    <div className="text-sm text-gray-600">総ツイート数</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">{filteredTweets.length}</div>
+                    <div className="text-sm text-gray-600">表示中</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-600">{getCurrentSpot().name}</div>
+                    <div className="text-sm text-gray-600">選択エリア</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-orange-600">{selectedCategory === 'all' ? 'すべて' : selectedCategory}</div>
+                    <div className="text-sm text-gray-600">カテゴリー</div>
+                  </div>
+                </div>
               </div>
 
               <div className="features-grid">
@@ -355,21 +947,33 @@ export default function RealtimeContent() {
                   </div>
                 ) : (
                   filteredTweets.map((tweet) => (
-                    <TweetCard key={tweet.id} tweet={tweet} />
+                    <TweetCard key={tweet.id} tweet={tweet} displayLang={displayLang} />
                   ))
                 )}
               </div>
 
               {/* Load More Button */}
-              <div className="text-center" style={{ marginTop: '60px' }}>
-                <button 
-                  onClick={fetchTweets}
-                  className="btn btn-primary"
-                >
-                  <i className="fas fa-sync-alt"></i>
-                  <span>最新情報を更新</span>
-                </button>
-              </div>
+              {hasMore && (
+                <div className="text-center" style={{ marginTop: '60px' }}>
+                  <button 
+                    onClick={() => loadMore()}
+                    disabled={loading}
+                    className="btn btn-primary"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                        <span>読み込み中...</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-chevron-down"></i>
+                        <span>もっと見る</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>

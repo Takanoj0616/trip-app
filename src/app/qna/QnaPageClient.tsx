@@ -165,7 +165,7 @@ export default function QnaPageClient() {
         aria-hidden="true"
         className="fixed inset-0"
         style={{
-          zIndex: -30,
+          zIndex: -1,
           pointerEvents: 'none',
           background: `
             radial-gradient(800px 400px at 15% 12%, rgba(255, 122, 0, 0.28) 0%, transparent 60%),
@@ -189,7 +189,7 @@ export default function QnaPageClient() {
         aria-hidden="true"
         className="fixed inset-0"
         style={{
-          zIndex: -10,
+          zIndex: -2,
           pointerEvents: 'none',
           background: `
             radial-gradient(300px 220px at 50% calc(100% - 120px), rgba(255, 120, 0, 0.35) 0%, transparent 70%),
@@ -203,7 +203,7 @@ export default function QnaPageClient() {
         aria-hidden="true"
         className="fixed inset-0"
         style={{
-          zIndex: -20,
+          zIndex: -3,
           pointerEvents: 'none',
           background: `
             linear-gradient(to top, rgba(2, 6, 23, 0.65) 0%, rgba(2, 6, 23, 0) 60%),
@@ -213,15 +213,15 @@ export default function QnaPageClient() {
         }}
       />
       
-      <div className="min-h-screen" style={{ paddingTop: '120px' }}>
+      <div className="min-h-screen relative z-10" style={{ paddingTop: '120px' }}>
         <div style={{ 
           maxWidth: '1200px', 
           margin: '0 auto', 
           padding: '0 20px',
-          background: 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(20px)',
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(10px)',
           borderRadius: '24px',
-          border: '1px solid rgba(255, 255, 255, 0.2)'
+          border: '1px solid rgba(255, 255, 255, 0.1)'
         }}>
           <div style={{ padding: '40px 20px' }}>
             <Hero />
