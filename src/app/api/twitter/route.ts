@@ -1,270 +1,195 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
-// サンプルデータ（Twitter APIが利用不可の場合のフォールバック）
-const sampleTweets = [
-  {
-    id: '1',
-    content: '【運行情報】JR山手線は現在、新宿駅での人身事故の影響により、内回り・外回りともに10分程度の遅延が発生しています。復旧まで今しばらくお待ちください。 #東京 #JR山手線 #遅延情報',
-    author: {
-      id: 'tokyo_traffic_jp',
-      username: 'tokyo_traffic_jp',
-      displayName: '東京交通情報',
-      avatar: '🚇',
-    },
-    createdAt: new Date().toISOString(),
-    metrics: {
-      likes: 45,
-      retweets: 123,
-      replies: 8,
-      quotes: 5,
-    },
-    hashtags: ['東京', 'JR山手線', '遅延情報'],
-    mentions: [],
-    urls: [],
-    contextAnnotations: [],
-  },
-  {
-    id: '2',
-    content: '上野公園の桜が5分咲きになりました！今週末がお花見のベストタイミングです。平日の午前中がおすすめです。写真は今朝撮影したものです。 #東京 #東京観光 #桜 #上野公園',
-    author: {
-      id: 'sakura_tokyo',
-      username: 'sakura_tokyo',
-      displayName: '東京桜開花情報',
-      avatar: '🌸',
-    },
-    createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30分前
-    metrics: {
-      likes: 287,
-      retweets: 156,
-      replies: 24,
-      quotes: 12,
-    },
-    hashtags: ['東京', '東京観光', '桜', '上野公園'],
-    mentions: [],
-    urls: [],
-    contextAnnotations: [],
-  },
-  {
-    id: '3',
-    content: 'みなとみらいの夜景が今日は特に美しいです！コスモワールドの観覧車と横浜ランドマークタワーのライトアップが最高です。カップルにおすすめスポット！ #横浜 #横浜観光 #みなとみらい #夜景',
-    author: {
-      id: 'yokohama_night',
-      username: 'yokohama_night',
-      displayName: '横浜夜景情報',
-      avatar: '🌃',
-    },
-    createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(), // 45分前
-    metrics: {
-      likes: 189,
-      retweets: 94,
-      replies: 16,
-      quotes: 8,
-    },
-    hashtags: ['横浜', '横浜観光', 'みなとみらい', '夜景'],
-    mentions: [],
-    urls: [],
-    contextAnnotations: [],
-  },
-  {
-    id: '4',
-    content: '築地の大和寿司、今日は比較的空いています！平日限定のマグロ定食が絶品です。観光客の皆さん、チャンスですよ！ #東京 #東京グルメ #築地 #寿司',
-    author: {
-      id: 'tsukiji_gourmet',
-      username: 'tsukiji_gourmet',
-      displayName: '築地グルメ情報',
-      avatar: '🍣',
-    },
-    createdAt: new Date(Date.now() - 1000 * 60 * 90).toISOString(), // 1.5時間前
-    metrics: {
-      likes: 156,
-      retweets: 89,
-      replies: 18,
-      quotes: 7,
-    },
-    hashtags: ['東京', '東京グルメ', '築地', '寿司'],
-    mentions: [],
-    urls: [],
-    contextAnnotations: [],
-  },
-  {
-    id: '5',
-    content: '横浜中華街の春節祭、今年も盛大に開催中！獅子舞や太鼓の演奏が迫力満点です。本格的な中華料理も楽しめます。 #横浜 #横浜中華街 #春節祭 #中華料理',
-    author: {
-      id: 'chinatown_yokohama',
-      username: 'chinatown_yokohama',
-      displayName: '横浜中華街情報',
-      avatar: '🐉',
-    },
-    createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(), // 1時間前
-    metrics: {
-      likes: 234,
-      retweets: 189,
-      replies: 31,
-      quotes: 15,
-    },
-    hashtags: ['横浜', '横浜中華街', '春節祭', '中華料理'],
-    mentions: [],
-    urls: [],
-    contextAnnotations: [],
-  },
-  {
-    id: '6',
-    content: '浅草寺の今日の参拝者数は例年より少なめです。ゆっくりお参りできるチャンスです。仲見世通りの人形焼きも並ばずに買えます！ #東京 #東京観光 #浅草寺 #仲見世通り',
-    author: {
-      id: 'asakusa_info',
-      username: 'asakusa_info',
-      displayName: '浅草観光案内',
-      avatar: '⛩️',
-    },
-    createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(), // 2時間前
-    metrics: {
-      likes: 67,
-      retweets: 34,
-      replies: 9,
-      quotes: 2,
-    },
-    hashtags: ['東京', '東京観光', '浅草寺', '仲見世通り'],
-    mentions: [],
-    urls: [],
-    contextAnnotations: [],
-  },
-  {
-    id: '7',
-    content: '横浜赤レンガ倉庫でアートイベント開催中！現代アートの展示とワークショップが楽しめます。入場無料なのでぜひお立ち寄りください。 #横浜 #横浜旅行 #赤レンガ倉庫 #アート',
-    author: {
-      id: 'redbrick_yokohama',
-      username: 'redbrick_yokohama',
-      displayName: '横浜赤レンガ情報',
-      avatar: '🧱',
-    },
-    createdAt: new Date(Date.now() - 1000 * 60 * 150).toISOString(), // 2.5時間前
-    metrics: {
-      likes: 98,
-      retweets: 52,
-      replies: 14,
-      quotes: 6,
-    },
-    hashtags: ['横浜', '横浜旅行', '赤レンガ倉庫', 'アート'],
-    mentions: [],
-    urls: [],
-    contextAnnotations: [],
-  },
-  {
-    id: '8',
-    content: '東京スカイツリーで今夜限定のイルミネーションイベント開催！19:00〜21:00まで特別ライトアップが楽しめます。入場無料です。 #東京 #Tokyo #スカイツリー #イルミネーション',
-    author: {
-      id: 'skytree_official',
-      username: 'skytree_official',
-      displayName: '東京スカイツリー公式',
-      avatar: '🗼',
-    },
-    createdAt: new Date(Date.now() - 1000 * 60 * 180).toISOString(), // 3時間前
-    metrics: {
-      likes: 345,
-      retweets: 278,
-      replies: 42,
-      quotes: 23,
-    },
-    hashtags: ['東京', 'Tokyo', 'スカイツリー', 'イルミネーション'],
-    mentions: [],
-    urls: [],
-    contextAnnotations: [],
-  }
-];
+type ApiTweet = {
+  id: string;
+  content: string;
+  author: {
+    id: string;
+    username: string;
+    displayName: string;
+    avatar: string;
+  };
+  createdAt: string;
+  metrics: {
+    likes: number;
+    retweets: number;
+    replies: number;
+    quotes: number;
+    views?: number;
+  };
+  hashtags: string[];
+  mentions: string[];
+  urls: string[];
+  media?: {
+    type: 'photo' | 'video' | 'gif';
+    url: string;
+    thumbnailUrl?: string;
+    alt?: string;
+  }[];
+  lang?: string;
+};
 
-export async function GET(request: NextRequest) {
-  try {
-    const bearerToken = process.env.TWITTER_BEARER_TOKEN;
-    
-    if (!bearerToken) {
-      console.log('Twitter Bearer Token not configured, using sample data');
-      return NextResponse.json({
-        tweets: sampleTweets,
-        meta: { result_count: sampleTweets.length },
-        fallback: true
-      });
-    }
-
-    const searchParams = request.nextUrl.searchParams;
-    const query = searchParams.get('q') || '#東京 OR #横浜 OR #Tokyo OR #Yokohama OR #東京観光 OR #横浜観光';
-    const count = Math.min(parseInt(searchParams.get('count') || '10'), 10); // 制限を10に
-
-    // Twitter API v2を使用してツイートを検索
-    const url = `https://api.twitter.com/2/tweets/search/recent?query=${encodeURIComponent(query)}&max_results=${count}&tweet.fields=author_id,created_at,public_metrics,context_annotations,entities&expansions=author_id&user.fields=name,username,profile_image_url`;
-
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${bearerToken}`,
-        'Content-Type': 'application/json',
+function buildFallbackTweets(count: number): ApiTweet[] {
+  const base: ApiTweet[] = [
+    {
+      id: 'demo-1',
+      content: '浅草寺のライトアップが美しい！今夜は人も少なくて快適に散策できます。',
+      author: {
+        id: 'u1',
+        username: 'tokyo_traveler',
+        displayName: 'Tokyo Traveler',
+        avatar: '',
       },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error('Twitter API Error:', errorData);
-      
-      // レート制限や他のAPIエラーの場合、サンプルデータを返す
-      if (response.status === 429 || response.status >= 400) {
-        console.log('Twitter API error, falling back to sample data');
-        return NextResponse.json({
-          tweets: sampleTweets,
-          meta: { result_count: sampleTweets.length },
-          fallback: true,
-          error: 'Using sample data due to API limitations'
-        });
-      }
-      
-      return NextResponse.json(
-        { error: 'Failed to fetch tweets', details: errorData },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-
-    // データを整形
-    const tweets = data.data?.map((tweet: any) => {
-      const author = data.includes?.users?.find((user: any) => user.id === tweet.author_id);
-      
-      return {
-        id: tweet.id,
-        content: tweet.text,
-        author: {
-          id: tweet.author_id,
-          username: author?.username || 'unknown',
-          displayName: author?.name || 'Unknown User',
-          avatar: author?.profile_image_url || '',
-        },
-        createdAt: tweet.created_at,
-        metrics: {
-          likes: tweet.public_metrics?.like_count || 0,
-          retweets: tweet.public_metrics?.retweet_count || 0,
-          replies: tweet.public_metrics?.reply_count || 0,
-          quotes: tweet.public_metrics?.quote_count || 0,
-        },
-        hashtags: tweet.entities?.hashtags?.map((tag: any) => tag.tag) || [],
-        mentions: tweet.entities?.mentions?.map((mention: any) => mention.username) || [],
-        urls: tweet.entities?.urls?.map((url: any) => url.expanded_url) || [],
-        contextAnnotations: tweet.context_annotations || [],
-      };
-    }) || [];
-
-    return NextResponse.json({
-      tweets,
-      meta: data.meta || {},
-      fallback: false
-    });
-
-  } catch (error) {
-    console.error('Error fetching tweets:', error);
-    
-    // エラーが発生した場合もサンプルデータを返す
-    console.log('Unexpected error, falling back to sample data');
-    return NextResponse.json({
-      tweets: sampleTweets,
-      meta: { result_count: sampleTweets.length },
-      fallback: true,
-      error: 'Using sample data due to unexpected error'
-    });
+      createdAt: new Date().toISOString(),
+      metrics: { likes: 32, retweets: 5, replies: 1, quotes: 0, views: 1200 },
+      hashtags: ['東京', '浅草', '東京観光'],
+      mentions: [],
+      urls: [],
+      media: [
+        { type: 'photo', url: 'https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba?q=80&w=1200&auto=format&fit=crop', thumbnailUrl: undefined, alt: 'Asakusa night' }
+      ],
+      lang: 'ja',
+    },
+    {
+      id: 'demo-2',
+      content: 'Shibuya is vibrant tonight! Great weather and smooth trains. #Tokyo #Shibuya',
+      author: {
+        id: 'u2',
+        username: 'japan_updates',
+        displayName: 'Japan Updates',
+        avatar: '',
+      },
+      createdAt: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
+      metrics: { likes: 58, retweets: 11, replies: 4, quotes: 0, views: 2500 },
+      hashtags: ['Tokyo', 'Shibuya'],
+      mentions: [],
+      urls: [],
+      media: [],
+      lang: 'en',
+    },
+    {
+      id: 'demo-3',
+      content: '京都・清水寺の周辺、朝は比較的人が少なく快適に観光できます。#京都 #清水寺',
+      author: {
+        id: 'u3',
+        username: 'kyoto_walk',
+        displayName: 'Kyoto Walk',
+        avatar: '',
+      },
+      createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+      metrics: { likes: 74, retweets: 8, replies: 3, quotes: 0 },
+      hashtags: ['京都', '清水寺'],
+      mentions: [],
+      urls: [],
+      media: [],
+      lang: 'ja',
+    },
+  ];
+  // Repeat/truncate to requested count
+  const out: ApiTweet[] = [];
+  for (let i = 0; i < Math.max(1, count); i++) {
+    const t = base[i % base.length];
+    out.push({ ...t, id: `${t.id}-${i}` });
   }
+  return out;
 }
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const q = searchParams.get('q') || '#Tokyo OR #東京';
+  const count = Math.min(50, Math.max(1, parseInt(searchParams.get('count') || '20', 10)));
+
+  const keys = {
+    appKey: process.env.TWITTER_APP_KEY,
+    appSecret: process.env.TWITTER_APP_SECRET,
+    accessToken: process.env.TWITTER_ACCESS_TOKEN,
+    accessSecret: process.env.TWITTER_ACCESS_SECRET,
+  };
+
+  let tweets: ApiTweet[] = [];
+  let fallback = false;
+
+  // Try to use twitter-api-v2 if available and credentials exist
+  if (keys.appKey && keys.appSecret && keys.accessToken && keys.accessSecret) {
+    try {
+      // Dynamic import so the app still runs without the package installed
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const mod = await import('twitter-api-v2').catch(() => null as any);
+      if (mod) {
+        const client = new mod.TwitterApi({
+          appKey: keys.appKey,
+          appSecret: keys.appSecret,
+          accessToken: keys.accessToken,
+          accessSecret: keys.accessSecret,
+        });
+
+        const v2 = client.readOnly;
+        const res = await v2.v2.search(q, {
+          max_results: Math.min(100, count),
+          'tweet.fields': ['created_at', 'lang', 'public_metrics', 'entities'],
+          expansions: ['author_id', 'attachments.media_keys'],
+          'user.fields': ['name', 'username', 'profile_image_url'],
+          'media.fields': ['preview_image_url', 'url', 'type', 'alt_text'],
+        });
+
+        const users = new Map<string, any>((res.includes?.users || []).map((u: any) => [u.id, u]));
+        const mediaMap = new Map<string, any>((res.includes?.media || []).map((m: any) => [m.media_key, m]));
+
+        tweets = (res.data || []).map((t: any) => {
+          const author = users.get(t.author_id);
+          const urls: string[] = (t.entities?.urls || []).map((u: any) => u.expanded_url || u.url).slice(0, 3);
+          const hashtags: string[] = (t.entities?.hashtags || []).map((h: any) => h.tag);
+          const mentions: string[] = (t.entities?.mentions || []).map((m: any) => m.username);
+          const mediaKeys: string[] = t.attachments?.media_keys || [];
+          const media = mediaKeys
+            .map((k) => mediaMap.get(k))
+            .filter(Boolean)
+            .slice(0, 4)
+            .map((m: any) => ({
+              type: (m.type || 'photo') as 'photo' | 'video' | 'gif',
+              url: m.url || m.preview_image_url,
+              thumbnailUrl: m.preview_image_url || m.url,
+              alt: m.alt_text,
+            }));
+
+          return {
+            id: t.id,
+            content: t.text,
+            author: {
+              id: t.author_id,
+              username: author?.username || 'unknown',
+              displayName: author?.name || 'User',
+              avatar: author?.profile_image_url || '',
+            },
+            createdAt: t.created_at || new Date().toISOString(),
+            metrics: {
+              likes: t.public_metrics?.like_count || 0,
+              retweets: t.public_metrics?.retweet_count || 0,
+              replies: t.public_metrics?.reply_count || 0,
+              quotes: t.public_metrics?.quote_count || 0,
+            },
+            hashtags,
+            mentions,
+            urls,
+            media,
+            lang: t.lang || 'und',
+          } as ApiTweet;
+        });
+      } else {
+        fallback = true;
+        tweets = buildFallbackTweets(count);
+      }
+    } catch (e) {
+      // Any error -> fallback dataset so UI never breaks
+      fallback = true;
+      tweets = buildFallbackTweets(count);
+    }
+  } else {
+    // Missing credentials -> fallback
+    fallback = true;
+    tweets = buildFallbackTweets(count);
+  }
+
+  return Response.json({ tweets, has_more: false, fallback }, { status: 200 });
+}
+

@@ -317,6 +317,18 @@ export default function RealtimeContent() {
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
+  // Make fade-in elements visible on mount (staggered)
+  useEffect(() => {
+    try {
+      const elements = Array.from(document.querySelectorAll('.fade-in')) as HTMLElement[];
+      elements.forEach((el, idx) => {
+        setTimeout(() => {
+          el.classList.add('visible');
+        }, 120 + idx * 80);
+      });
+    } catch {}
+  }, []);
+
   const categorizeByKeywords = (content: string, hashtags: string[]): Tweet['category'] => {
     const text = content.toLowerCase() + ' ' + hashtags.join(' ').toLowerCase();
     
@@ -630,8 +642,8 @@ export default function RealtimeContent() {
       <section className="hero">
         <div className="container">
           <div className="hero-content">
-            <h1>📡 リアルタイム情報</h1>
-            <p>Twitter/Xからの最新旅行情報、交通状況、天気、イベント情報などをリアルタイムでお届けします。旅行中の最新情報収集にご活用ください。</p>
+            <h1 style={{ color: '#ffffff' }}>📡 リアルタイム情報</h1>
+            <p style={{ color: 'rgba(255,255,255,0.95)' }}>Twitter/Xからの最新旅行情報、交通状況、天気、イベント情報などをリアルタイムでお届けします。旅行中の最新情報収集にご活用ください。</p>
           </div>
         </div>
       </section>

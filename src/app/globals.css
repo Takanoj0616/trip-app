@@ -451,6 +451,15 @@ body {
   position: relative;
 }
 
+/* Ensure elements in realtime/features section are visible even if they carry fade-in */
+.features .fade-in,
+.features .section-title,
+.features .section-subtitle,
+.hero .fade-in {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
 /* Reviews Section */
 .reviews {
   padding: 120px 0;
