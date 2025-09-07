@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import AnimationClient from '@/components/AnimationClient';
 
 interface SpotQuery {
@@ -60,6 +61,7 @@ interface Tweet {
 }
 
 function TweetCard({ tweet, displayLang }: { tweet: Tweet; displayLang: string }) {
+  const { t, currentLanguage } = useLanguage();
   const getCategoryColor = (category?: string) => {
     switch (category) {
       case 'traffic': return 'bg-red-100 text-red-800';
@@ -74,19 +76,26 @@ function TweetCard({ tweet, displayLang }: { tweet: Tweet; displayLang: string }
 
   const getCategoryLabel = (category?: string) => {
     switch (category) {
-      case 'traffic': return '交通情報';
-      case 'weather': return '天気';
-      case 'events': return 'イベント';
-      case 'food': return 'グルメ';
-      case 'sightseeing': return '観光';
-      case 'emergency': return '緊急情報';
-      default: return 'その他';
+      case 'traffic': return t('realtime.categories.traffic');
+      case 'weather': return t('realtime.categories.weather');
+      case 'events': return t('realtime.categories.events');
+      case 'food': return t('realtime.categories.food');
+      case 'sightseeing': return t('realtime.categories.sightseeing');
+      case 'emergency': return t('realtime.categories.emergency') || 'Emergency';
+      default: return t('realtime.categories.other') || 'Other';
     }
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString('ja-JP', {
+    const localeMap: Record<string, string> = {
+      ja: 'ja-JP',
+      en: 'en-US',
+      ko: 'ko-KR',
+      fr: 'fr-FR',
+      ar: 'ar-SA',
+    };
+    return date.toLocaleString(localeMap[currentLanguage] || 'en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -130,7 +139,7 @@ function TweetCard({ tweet, displayLang }: { tweet: Tweet; displayLang: string }
             )}
             {tweet.relevanceScore && tweet.relevanceScore > 10 && (
               <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                ★ 注目
+                ★ {t('realtime.badge.featured')}
               </span>
             )}
           </div>
@@ -139,7 +148,7 @@ function TweetCard({ tweet, displayLang }: { tweet: Tweet; displayLang: string }
           
           {shouldShowOriginal() && (
             <details className="mb-3">
-              <summary className="text-sm text-gray-600 cursor-pointer hover:text-gray-800">原文を表示</summary>
+              <summary className="text-sm text-gray-600 cursor-pointer hover:text-gray-800">{t('realtime.tweet.showOriginal')}</summary>
               <p className="text-gray-700 text-sm mt-2 p-3 bg-gray-50 rounded">{tweet.content}</p>
             </details>
           )}
@@ -159,7 +168,7 @@ function TweetCard({ tweet, displayLang }: { tweet: Tweet; displayLang: string }
                     <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
                          onClick={() => window.open(media.url, '_blank')}>
                       <span className="text-gray-600 font-medium">
-                        {media.type === 'video' ? '🎥 動画' : '🎬 GIF'}
+                        {media.type === 'video' ? `🎥 ${t('realtime.media.video')}` : `🎬 ${t('realtime.media.gif')}`}
                       </span>
                     </div>
                   )}
@@ -168,7 +177,7 @@ function TweetCard({ tweet, displayLang }: { tweet: Tweet; displayLang: string }
             </div>
           )}
           
-          {tweet.hashtags.length > 0 && (
+              {tweet.hashtags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
               {tweet.hashtags.slice(0, 5).map((hashtag, index) => (
                 <span key={index} className="text-blue-600 text-sm hover:text-blue-800 cursor-pointer bg-blue-50 px-2 py-1 rounded">
@@ -176,12 +185,12 @@ function TweetCard({ tweet, displayLang }: { tweet: Tweet; displayLang: string }
                 </span>
               ))}
               {tweet.hashtags.length > 5 && (
-                <span className="text-gray-500 text-sm">+{tweet.hashtags.length - 5} more</span>
+                <span className="text-gray-500 text-sm">+{tweet.hashtags.length - 5} {t('realtime.more')}</span>
               )}
             </div>
           )}
           
-          {tweet.urls.length > 0 && (
+              {tweet.urls.length > 0 && (
             <div className="mb-4">
               {tweet.urls.slice(0, 2).map((url, index) => (
                 <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm block truncate bg-gray-50 p-2 rounded mb-1">
@@ -189,7 +198,7 @@ function TweetCard({ tweet, displayLang }: { tweet: Tweet; displayLang: string }
                 </a>
               ))}
               {tweet.urls.length > 2 && (
-                <span className="text-gray-500 text-sm">+{tweet.urls.length - 2} more links</span>
+                <span className="text-gray-500 text-sm">+{tweet.urls.length - 2} {t('realtime.moreLinks')}</span>
               )}
             </div>
           )}
@@ -294,6 +303,7 @@ interface FilterOptions {
 }
 
 export default function RealtimeContent() {
+  const { t, currentLanguage } = useLanguage();
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -642,8 +652,8 @@ export default function RealtimeContent() {
       <section className="hero">
         <div className="container">
           <div className="hero-content">
-            <h1 style={{ color: '#ffffff' }}>📡 リアルタイム情報</h1>
-            <p style={{ color: 'rgba(255,255,255,0.95)' }}>Twitter/Xからの最新旅行情報、交通状況、天気、イベント情報などをリアルタイムでお届けします。旅行中の最新情報収集にご活用ください。</p>
+            <h1 style={{ color: '#ffffff' }}>{t('realtime.hero.title')}</h1>
+            <p style={{ color: 'rgba(255,255,255,0.95)' }}>{t('realtime.hero.desc')}</p>
           </div>
         </div>
       </section>
@@ -654,7 +664,7 @@ export default function RealtimeContent() {
           {/* Spot Selection */}
           <div className="feature-card fade-in" style={{ marginBottom: '40px' }}>
             <div className="feature-icon">📍</div>
-            <h3>観光地選択</h3>
+            <h3>{t('realtime.spotSelection.title')}</h3>
             <div className="relative" style={{ marginTop: '20px' }}>
               <button
                 onClick={() => setIsSpotDropdownOpen(!isSpotDropdownOpen)}
@@ -706,26 +716,26 @@ export default function RealtimeContent() {
           {/* Language & Filter Options */}
           <div className="feature-card fade-in" style={{ marginBottom: '40px' }}>
             <div className="feature-icon">🔧</div>
-            <h3>表示設定</h3>
+            <h3>{t('realtime.displaySettings.title')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ marginTop: '20px' }}>
               {/* Language Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">表示言語</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('realtime.displaySettings.displayLanguage')}</label>
                 <select
                   value={displayLang}
                   onChange={(e) => setDisplayLang(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
                 >
-                  <option value="ja">日本語</option>
-                  <option value="en">English</option>
-                  <option value="ko">한국어</option>
-                  <option value="zh">中文</option>
+                  <option value="ja">{t('lang.ja')}</option>
+                  <option value="en">{t('lang.en')}</option>
+                  <option value="ko">{t('lang.ko')}</option>
+                  <option value="zh">{t('lang.zh')}</option>
                 </select>
               </div>
               
               {/* Auto Update Toggle */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">自動更新</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('realtime.autoUpdate')}</label>
                 <button
                   onClick={() => setAutoUpdate(!autoUpdate)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
@@ -735,7 +745,7 @@ export default function RealtimeContent() {
                   }`}
                 >
                   <div className={`w-3 h-3 rounded-full ${autoUpdate ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
-                  <span>{autoUpdate ? 'ON' : 'OFF'}</span>
+                  <span>{autoUpdate ? t('realtime.on') : t('realtime.off')}</span>
                 </button>
               </div>
             </div>
@@ -750,7 +760,7 @@ export default function RealtimeContent() {
                     onChange={(e) => setFilters(prev => ({ ...prev, hasMedia: e.target.checked }))}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">画像・動画付き優先</span>
+                  <span className="text-sm text-gray-700">{t('realtime.filters.mediaPreferred')}</span>
                 </label>
                 
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -760,13 +770,13 @@ export default function RealtimeContent() {
                     onChange={(e) => setFilters(prev => ({ ...prev, showRetweets: !e.target.checked }))}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">リツイート除外</span>
+                  <span className="text-sm text-gray-700">{t('realtime.filters.excludeRetweets')}</span>
                 </label>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">最小いいね数</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('realtime.filters.minLikes')}</label>
                   <input
                     type="number"
                     min="0"
@@ -777,7 +787,7 @@ export default function RealtimeContent() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">最小RT数</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('realtime.filters.minRetweets')}</label>
                   <input
                     type="number"
                     min="0"
@@ -788,15 +798,15 @@ export default function RealtimeContent() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">並び順</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('realtime.filters.sortBy')}</label>
                   <select
                     value={filters.sortBy}
                     onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value as FilterOptions['sortBy'] }))}
                     className="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-blue-500"
                   >
-                    <option value="recent">新着順</option>
-                    <option value="popular">人気順</option>
-                    <option value="relevant">関連度順</option>
+                    <option value="recent">{t('realtime.sort.recent')}</option>
+                    <option value="popular">{t('realtime.sort.popular')}</option>
+                    <option value="relevant">{t('realtime.sort.relevant')}</option>
                   </select>
                 </div>
               </div>
@@ -806,7 +816,7 @@ export default function RealtimeContent() {
           {/* Category Filter */}
           <div className="feature-card fade-in" style={{ marginBottom: '40px', textAlign: 'center' }}>
             <div className="feature-icon">🔍</div>
-            <h3>カテゴリーフィルター</h3>
+            <h3>{t('realtime.categoryFilter.title')}</h3>
             <div className="flex flex-wrap gap-3 justify-center" style={{ marginTop: '20px' }}>
               <button 
                 onClick={() => setSelectedCategory('all')}
@@ -816,7 +826,7 @@ export default function RealtimeContent() {
                     : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
-                すべて
+                {t('realtime.categories.all')}
               </button>
               <button 
                 onClick={() => setSelectedCategory('traffic')}
@@ -826,7 +836,7 @@ export default function RealtimeContent() {
                     : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
-                🚇 交通情報
+                🚇 {t('realtime.categories.traffic')}
               </button>
               <button 
                 onClick={() => setSelectedCategory('weather')}
@@ -836,7 +846,7 @@ export default function RealtimeContent() {
                     : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
-                🌤️ 天気
+                🌤️ {t('realtime.categories.weather')}
               </button>
               <button 
                 onClick={() => setSelectedCategory('events')}
@@ -846,7 +856,7 @@ export default function RealtimeContent() {
                     : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
-                🎪 イベント
+                🎪 {t('realtime.categories.events')}
               </button>
               <button 
                 onClick={() => setSelectedCategory('food')}
@@ -856,7 +866,7 @@ export default function RealtimeContent() {
                     : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
-                🍣 グルメ
+                🍣 {t('realtime.categories.food')}
               </button>
               <button 
                 onClick={() => setSelectedCategory('sightseeing')}
@@ -866,7 +876,7 @@ export default function RealtimeContent() {
                     : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
-                ⛩️ 観光
+                ⛩️ {t('realtime.categories.sightseeing')}
               </button>
             </div>
           </div>
@@ -874,7 +884,7 @@ export default function RealtimeContent() {
           {/* Status Section */}
           <div className="feature-card fade-in" style={{ marginBottom: '40px', textAlign: 'center' }}>
             <div className="feature-icon">🔄</div>
-            <h3>更新ステータス</h3>
+            <h3>{t('realtime.status.title')}</h3>
             <div className="flex flex-wrap items-center justify-center gap-3" style={{ marginTop: '20px' }}>
               <div className="flex items-center gap-2">
                 <div className={`w-3 h-3 rounded-full ${
@@ -883,20 +893,20 @@ export default function RealtimeContent() {
                   'bg-red-500'
                 }`}></div>
                 <span className="text-blue-800 font-medium">
-                  {connectionStatus === 'connected' && autoUpdate ? 'リアルタイム更新中' :
-                   connectionStatus === 'connecting' ? '接続中...' :
-                   autoUpdate ? '再接続中...' : 'オフライン'}
+                  {connectionStatus === 'connected' && autoUpdate ? t('realtime.status.liveUpdating') :
+                   connectionStatus === 'connecting' ? t('realtime.status.connecting') :
+                   autoUpdate ? t('realtime.status.reconnecting') : t('realtime.status.offline')}
                 </span>
               </div>
               {lastUpdate && (
-                <span className="text-blue-600 text-sm">最終更新: {lastUpdate}</span>
+                <span className="text-blue-600 text-sm">{t('realtime.status.lastUpdate')}: {lastUpdate}</span>
               )}
               <button 
                 onClick={() => fetchTweets(1, false)}
                 disabled={loading}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50 transition-colors"
               >
-                {loading ? '更新中...' : '手動更新'}
+                {loading ? t('realtime.status.refreshing') : t('realtime.status.manualRefresh')}
               </button>
             </div>
           </div>
@@ -905,47 +915,47 @@ export default function RealtimeContent() {
           {loading && tweets.length === 0 ? (
             <div className="feature-card fade-in text-center">
               <div className="feature-icon">⏳</div>
-              <h3>読み込み中</h3>
+              <h3>{t('realtime.loading.title')}</h3>
               <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto my-4"></div>
-              <p>最新のツイート情報を取得中...</p>
+              <p>{t('realtime.loading.message')}</p>
             </div>
           ) : error ? (
             <div className="feature-card fade-in text-center">
               <div className="feature-icon">❌</div>
-              <h3>エラーが発生しました</h3>
+              <h3>{t('realtime.error.title')}</h3>
               <p className="text-red-600 mb-4">{error}</p>
               <button 
                 onClick={fetchTweets}
                 className="btn btn-primary"
               >
-                再試行
+                {t('realtime.error.retry')}
               </button>
             </div>
           ) : (
             <>
-              <h2 className="section-title fade-in">最新のツイート情報</h2>
-              <p className="section-subtitle fade-in">旅行に役立つリアルタイム情報をお届けします</p>
+              <h2 className="section-title fade-in">{t('realtime.section.latestTweetsTitle')}</h2>
+              <p className="section-subtitle fade-in">{t('realtime.section.latestTweetsSubtitle')}</p>
               
               {/* Stats */}
               <div className="feature-card fade-in" style={{ textAlign: 'center', marginBottom: '40px' }}>
                 <div className="feature-icon">📊</div>
-                <h3>データ状況</h3>
+                <h3>{t('realtime.stats.title')}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4" style={{ marginTop: '20px' }}>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-blue-600">{tweets.length}</div>
-                    <div className="text-sm text-gray-600">総ツイート数</div>
+                    <div className="text-sm text-gray-600">{t('realtime.stats.totalTweets')}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-green-600">{filteredTweets.length}</div>
-                    <div className="text-sm text-gray-600">表示中</div>
+                    <div className="text-sm text-gray-600">{t('realtime.stats.showing')}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-purple-600">{getCurrentSpot().name}</div>
-                    <div className="text-sm text-gray-600">選択エリア</div>
+                    <div className="text-sm text-gray-600">{t('realtime.stats.selectedArea')}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600">{selectedCategory === 'all' ? 'すべて' : selectedCategory}</div>
-                    <div className="text-sm text-gray-600">カテゴリー</div>
+                    <div className="text-2xl font-bold text-orange-600">{selectedCategory === 'all' ? t('realtime.categories.all') : t(`realtime.categories.${selectedCategory}`)}</div>
+                    <div className="text-sm text-gray-600">{t('realtime.stats.category')}</div>
                   </div>
                 </div>
               </div>
@@ -954,8 +964,8 @@ export default function RealtimeContent() {
                 {filteredTweets.length === 0 ? (
                   <div className="feature-card fade-in text-center">
                     <div className="feature-icon">🔍</div>
-                    <h3>ツイートが見つかりません</h3>
-                    <p>選択したカテゴリーのツイートが見つかりませんでした。「すべて」を選択してお試しください。</p>
+                    <h3>{t('realtime.noTweets.title')}</h3>
+                    <p>{t('realtime.noTweets.message')}</p>
                   </div>
                 ) : (
                   filteredTweets.map((tweet) => (
@@ -975,12 +985,12 @@ export default function RealtimeContent() {
                     {loading ? (
                       <>
                         <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
-                        <span>読み込み中...</span>
+                        <span>{t('realtime.loadingMore')}</span>
                       </>
                     ) : (
                       <>
                         <i className="fas fa-chevron-down"></i>
-                        <span>もっと見る</span>
+                        <span>{t('realtime.loadMore')}</span>
                       </>
                     )}
                   </button>
