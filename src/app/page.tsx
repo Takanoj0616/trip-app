@@ -226,6 +226,7 @@ export default function Home() {
             <Link 
               href="/plan" 
               style={{
+                display: 'inline-block',
                 padding: '1rem 2rem',
                 fontSize: '1.1rem',
                 borderRadius: '30px',
@@ -239,7 +240,9 @@ export default function Home() {
                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8))',
                 color: '#2563eb',
                 backdropFilter: 'blur(15px)',
-                boxShadow: '0 8px 25px rgba(255, 255, 255, 0.2)'
+                boxShadow: '0 8px 25px rgba(255, 255, 255, 0.2)',
+                userSelect: 'none',
+                WebkitTapHighlightColor: 'transparent'
               }}
               onMouseEnter={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
