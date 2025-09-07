@@ -136,28 +136,15 @@ const Header: React.FC = () => {
         </div>
 
           {/* User Authentication Section */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {loading ? (
-              <div style={{ 
-                padding: '8px 16px',
-                color: 'rgba(255, 255, 255, 0.8)',
-                fontSize: '14px'
-              }}>
+              <div className="btn-ghost small-text">
 {t('common.loading')}
               </div>
             ) : user ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 {/* User Info */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '8px 16px',
-                  borderRadius: '20px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)'
-                }}>
+                <div className="user-pill">
                   <div style={{
                     width: '32px',
                     height: '32px',
@@ -176,100 +163,24 @@ const Header: React.FC = () => {
                   }}>
                     {!user.avatar && (user.name ? user.name.charAt(0) : user.email.charAt(0))}
                   </div>
-                  <span style={{
-                    color: 'white',
-                    fontSize: '14px',
-                    fontWeight: '500'
-                  }}>
+                  <span className="small-text" style={{ color: 'white' }}>
                     {user.name || 'User'}
                   </span>
                 </div>
                 
                 {/* Logout Button */}
-                <button
-                  onClick={logout}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    borderRadius: '20px',
-                    padding: '8px 16px',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                    e.currentTarget.style.color = 'white';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
-                  }}
-                >
+                <button onClick={logout} className="btn-ghost">
                   <i className="fas fa-sign-out-alt"></i>
                   Logout
                 </button>
               </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <button
-                  onClick={() => openAuthModal('login')}
-                  style={{
-                    background: 'transparent',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: '20px',
-                    padding: '8px 16px',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                    e.currentTarget.style.color = 'white';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
-                  }}
-                >
+                <button onClick={() => openAuthModal('login')} className="btn-ghost">
                   <i className="fas fa-sign-in-alt"></i>
                   {t('auth.login')}
                 </button>
-                <button
-                  onClick={() => openAuthModal('register')}
-                  style={{
-                    background: 'linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '20px',
-                    padding: '10px 20px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(79, 172, 254, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }}
-                >
+                <button onClick={() => openAuthModal('register')} className="btn-solid">
                   <i className="fas fa-user-plus"></i>
                   {t('auth.signUp')}
                 </button>
@@ -300,6 +211,14 @@ const Header: React.FC = () => {
                 suppressHydrationWarning
               >
                 한국어
+              </button>
+              <button 
+                onClick={() => setCurrentLanguage('ar')}
+                className={`lang-btn ${currentLanguage === 'ar' ? 'active' : ''}`}
+                data-lang="ar"
+                suppressHydrationWarning
+              >
+                العربية
               </button>
               {isLocalhost && (
                 <button 

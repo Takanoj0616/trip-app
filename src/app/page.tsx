@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { heroFeatures } from '../data/homepage';
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { t, currentLanguage } = useLanguage();
   
   // Multilingual features data
   const getMainFeatures = () => [
@@ -107,7 +107,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen" style={{
+    <div className="min-h-screen" dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'} style={{
       background: "linear-gradient(135deg, #1e3a8a 0%, #312e81 25%, #1e1b4b 50%, #0f172a 75%, #020617 100%)",
       minHeight: "100vh"
     }}>

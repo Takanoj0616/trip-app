@@ -48,6 +48,7 @@ export const metadata: Metadata = {
       'en-US': `${baseUrl}/en`,
       'ja-JP': `${baseUrl}/ja`,
       'ko-KR': `${baseUrl}/ko`,
+      'ar-SA': `${baseUrl}/ar`,
     },
   },
   openGraph: {
@@ -109,7 +110,7 @@ const structuredData = {
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "customer service",
-    "availableLanguage": ["English", "Japanese", "Korean"]
+    "availableLanguage": ["English", "Japanese", "Korean", "Arabic"]
   },
   "areaServed": [
     { "@type": "Country", "name": "Japan" },
@@ -230,5 +231,4 @@ export default function RootLayout({
     </html>
   );
 }
-
 

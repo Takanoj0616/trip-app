@@ -20,6 +20,105 @@ export const useLanguage = () => {
 
 // Translation data
 const translations = {
+  ar: {
+    // Navigation
+    'nav.areas': 'المناطق',
+    'nav.courses': 'مسارات نموذجية',
+    'nav.realtime': 'مباشر',
+    'nav.stories': 'تجارب السفر',
+    'nav.ai-spots': 'توصيات الذكاء الاصطناعي',
+    'nav.coordinator': 'المنسقون',
+    'nav.favorites': 'المفضلة',
+
+    // Common
+    'common.loading': 'جارٍ التحميل...',
+    'common.search': 'ابحث عن الأماكن...',
+    'common.allCategories': 'كل الفئات',
+    'common.sortByRating': 'ترتيب حسب التقييم',
+    'common.sortByName': 'ترتيب أبجدي',
+    'common.sortByNewest': 'الأحدث أولاً',
+
+    // Authentication
+    'auth.login': 'تسجيل الدخول',
+    'auth.signUp': 'إنشاء حساب',
+    'auth.createPlan': 'أنشئ خطة بالذكاء الاصطناعي الآن',
+
+    // Homepage
+    'home.trustedBy': 'موثوق من أكثر من 10,000 مسافر حول العالم',
+    'home.heroTitle': 'خطة سفر لليابان خلال دقيقة مجاناً',
+    'home.heroSubtitle': 'احصل على مسارات مخصصة، جواهر مخفية وتجارب أصيلة تناسبك. ابدأ التخطيط في أقل من 60 ثانية.',
+    'home.ctaPrimary': 'أنشئ خطة بالذكاء الاصطناعي الآن',
+    'home.ctaSecondary': 'استكشف اليابان',
+    'home.featuresTitle': 'مميزاتنا',
+    'home.experienceTitle': 'عِش اليابان الحقيقية',
+    'home.experienceSubtitle': 'اكتشف المعابد المخفية، الشوارع التقليدية، ولحظات لا تُنسى في بلاد الشمس المشرقة.',
+    'home.popularDestinations': 'وجهات شهيرة',
+    'home.footerCopyright': '© 2025 دليل السياحة في اليابان. جميع الحقوق محفوظة.',
+
+    // Main Features
+    'features.multilingual.title': 'دعم متعدد اللغات',
+    'features.multilingual.description': 'دعم كامل للغات اليابانية والإنجليزية والكورية مع تجربة استخدام محلية بالكامل.',
+    'features.areaGuide.title': 'دليل المناطق والفئات',
+    'features.areaGuide.description': 'أدلة شاملة لطوكيو ويوكوهاما وسايتاما وتشيبا وغيرها. اكتشف المعالم والمطاعم والجواهر المحلية.',
+    'features.userExperience.title': 'تجربة مستخدم محسّنة',
+    'features.userExperience.description': 'احفظ المفضلة، اكتب المراجعات، أنشئ مذكرات السفر وشارك تجاربك.',
+    'features.aiRecommendation.title': 'نظام توصية بالذكاء الاصطناعي',
+    'features.aiRecommendation.description': 'خطط سفر مخصصة بناءً على تفضيلاتك وميزانيتك واهتماماتك.',
+    'features.realTimeInfo.title': 'معلومات آنية',
+    'features.realTimeInfo.description': 'بيانات مباشرة حول الازدحام والطقس والجداول والنشاطات المتاحة.',
+    'features.community.title': 'مجتمع المسافرين',
+    'features.community.description': 'انضم للنقاشات وشارك التجارب واحصل على نصائح من المحليين والمسافرين.',
+
+    // Areas
+    'areas.tokyo.title': 'طوكيو',
+    'areas.tokyo.description': 'عاصمة عصرية تجمع بين أحدث التقنيات والتقاليد العريقة. تسوق، مطاعم، وحياة ليلية نابضة.',
+    'areas.mtFuji.title': 'منطقة جبل فوجي',
+    'areas.mtFuji.description': 'جبل أيقوني بمناظر خلابة وينابيع ساخنة وتجارب ريفية يابانية أصيلة.',
+    'areas.kyoto.title': 'كيوتو التاريخية',
+    'areas.kyoto.description': 'عاصمة قديمة مليئة بالمعابد والعمارة التقليدية والحدائق والثقافة المحفوظة.',
+    'areas.osaka.title': 'أوساكا عاصمة الطعام',
+    'areas.osaka.description': 'مأكولات شارع مذهلة مثل تاكوياكي وأوكونوميياكي وتجارب طهي لا تُنسى.',
+
+    // Footer
+    'footer.explore.title': 'استكشف',
+    'footer.explore.areaGuide': 'دليل المناطق',
+    'footer.explore.categorySearch': 'بحث حسب الفئة',
+    'footer.explore.popularSpots': 'أماكن شهيرة',
+    'footer.explore.whatsNew': 'جديدنا',
+    'footer.features.title': 'الميزات',
+    'footer.features.aiTravelPlan': 'خطة سفر بالذكاء الاصطناعي',
+    'footer.features.favorites': 'المفضلة',
+    'footer.features.reviews': 'المراجعات',
+    'footer.features.offlineFeatures': 'ميزات دون اتصال',
+    'footer.support.title': 'الدعم',
+    'footer.support.helpCenter': 'مركز المساعدة',
+    'footer.support.contactUs': 'تواصل معنا',
+    'footer.support.emergencyGuide': 'دليل الطوارئ',
+    'footer.support.feedback': 'ملاحظات',
+    'footer.account.title': 'الحساب',
+    'footer.account.login': 'تسجيل الدخول',
+    'footer.account.signUp': 'إنشاء حساب',
+    'footer.account.premium': 'مميز',
+    'footer.account.settings': 'الإعدادات',
+
+    // Travel Experiences (minimal keys used by list UI)
+    'travel.title': 'تجارب السفر',
+    'travel.subtitle': 'شارك رحلاتك واكتشف إلهاماً جديداً',
+    'travel.postNew': 'أنشئ منشور سفر جديد',
+    'travel.filter.region': 'تصفية حسب المنطقة',
+    'travel.filter.category': 'تصفية حسب الموضوع',
+    'travel.filter.all': 'الكل',
+    'travel.sort.createdAt': 'تاريخ النشر',
+    'travel.sort.viewCount': 'المشاهدات',
+    'travel.sort.likeCount': 'الإعجابات',
+    'travel.empty.title': 'لا توجد منشورات بعد',
+    'travel.empty.desc': 'كن أول من يشارك قصة سفره!',
+    'travel.empty.cta': 'انشر',
+    // Tags
+    'tag.temple': 'معبد/ضريح',
+    'tag.nature': 'طبيعة',
+    'tag.shopping': 'تسوق',
+  },
   en: {
     // Navigation
     'nav.areas': 'Areas',

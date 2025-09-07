@@ -5,6 +5,7 @@ import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import { CheckInProvider } from "@/contexts/CheckInContext";
 import { RouteProvider } from "@/contexts/RouteContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import LanguageDirection from "./LanguageDirection";
 
 export default function ClientProviders({
   children,
@@ -13,6 +14,7 @@ export default function ClientProviders({
 }) {
   return (
     <LanguageProvider>
+      <LanguageDirection />
       <AuthProvider>
         <FavoritesProvider>
           <CheckInProvider>
