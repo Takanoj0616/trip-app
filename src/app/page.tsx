@@ -199,7 +199,9 @@ export default function Home() {
             fontSize: '3.5rem',
             fontWeight: 800,
             marginBottom: '1rem',
-            lineHeight: 1.2
+            lineHeight: 1.2,
+            color: '#000000',
+            textShadow: '2px 2px 4px rgba(255, 255, 255, 0.8)'
           }}>
             {t('home.heroTitle')}
           </h1>
@@ -207,7 +209,9 @@ export default function Home() {
           <p style={{
             fontSize: '1.25rem',
             marginBottom: '2rem',
-            opacity: 0.9
+            color: '#000000',
+            textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
+            fontWeight: 500
           }}>
             {t('home.heroSubtitle')}
           </p>
@@ -220,7 +224,7 @@ export default function Home() {
             flexWrap: 'wrap'
           }}>
             <Link 
-              href="#" 
+              href="/plan" 
               style={{
                 padding: '1rem 2rem',
                 fontSize: '1.1rem',
