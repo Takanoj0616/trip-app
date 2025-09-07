@@ -160,7 +160,7 @@ export default function QnaPageClient() {
 
   return (
     <>
-      {/* Tokyo Tower themed background (vivid orange-to-blue with glows) */}
+      {/* Sushi Experience themed background */}
       <div
         aria-hidden="true"
         className="fixed inset-0"
@@ -168,23 +168,26 @@ export default function QnaPageClient() {
           zIndex: -1,
           pointerEvents: 'none',
           background: `
-            radial-gradient(800px 400px at 15% 12%, rgba(255, 122, 0, 0.28) 0%, transparent 60%),
-            radial-gradient(800px 400px at 85% 88%, rgba(46, 134, 222, 0.28) 0%, transparent 55%),
-            linear-gradient(130deg,
-              #ff6a00 0%,
-              #ff8a00 14%,
-              #ffb347 28%,
-              #ffd194 42%,
-              #a0c4ff 58%,
-              #4e73df 74%,
-              #1b2a6b 100%
-            )
+            radial-gradient(circle at 20% 30%, rgba(220, 38, 127, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 165, 0, 0.12) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(34, 197, 94, 0.10) 0%, transparent 50%),
+            linear-gradient(135deg,
+              #1a1a2e 0%,
+              #16213e 25%,
+              #0f3460 50%,
+              #533483 75%,
+              #e94560 100%
+            ),
+            url("https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")
           `,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           backgroundAttachment: 'fixed',
-          filter: 'saturate(1.15) contrast(1.05)'
+          backgroundBlendMode: 'overlay'
         }}
       />
-      {/* Tokyo Tower main structure with subtle glow (kept as data-URL SVG) */}
+      
+      {/* Sushi elements overlay */}
       <div
         aria-hidden="true"
         className="fixed inset-0"
@@ -192,26 +195,26 @@ export default function QnaPageClient() {
           zIndex: -2,
           pointerEvents: 'none',
           background: `
-            radial-gradient(300px 220px at 50% calc(100% - 120px), rgba(255, 120, 0, 0.35) 0%, transparent 70%),
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 400'%3E%3Cg transform='translate(100,200)'%3E%3Cpath d='M-16 200 L-16 16 L-28 -124 L-10 -188 L10 -188 L28 -124 L16 16 L16 200 M-22 -84 L22 -84 M-20 16 L20 16 M-18 80 L18 80 M-16 140 L16 140' stroke='%23ff6a00' stroke-width='3.6' fill='none' opacity='0.95'/%3E%3Cpath d='M-10 -188 L0 -210 L10 -188' stroke='%23ff6a00' stroke-width='3' fill='%23ff6a00' opacity='0.95'/%3E%3C/g%3E%3C/svg%3E") no-repeat center bottom
+            radial-gradient(200px 200px at 15% 25%, rgba(255, 99, 71, 0.2) 0%, transparent 70%),
+            radial-gradient(150px 150px at 85% 75%, rgba(255, 215, 0, 0.15) 0%, transparent 70%),
+            radial-gradient(180px 180px at 50% 50%, rgba(0, 128, 0, 0.1) 0%, transparent 70%)
           `,
-          backgroundSize: '420px 640px'
+          animation: 'sushiFloat 15s ease-in-out infinite alternate'
         }}
       />
-      {/* Tokyo cityscape silhouette (darker, crisper) */}
-      <div
-        aria-hidden="true"
-        className="fixed inset-0"
-        style={{
-          zIndex: -3,
-          pointerEvents: 'none',
-          background: `
-            linear-gradient(to top, rgba(2, 6, 23, 0.65) 0%, rgba(2, 6, 23, 0) 60%),
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 200'%3E%3Cpath d='M0 200 L0 160 L40 160 L40 115 L80 115 L80 140 L120 140 L120 100 L160 100 L160 130 L200 130 L200 110 L240 110 L240 150 L280 150 L280 90 L320 90 L320 170 L360 170 L360 80 L400 80 L400 160 L440 160 L440 140 L480 140 L480 120 L520 120 L520 180 L560 180 L560 100 L600 100 L600 150 L640 150 L640 130 L680 130 L680 170 L720 170 L720 110 L760 110 L760 160 L800 160 L800 200 Z' fill='%230b1220' opacity='0.55'/%3E%3C/svg%3E") repeat-x bottom
-          `,
-          backgroundSize: '900px 220px'
-        }}
-      />
+
+      <style jsx>{`
+        @keyframes sushiFloat {
+          0% { 
+            transform: translateX(-1%) translateY(-0.5%);
+            opacity: 0.7;
+          }
+          100% { 
+            transform: translateX(1%) translateY(0.5%);
+            opacity: 0.9;
+          }
+        }
+      `}</style>
       
       <div className="min-h-screen relative z-10" style={{ paddingTop: '120px' }}>
         <div style={{ 
