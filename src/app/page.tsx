@@ -115,18 +115,68 @@ export default function Home() {
       {/* Hero Section */}
       <main style={{
         height: '100vh',
-        background: 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("https://images.unsplash.com/photo-1522383225653-ed111181a951?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
+        background: 'linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 182, 193, 0.2)), url("https://images.unsplash.com/photo-1522383225653-ed111181a951?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80"), url("https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")',
+        backgroundSize: 'cover, cover',
+        backgroundPosition: 'center, center',
+        backgroundAttachment: 'fixed, fixed',
+        backgroundBlendMode: 'overlay',
+        animation: 'sakuraFloat 20s ease-in-out infinite',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
         color: 'white',
         position: 'relative',
-        paddingTop: '140px'
+        paddingTop: '140px',
+        overflow: 'hidden'
       }}>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `
+            radial-gradient(circle at 20% 20%, rgba(255, 182, 193, 0.4) 0%, transparent 50%),
+            radial-gradient(circle at 80% 40%, rgba(255, 218, 185, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(255, 240, 245, 0.3) 0%, transparent 50%),
+            linear-gradient(45deg, rgba(255, 228, 225, 0.2) 0%, rgba(255, 245, 238, 0.1) 100%)
+          `,
+          animation: 'sakuraDrift 25s ease-in-out infinite alternate',
+          zIndex: 1
+        }}></div>
+        
+        <style jsx>{`
+          @keyframes sakuraFloat {
+            0%, 100% { 
+              background-position: center, center;
+              filter: hue-rotate(0deg) brightness(1);
+            }
+            25% { 
+              background-position: center top, center bottom;
+              filter: hue-rotate(5deg) brightness(1.1);
+            }
+            50% { 
+              background-position: center bottom, center top;
+              filter: hue-rotate(10deg) brightness(0.95);
+            }
+            75% { 
+              background-position: center, center;
+              filter: hue-rotate(5deg) brightness(1.05);
+            }
+          }
+          
+          @keyframes sakuraDrift {
+            0% { 
+              transform: translateX(-2%) translateY(-1%);
+              opacity: 0.7;
+            }
+            100% { 
+              transform: translateX(2%) translateY(1%);
+              opacity: 0.9;
+            }
+          }
+        `}</style>
         <div style={{
           maxWidth: '800px',
           padding: '0 2rem'
