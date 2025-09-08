@@ -836,6 +836,27 @@ header {
   box-sizing: border-box;
 }
 
+/* Hamburger (hidden on desktop) */
+.hamburger-btn {
+  display: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.hamburger-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #fff;
+  border-radius: 1px;
+}
+
 /* Navigation Menu */
 .nav-menu {
   display: flex;
@@ -1340,9 +1361,9 @@ footer {
 @media (max-width: 768px) {
   .header-content {
     padding: 12px 16px;
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
-    align-items: stretch;
+    align-items: center;
   }
 
   .logo {
@@ -1351,11 +1372,7 @@ footer {
   }
 
   .nav-menu {
-    order: 2;
-    justify-content: center;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin: 0;
+    display: none; /* hide desktop nav */
   }
 
   .nav-link {
@@ -1369,10 +1386,7 @@ footer {
   }
 
   .lang-selector {
-    gap: 3px;
-    padding: 5px;
-    align-self: center;
-    order: 4;
+    display: none; /* hide desktop lang selector */
   }
 
   .lang-btn {
@@ -1381,10 +1395,7 @@ footer {
   }
 
   .ai-header-section {
-    order: 3;
-    justify-content: center;
-    gap: 8px;
-    margin-left: 0;
+    display: none; /* hide desktop AI section */
   }
 
   .ai-features-header {
@@ -1419,6 +1430,34 @@ footer {
     gap: 40px;
   }
 }
+
+/* Show hamburger on mobile */
+@media (max-width: 768px) {
+  .hamburger-btn { display: inline-flex; }
+}
+
+/* Mobile drawer */
+.mobile-drawer { position: fixed; inset: 0; z-index: 9998; }
+.mobile-drawer__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+.mobile-drawer__panel {
+  position: absolute; top: 0; right: 0; width: min(92vw, 520px); height: 100dvh;
+  background: rgba(20,24,38,0.8); backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(255,255,255,0.15);
+  padding: calc(16px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+}
+.mobile-drawer__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.mobile-drawer__close { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
+.mobile-drawer__nav { display: grid; gap: 12px; margin: 18px 0; }
+.mobile-link { color: #e5e7eb; text-decoration: none; padding: 14px 16px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); font-size: 16px; min-height: 44px; display: flex; align-items: center; }
+.mobile-link:hover { background: rgba(255,255,255,0.16); }
+.mobile-drawer__languages { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 18px; }
+.mobile-drawer__auth { display: grid; gap: 8px; }
+.mobile-drawer__auth .btn-ghost,
+.mobile-drawer__auth .btn-solid { width: 100%; justify-content: center; min-height: 44px; font-size: 16px; }
+
+/* Larger touch targets for language buttons inside drawer */
+.mobile-drawer__languages .lang-btn { padding: 10px 14px; min-height: 40px; font-size: 14px; }
 
 /* AI Header Section */
 .ai-header-section {

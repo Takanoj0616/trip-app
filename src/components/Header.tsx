@@ -16,6 +16,7 @@ const Header: React.FC = () => {
   const [authError, setAuthError] = useState('');
   const { user, loading, logout, signIn, signUp, signInWithGoogle } = useAuth();
   const { currentLanguage, setCurrentLanguage, t } = useLanguage();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // フランス語ボタンを常に表示するため、isLocalhostの判定を削除
   const isLocalhost = true;
@@ -90,6 +91,17 @@ const Header: React.FC = () => {
           <span>🗾</span>
           <span>Japan Guide</span>
         </Link>
+
+        {/* Mobile hamburger */}
+        <button
+          className="hamburger-btn"
+          aria-label="Open menu"
+          onClick={() => setMobileOpen(true)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
         
         {/* Navigation Menu */}
         <nav className="nav-menu">
@@ -230,9 +242,65 @@ const Header: React.FC = () => {
                   Français
                 </button>
               )}
-            </div>
           </div>
         </div>
+
+        {/* Mobile drawer */}
+        {mobileOpen && (
+          <div className="mobile-drawer" role="dialog" aria-modal="true">
+            <div className="mobile-drawer__backdrop" onClick={() => setMobileOpen(false)} />
+            <div className="mobile-drawer__panel">
+              <div className="mobile-drawer__header">
+                <Link href="/" className="logo" onClick={() => setMobileOpen(false)}>
+                  <span>🗾</span>
+                  <span>Japan Guide</span>
+                </Link>
+                <button className="mobile-drawer__close" aria-label="Close menu" onClick={() => setMobileOpen(false)}>×</button>
+              </div>
+
+              <nav className="mobile-drawer__nav">
+                <Link href="/areas" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.areas')}</Link>
+                <Link href="/courses" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.courses')}</Link>
+                <AuthRequiredLink href="/ai-spots" onClick={() => setMobileOpen(false)} className="mobile-link">AI</AuthRequiredLink>
+                <AuthRequiredLink href="/coordinator" onClick={() => setMobileOpen(false)} className="mobile-link">Coordinator</AuthRequiredLink>
+                <Link href="/qna" onClick={() => setMobileOpen(false)} className="mobile-link">Q&A</Link>
+                <Link href="/realtime" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.realtime')}</Link>
+                <Link href="/travel-experiences" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.stories')}</Link>
+                <Link href="/favorites" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.favorites')}</Link>
+              </nav>
+
+              <div className="mobile-drawer__languages">
+                <button onClick={() => { setCurrentLanguage('ja'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'ja' ? 'active' : ''}`}>日本語</button>
+                <button onClick={() => { setCurrentLanguage('en'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}>English</button>
+                <button onClick={() => { setCurrentLanguage('ko'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'ko' ? 'active' : ''}`}>한국어</button>
+                <button onClick={() => { setCurrentLanguage('ar'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'ar' ? 'active' : ''}`}>العربية</button>
+                {isLocalhost && (
+                  <button onClick={() => { setCurrentLanguage('fr'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'fr' ? 'active' : ''}`}>Français</button>
+                )}
+              </div>
+
+              <div className="mobile-drawer__auth">
+                {loading ? (
+                  <div className="btn-ghost small-text">{t('common.loading')}</div>
+                ) : user ? (
+                  <>
+                    <div className="user-pill" style={{ marginBottom: 8 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: user.avatar ? `url(${user.avatar})` : 'linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                      <span className="small-text" style={{ color: 'white' }}>{user.name || 'User'}</span>
+                    </div>
+                    <button className="btn-ghost" onClick={() => { logout(); setMobileOpen(false); }}>Logout</button>
+                  </>
+                ) : (
+                  <>
+                    <button className="btn-ghost" onClick={() => { setMobileOpen(false); openAuthModal('login'); }}>{t('auth.login')}</button>
+                    <button className="btn-solid" onClick={() => { setMobileOpen(false); openAuthModal('register'); }}>{t('auth.signUp')}</button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Authentication Modal */}
       {showAuthModal && (

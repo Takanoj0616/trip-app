@@ -661,10 +661,10 @@ export default function RealtimeContent() {
       </section>
 
       {/* Features Section */}
-      <section className="features">
-        <div className="container">
+      <section className="features" suppressHydrationWarning>
+        <div className="container" suppressHydrationWarning>
           {/* Spot Selection */}
-          <div className="feature-card fade-in" style={{ marginBottom: '40px' }}>
+          <div className="feature-card fade-in" style={{ marginBottom: '40px' }} suppressHydrationWarning>
             <div className="feature-icon">📍</div>
             <h3>{t('realtime.spotSelection.title')}</h3>
             <div className="relative" style={{ marginTop: '20px' }}>
@@ -716,7 +716,7 @@ export default function RealtimeContent() {
           </div>
           
           {/* Language & Filter Options */}
-          <div className="feature-card fade-in" style={{ marginBottom: '40px' }}>
+          <div className="feature-card fade-in" style={{ marginBottom: '40px' }} suppressHydrationWarning>
             <div className="feature-icon">🔧</div>
             <h3>{t('realtime.displaySettings.title')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ marginTop: '20px' }}>
