@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import RealtimeContent from '@/components/RealtimeContent';
+import BodyClassHandler from './BodyClassHandler';
 
 export const metadata: Metadata = {
   title: 'リアルタイム情報 | Japan Travel Guide',
@@ -7,5 +8,10 @@ export const metadata: Metadata = {
 };
 
 export default function RealtimePage() {
-  return <RealtimeContent />;
+  return (
+    <div id="realtime-root">
+      <BodyClassHandler />
+      <RealtimeContent />
+    </div>
+  );
 }

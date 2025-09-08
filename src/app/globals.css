@@ -1832,6 +1832,137 @@ body.qna-page .sakura-container {
   }
 }
 
+/* Realtime page background: Sakura gradient + Seigaiha pattern */
+#realtime-root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+/* Use page-scoped background so we don't affect other routes */
+body:has(#realtime-root) {
+  background: transparent !important;
+}
+body.realtime-page { /* Fallback for browsers without :has */
+  background: transparent !important;
+}
+
+/* Base gradient:淡い紅梅〜空色 + subtle dark overlay for title contrast */
+/* Neutralize and scope the animated background (keep pseudo elements only) */
+body:has(#realtime-root) #realtime-root .animated-bg,
+body.realtime-page #realtime-root .animated-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  background: transparent !important;
+  background-attachment: fixed;
+}
+
+/* Dedicated onsen visual layer under animated-bg */
+body:has(#realtime-root) #realtime-root .realtime-bg-onsen,
+body.realtime-page #realtime-root .realtime-bg-onsen {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(30,35,55,0.50) 0%, rgba(25,30,50,0.55) 100%),
+    url('/images/backgrounds/karaoke.jpg') center/cover no-repeat;
+  background-attachment: fixed, fixed;
+  pointer-events: none;
+}
+
+/* Show entire photo on extreme aspect ratios (avoid heavy crop) */
+/* Fill viewport in all aspect ratios (no side gaps) */
+body:has(#realtime-root) #realtime-root .realtime-bg-onsen,
+body.realtime-page #realtime-root .realtime-bg-onsen {
+  background-position: center center;
+  background-size: 100% 100%, cover; /* overlay covers fully, image uses cover */
+}
+
+/* Realtime page: neutralize section background so onsen photo is visible */
+body:has(#realtime-root) .features,
+body.realtime-page .features {
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
+/* Seigaiha waves: SVG-less using radial gradients, very subtle */
+body:has(#realtime-root) #realtime-root .animated-bg::before,
+body.realtime-page #realtime-root .animated-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(40px 20px at 0 100%, rgba(30, 60, 120, 0.06) 24%, transparent 25%) 0 100%/80px 40px repeat,
+    radial-gradient(40px 20px at 40px 100%, rgba(30, 60, 120, 0.05) 24%, transparent 25%) 40px 100%/80px 40px repeat,
+    radial-gradient(40px 20px at 0 0, rgba(30, 60, 120, 0.05) 24%, transparent 25%) 0 0/80px 40px repeat,
+    radial-gradient(40px 20px at 40px 0, rgba(30, 60, 120, 0.04) 24%, transparent 25%) 40px 0/80px 40px repeat;
+  opacity: 0.5;
+  will-change: background-position;
+  animation: realtimeWaves 60s linear infinite;
+}
+
+/* Sakura particles: extremely light, CSS-only soft blobs drifting */
+body:has(#realtime-root) #realtime-root .animated-bg::after,
+body.realtime-page #realtime-root .animated-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(10px 8px at 10% -5%, rgba(255, 182, 193, 0.10) 0 60%, transparent 65%),
+    radial-gradient(12px 9px at 60% -8%, rgba(253, 121, 168, 0.09) 0 60%, transparent 65%),
+    radial-gradient(9px 7px at 85% -6%, rgba(255, 142, 83, 0.08) 0 60%, transparent 65%),
+    radial-gradient(10px 8px at 30% -4%, rgba(255, 182, 193, 0.10) 0 60%, transparent 65%),
+    radial-gradient(11px 9px at 5% 20%, rgba(253, 121, 168, 0.10) 0 60%, transparent 65%),
+    radial-gradient(10px 8px at 40% 10%, rgba(255, 182, 193, 0.12) 0 60%, transparent 65%),
+    radial-gradient(10px 8px at 70% 15%, rgba(253, 121, 168, 0.10) 0 60%, transparent 65%),
+    radial-gradient(11px 9px at 90% 12%, rgba(255, 142, 83, 0.08) 0 60%, transparent 65%);
+  background-repeat: no-repeat;
+  filter: blur(0.2px);
+  opacity: 1;
+  will-change: transform;
+  animation: sakuraDriftRealtime 50s ease-in-out infinite alternate;
+}
+
+@keyframes realtimeWaves {
+  0% { background-position: 0 0, 40px 0, 0 20px, 40px 20px; }
+  100% { background-position: 80px 0, 120px 0, 80px 20px, 120px 20px; }
+}
+
+@keyframes sakuraDriftRealtime {
+  0% { transform: translateX(-1%) translateY(-0.5%); }
+  100% { transform: translateX(1%) translateY(0.5%); }
+}
+
+/* Reduce motion on user preference */
+@media (prefers-reduced-motion: reduce) {
+  body:has(#realtime-root) #realtime-root .animated-bg::before,
+  body:has(#realtime-root) #realtime-root .animated-bg::after,
+  body.realtime-page #realtime-root .animated-bg::before,
+  body.realtime-page #realtime-root .animated-bg::after {
+    animation: none !important;
+  }
+}
+
+/* Ensure hero text meets AA contrast by adding subtle text-shadow and raising z-index */
+body:has(#realtime-root) .hero .hero-content h1,
+body:has(#realtime-root) .hero .hero-content p,
+body.realtime-page .hero .hero-content h1,
+body.realtime-page .hero .hero-content p {
+  text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  position: relative;
+  z-index: 1;
+}
+
+/* Override gradient text on global hero for clear white text in realtime */
+body:has(#realtime-root) .hero .hero-content h1,
+body.realtime-page .hero .hero-content h1 {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: #ffffff !important;
+  color: #ffffff !important;
+}
+
 /* Travel Experiences Card Layout Styles */
 .travel-card {
   background: rgba(255, 255, 255, 0.95);

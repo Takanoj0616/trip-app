@@ -643,13 +643,15 @@ export default function RealtimeContent() {
   const filteredTweets = sortTweets(applyFilters(tweets));
 
   return (
-    <>
+    <div data-realtime-wrapper suppressHydrationWarning>
       <AnimationClient />
+      {/* Dedicated onsen background layer (fixed, non-interactive) */}
+      <div className="realtime-bg-onsen" aria-hidden="true"></div>
       <div className="animated-bg"></div>
       <div className="sakura-container" id="sakuraContainer"></div>
       
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero" suppressHydrationWarning>
         <div className="container">
           <div className="hero-content">
             <h1 style={{ color: '#ffffff' }}>{t('realtime.hero.title')}</h1>
@@ -1000,6 +1002,6 @@ export default function RealtimeContent() {
           )}
         </div>
       </section>
-    </>
+    </div>
   );
 }
