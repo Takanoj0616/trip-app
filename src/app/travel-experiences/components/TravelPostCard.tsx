@@ -68,9 +68,11 @@ export default function TravelPostCard({ post, index }: TravelPostCardProps) {
   const localizeExcerpt = (text: string) => (text.startsWith('ダミーの旅行記本文です') ? t('travel.sample.excerpt') : text)
 
   return (
-    <div 
+    <article
       className="travel-card animate-slide-up"
       style={{ animationDelay: `${index * 0.1}s` }}
+      itemScope
+      itemType="https://schema.org/Article"
     >
       {/* 画像エリア */}
       <div className="travel-card-image" style={{
@@ -102,11 +104,11 @@ export default function TravelPostCard({ post, index }: TravelPostCardProps) {
 
       {/* コンテンツエリア */}
       <div className="travel-card-content">
-        <h3 className="travel-card-title">
+        <h3 className="travel-card-title" itemProp="headline">
           {localizeTitle(post.title)}
         </h3>
         
-        <p className="travel-card-excerpt">
+        <p className="travel-card-excerpt" itemProp="description">
           {localizeExcerpt(post.excerpt || post.content)}
         </p>
 
@@ -146,10 +148,12 @@ export default function TravelPostCard({ post, index }: TravelPostCardProps) {
         </div>
 
         {/* 投稿者 */}
-        <div className="travel-card-author">
-          by <span>{post.author}</span>
+        <div className="travel-card-author" itemProp="author" itemScope itemType="https://schema.org/Person">
+          by <span itemProp="name">{post.author}</span>
         </div>
+        <meta itemProp="datePublished" content={new Date(post.createdAt).toISOString()} />
+        <meta itemProp="dateModified" content={new Date(post.createdAt).toISOString()} />
       </div>
-    </div>
+    </article>
   )
 }

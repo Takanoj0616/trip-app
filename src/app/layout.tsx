@@ -43,17 +43,21 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: baseUrl,
+    // Do not set a global canonical here to avoid overriding per-page canonicals
     languages: {
-      'en-US': `${baseUrl}/en`,
-      'ja-JP': `${baseUrl}/ja`,
-      'ko-KR': `${baseUrl}/ko`,
-      'ar-SA': `${baseUrl}/ar`,
+      'x-default': `${baseUrl}`,
+      'en-US': `${baseUrl}?lang=en`,
+      'en-GB': `${baseUrl}?lang=en`,
+      'fr-FR': `${baseUrl}?lang=fr`,
+      'ja-JP': `${baseUrl}?lang=ja`,
+      'ko-KR': `${baseUrl}?lang=ko`,
+      'ar-SA': `${baseUrl}?lang=ar`,
     },
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
+    alternateLocale: ['en_GB', 'fr_FR'],
     url: baseUrl,
     title: "Japan Travel Guide | Tokyo Tourism | Best Japan Trip Planner 2025",
     description: "Discover Japan with AI-powered travel planning. Complete guide to Tokyo, Yokohama, Saitama & Chiba tourism. Hotels, restaurants, attractions & personalized itineraries.",
@@ -115,6 +119,8 @@ const structuredData = {
   "areaServed": [
     { "@type": "Country", "name": "Japan" },
     { "@type": "Country", "name": "United States" },
+    { "@type": "Country", "name": "United Kingdom" },
+    { "@type": "Country", "name": "France" },
     { "@type": "Country", "name": "South Korea" },
     { "@type": "Country", "name": "Australia" }
   ],
@@ -221,6 +227,27 @@ export default function RootLayout({
             })
           }}
         />
+        <Script
+          id="schema-website"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Japan Travel Guide",
+              "url": baseUrl,
+              "inLanguage": "en",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": `${baseUrl}/?q={search_term_string}`,
+                "query-input": "required name=search_term_string"
+              },
+              "alternateName": ["Japan Tourism Guide"],
+              "alternateNameLanguage": ["en-US", "en-GB", "fr-FR"],
+            })
+          }}
+        />
         <ClientProviders>
           <Header />
           <main>
@@ -231,4 +258,3 @@ export default function RootLayout({
     </html>
   );
 }
-

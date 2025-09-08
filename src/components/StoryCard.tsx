@@ -25,7 +25,7 @@ export default function StoryCard({ story }: StoryCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
+    <article
       style={{
         background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
@@ -38,6 +38,8 @@ export default function StoryCard({ story }: StoryCardProps) {
         boxShadow: isHovered ? '0 25px 50px rgba(0, 0, 0, 0.2)' : 'none'
       }}
       className="group"
+      itemScope
+      itemType="https://schema.org/Article"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -115,11 +117,11 @@ export default function StoryCard({ story }: StoryCardProps) {
           </span>
         </div>
 
-        <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 leading-tight">
+        <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 leading-tight" itemProp="headline">
           {story.title}
         </h3>
 
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
+        <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed" itemProp="description">
           {story.content}
         </p>
 
@@ -162,8 +164,10 @@ export default function StoryCard({ story }: StoryCardProps) {
               {story.author.charAt(0)}
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-900">{story.author}</div>
-              <div className="text-xs text-gray-500">{story.createdAt}</div>
+              <div className="text-sm font-medium text-gray-900" itemProp="author" itemScope itemType="https://schema.org/Person">
+                <span itemProp="name">{story.author}</span>
+              </div>
+              <div className="text-xs text-gray-500" itemProp="datePublished">{story.createdAt}</div>
             </div>
           </div>
           <div className="flex items-center gap-3 text-sm text-gray-500">
@@ -176,6 +180,7 @@ export default function StoryCard({ story }: StoryCardProps) {
           </div>
         </div>
       </div>
-    </div>
+      <meta itemProp="dateModified" content={new Date(story.createdAt).toISOString()} />
+    </article>
   );
 }

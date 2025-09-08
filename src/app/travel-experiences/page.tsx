@@ -1,6 +1,36 @@
 import ClientOnly from '@/components/ClientOnly'
 import TravelExperiencesContent from './TravelExperiencesContent'
 import BodyClassHandler from './BodyClassHandler'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Travel Experiences & Stories | Japan Travel Guide',
+  description:
+    'Browse authentic Japan travel experiences and stories. Discover itineraries, tips, and hidden spots in Tokyo, Yokohama, Saitama and Chiba.',
+  openGraph: {
+    title: 'Travel Experiences & Stories | Japan Travel Guide',
+    description:
+      'Authentic Japan travel experiences, itineraries and tips across major destinations.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Travel Experiences & Stories | Japan Travel Guide',
+    description:
+      'Real traveler stories and itineraries for Japan trips.',
+  },
+  alternates: {
+    languages: {
+      'x-default': '/travel-experiences',
+      'en-US': '/travel-experiences?lang=en',
+      'en-GB': '/travel-experiences?lang=en',
+      'fr-FR': '/travel-experiences?lang=fr',
+      'ja-JP': '/travel-experiences?lang=ja',
+      'ko-KR': '/travel-experiences?lang=ko',
+      'ar-SA': '/travel-experiences?lang=ar',
+    },
+  },
+}
 
 export default function TravelExperiencesPage() {
   return (
