@@ -67,6 +67,18 @@ export default function TravelPostCard({ post, index }: TravelPostCardProps) {
 
   const localizeExcerpt = (text: string) => (text.startsWith('ダミーの旅行記本文です') ? t('travel.sample.excerpt') : text)
 
+  // Special-case image override for Tokyo Tower posts
+  const isTokyoTowerPost = /東京タワー|Tokyo\s*Tower|도쿄\s*타워/i.test(post.title) ||
+    post.tags?.some(t => /東京タワー|Tokyo\s*Tower|도쿄\s*타워/i.test(t));
+  const tokyoTowerImages = [
+    '/images/tokyo_toewr/tokyo_toewr1.jpeg',
+    '/images/tokyo_toewr/tokyo_toewr2.jpg',
+    '/images/tokyo_toewr/tokyo_toewr3.jpg',
+  ];
+  const cardImage = isTokyoTowerPost
+    ? tokyoTowerImages[index % tokyoTowerImages.length]
+    : (post.images[0] || '');
+
   return (
     <article
       className="travel-card animate-slide-up"
@@ -76,9 +88,7 @@ export default function TravelPostCard({ post, index }: TravelPostCardProps) {
     >
       {/* 画像エリア */}
       <div className="travel-card-image" style={{
-        backgroundImage: post.images.length > 0 && !imageError 
-          ? `url(${post.images[0]})` 
-          : undefined
+        backgroundImage: (!imageError && cardImage) ? `url(${cardImage})` : undefined
       }}>
         {(!post.images.length || imageError) && (
           <div className="flex items-center justify-center h-full text-gray-400">

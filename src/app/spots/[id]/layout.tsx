@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_JP, Geist_Mono } from "next/font/google";
-import Header from "@/components/Header";
-import ClientProviders from "@/components/ClientProviders";
+// Header and global providers are already included in the root layout.
 import "./spots-detail.css";
 
 const inter = Inter({
@@ -57,12 +56,9 @@ export default function SpotLayout({
 }>) {
   return (
     <div className={`${inter.variable} ${notoSansJP.variable} ${geistMono.variable} antialiased min-h-screen bg-white`}>
-      <ClientProviders>
-        <Header />
-        <main className="flex-1">
-          {children}
-        </main>
-      </ClientProviders>
+      <main className="flex-1">
+        {children}
+      </main>
     </div>
   );
 }

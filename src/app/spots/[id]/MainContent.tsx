@@ -155,6 +155,8 @@ export default function MainContent({
       crowdLabels: { busy: '混雑', normal: '普通', empty: '空いている' },
       free: '無料', paid: '有料',
       highlights: '見どころ',
+      mainPhoto: 'メイン写真',
+      clickToEnlarge: 'クリックで拡大',
       heroSubtitle: 'スポット詳細',
       addToFavoritesBtn: 'お気に入りに追加',
       addToAIPlanBtn: 'AI旅行プランに入れる',
@@ -178,6 +180,8 @@ export default function MainContent({
       crowdLabels: { busy: 'Busy', normal: 'Moderate', empty: 'Light' },
       free: 'Free', paid: 'Paid',
       highlights: 'Highlights',
+      mainPhoto: 'Main Photo',
+      clickToEnlarge: 'Click to enlarge',
       heroSubtitle: 'Spot Details',
       addToFavoritesBtn: 'Add to Favorites',
       addToAIPlanBtn: 'Add to AI Plan',
@@ -201,6 +205,8 @@ export default function MainContent({
       crowdLabels: { busy: '혼잡', normal: '보통', empty: '여유' },
       free: '무료', paid: '유료',
       highlights: '볼거리',
+      mainPhoto: '메인 사진',
+      clickToEnlarge: '클릭하여 확대',
       heroSubtitle: '스팟 상세',
       addToFavoritesBtn: '즐겨찾기에 추가',
       addToAIPlanBtn: 'AI 여행 일정에 추가',
@@ -224,6 +230,8 @@ export default function MainContent({
       crowdLabels: { busy: 'Affluence', normal: 'Modérée', empty: 'Faible' },
       free: 'Gratuit', paid: 'Payant',
       highlights: 'Points forts',
+      mainPhoto: 'Photo principale',
+      clickToEnlarge: 'Cliquer pour agrandir',
       heroSubtitle: 'Détails du lieu',
       addToFavoritesBtn: 'Ajouter aux favoris',
       addToAIPlanBtn: "Ajouter au plan IA",
@@ -374,7 +382,7 @@ export default function MainContent({
     };
 
     fetchSpotData();
-  }, [spotId]);
+  }, [spotId, lang]);
 
   const openModal = (modalId: string) => {
     setActiveModal(modalId);
@@ -446,24 +454,84 @@ export default function MainContent({
   };
 
 
+  // Multilingual tag translator for Highlights (with Tokyo Tower specifics)
   const tagToLabel = (tag: string) => {
-    const map: Record<string, string> = {
-      book_store: '書店',
-      shopping: 'ショッピング',
-      entertainment: 'エンタメ',
-      museum: '博物館',
-      art_gallery: '美術館',
-      park: '公園',
-      temple: '寺院',
-      shrine: '神社',
-      nature: '自然',
-      culture: '文化',
-      cafe: 'カフェ',
-      food: 'グルメ',
-      store: '店舗',
-      point_of_interest: '観光',
+    const normalize = (s: string) => {
+      if (/展望台|observatory/i.test(s)) return 'observatory';
+      if (/夜景|night/i.test(s)) return 'night_view';
+      if (/ランドマーク|landmark/i.test(s)) return 'landmark';
+      if (/333m|電波塔|broadcast/i.test(s)) return 'broadcast_tower_333m';
+      if (/東京.*シンボル|symbol.*tokyo/i.test(s)) return 'symbol_of_tokyo';
+      if (/メインデッキ|main\s*deck/i.test(s)) return 'main_deck';
+      if (/トップデッキ|top\s*deck/i.test(s)) return 'top_deck';
+      if (/富士山|fuji/i.test(s)) return 'mt_fuji_view';
+      // generic types
+      if (/book_store|書店/i.test(s)) return 'book_store';
+      if (/museum|博物館/i.test(s)) return 'museum';
+      if (/art|美術館/i.test(s)) return 'art_gallery';
+      if (/park|公園/i.test(s)) return 'park';
+      if (/temple|寺/i.test(s)) return 'temple';
+      if (/shrine|神社/i.test(s)) return 'shrine';
+      if (/nature|自然/i.test(s)) return 'nature';
+      if (/culture|文化/i.test(s)) return 'culture';
+      if (/cafe|カフェ/i.test(s)) return 'cafe';
+      if (/food|グルメ/i.test(s)) return 'food';
+      if (/shopping|ショッピング/i.test(s)) return 'shopping';
+      if (/store|店舗/i.test(s)) return 'store';
+      if (/観光|interest/i.test(s)) return 'point_of_interest';
+      return s;
     };
-    return map[tag] || tag;
+
+    const key = normalize(tag);
+    const dict: Record<string, Record<string, string>> = {
+      ja: {
+        observatory: '展望台',
+        night_view: '夜景',
+        landmark: 'ランドマーク',
+        broadcast_tower_333m: '333m電波塔',
+        symbol_of_tokyo: '東京シンボル',
+        main_deck: 'メインデッキ',
+        top_deck: 'トップデッキ',
+        mt_fuji_view: '富士山眺望',
+        book_store: '書店', museum: '博物館', art_gallery: '美術館', park: '公園', temple: '寺院', shrine: '神社', nature: '自然', culture: '文化', cafe: 'カフェ', food: 'グルメ', shopping: 'ショッピング', store: '店舗', point_of_interest: '観光',
+      },
+      en: {
+        observatory: 'Observatory',
+        night_view: 'Night View',
+        landmark: 'Landmark',
+        broadcast_tower_333m: '333m Broadcast Tower',
+        symbol_of_tokyo: 'Tokyo Symbol',
+        main_deck: 'Main Deck',
+        top_deck: 'Top Deck',
+        mt_fuji_view: 'Mt. Fuji View',
+        book_store: 'Bookstore', museum: 'Museum', art_gallery: 'Art Gallery', park: 'Park', temple: 'Temple', shrine: 'Shrine', nature: 'Nature', culture: 'Culture', cafe: 'Cafe', food: 'Gourmet', shopping: 'Shopping', store: 'Store', point_of_interest: 'Attraction',
+      },
+      ko: {
+        observatory: '전망대',
+        night_view: '야경',
+        landmark: '랜드마크',
+        broadcast_tower_333m: '333m 방송탑',
+        symbol_of_tokyo: '도쿄의 상징',
+        main_deck: '메인 데크',
+        top_deck: '톱 데크',
+        mt_fuji_view: '후지산 전망',
+        book_store: '서점', museum: '박물관', art_gallery: '미술관', park: '공원', temple: '사찰', shrine: '신사', nature: '자연', culture: '문화', cafe: '카페', food: '미식', shopping: '쇼핑', store: '상점', point_of_interest: '관광',
+      },
+      fr: {
+        observatory: 'Plateforme d’observation',
+        night_view: 'Vue nocturne',
+        landmark: 'Monument',
+        broadcast_tower_333m: 'Tour de diffusion 333 m',
+        symbol_of_tokyo: 'Symbole de Tokyo',
+        main_deck: 'Main Deck',
+        top_deck: 'Top Deck',
+        mt_fuji_view: 'Vue sur le mont Fuji',
+        book_store: 'Librairie', museum: 'Musée', art_gallery: 'Galerie d’art', park: 'Parc', temple: 'Temple', shrine: 'Sanctuaire', nature: 'Nature', culture: 'Culture', cafe: 'Café', food: 'Gastronomie', shopping: 'Shopping', store: 'Boutique', point_of_interest: 'Attraction',
+      }
+    };
+
+    const table = dict[lang] || dict.ja;
+    return table[key] || tag;
   };
 
   // 現在の営業時間を計算
@@ -691,7 +759,7 @@ export default function MainContent({
     const photo = photos.find(p => p.id === modalId);
     if (photo) return photo.label;
     
-    if (modalId === 'main') return 'メイン写真';
+    if (modalId === 'main') return i18n.mainPhoto;
     return '写真';
   };
 
@@ -710,10 +778,25 @@ export default function MainContent({
     return src;
   };
   let heroImagesDisplay = heroImages.map((s, i) => toValidSrc(s, i));
-  const galleryImages = (spotData?.images || []).map((s, i) => toValidSrc(s, i));
+  let galleryImages = (spotData?.images || []).map((s, i) => toValidSrc(s, i));
   // 3枚に満たない場合はダミーで埋める
   for (let i = 0; heroImagesDisplay.length < 3 && i < fallbackSky.length; i++) {
     heroImagesDisplay.push(fallbackSky[i]);
+  }
+
+  // Special background override for Tokyo Tower
+  const isTokyoTower = spotId === '101' || /東京タワー|Tokyo\s*Tower/i.test(spotData?.name || '');
+  if (isTokyoTower) {
+    heroImagesDisplay = [
+      '/images/tokyo_toewr/tokyo_toewr1.jpeg',
+      '/images/tokyo_toewr/tokyo_toewr2.jpg',
+      '/images/tokyo_toewr/tokyo_toewr3.jpg',
+    ];
+    galleryImages = [
+      '/images/tokyo_toewr/tokyo_toewr1.jpeg',
+      '/images/tokyo_toewr/tokyo_toewr2.jpg',
+      '/images/tokyo_toewr/tokyo_toewr3.jpg',
+    ];
   }
 
   return (
@@ -750,7 +833,7 @@ export default function MainContent({
                 <br />
                 <span className="text-3xl opacity-90">{i18n.heroSubtitle}</span>
               </h1>
-              <p className="text-xl md:text-2xl opacity-95 mb-12 text-shadow">
+              <p className="text-xl md:text-2xl mb-12 text-black leading-relaxed bg-white/80 backdrop-blur-sm rounded-xl px-6 py-4 shadow-lg">
                 {spotData?.description || i18n.fallbackDescription}
               </p>
             </>
@@ -975,7 +1058,7 @@ export default function MainContent({
                 >
                   <Image 
                     src={galleryImages[0]} 
-                    alt={`${spotData?.name || 'スポット'}のメイン写真`} 
+                    alt={`${spotData?.name || 'スポット'} - ${i18n.mainPhoto}`} 
                     fill 
                     className="object-cover group-hover:scale-105 transition-transform duration-300" 
                     sizes="100vw" 
@@ -983,8 +1066,8 @@ export default function MainContent({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p className="text-lg font-semibold">メイン写真</p>
-                    <p className="text-sm opacity-90">クリックで拡大</p>
+                    <p className="text-lg font-semibold">{i18n.mainPhoto}</p>
+                    <p className="text-sm opacity-90">{i18n.clickToEnlarge}</p>
                   </div>
                 </div>
               </div>
@@ -1050,7 +1133,7 @@ export default function MainContent({
                     <div className="text-center text-white">
                       <div className="text-6xl mb-4">{getSpotIcon(spotData?.name || '')}</div>
                       <h3 className="text-2xl font-bold mb-2">{spotData?.name || '東京タワー'}</h3>
-                      <p className="text-lg opacity-90">メイン写真</p>
+                      <p className="text-lg opacity-90">{i18n.mainPhoto}</p>
                     </div>
                   </div>
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
