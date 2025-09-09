@@ -37,6 +37,7 @@ const translations = {
     'common.sortByRating': 'ترتيب حسب التقييم',
     'common.sortByName': 'ترتيب أبجدي',
     'common.sortByNewest': 'الأحدث أولاً',
+    'common.viewDetails': 'عرض التفاصيل',
 
     // Authentication
     'auth.login': 'تسجيل الدخول',
@@ -69,6 +70,10 @@ const translations = {
     'features.community.title': 'مجتمع المسافرين',
     'features.community.description': 'انضم للنقاشات وشارك التجارب واحصل على نصائح من المحليين والمسافرين.',
 
+    // Areas page (title/subtitle)
+    'areas.page.title': 'استكشف اليابان',
+    'areas.page.subtitle': 'اكتشف وجهات مذهلة في منطقة طوكيو الكبرى',
+
     // Areas
     'areas.tokyo.title': 'طوكيو',
     'areas.tokyo.description': 'عاصمة عصرية تجمع بين أحدث التقنيات والتقاليد العريقة. تسوق، مطاعم، وحياة ليلية نابضة.',
@@ -78,6 +83,12 @@ const translations = {
     'areas.kyoto.description': 'عاصمة قديمة مليئة بالمعابد والعمارة التقليدية والحدائق والثقافة المحفوظة.',
     'areas.osaka.title': 'أوساكا عاصمة الطعام',
     'areas.osaka.description': 'مأكولات شارع مذهلة مثل تاكوياكي وأوكونوميياكي وتجارب طهي لا تُنسى.',
+    'areas.yokohama.title': 'يوكوهاما',
+    'areas.yokohama.description': 'مدينة موانئ دولية تشتهر بحيّ الصين، المستودعات الحمراء، ميناتو ميراي والمعالم الساحلية.',
+    'areas.saitama.title': 'سايتاما',
+    'areas.saitama.description': 'شوارع كاواغويه التاريخية، متحف السكك الحديدية في أومييا، وطبيعة تشيتشيبو تقدم مزيجاً من الثقافة والطبيعة.',
+    'areas.chiba.title': 'تشيبا',
+    'areas.chiba.description': 'موطن منتجع طوكيو ديزني، معبد نارِيتاسان، وشواطئ شبه جزيرة بوسو الخلابة.',
 
     // Footer
     'footer.explore.title': 'استكشف',
@@ -348,6 +359,10 @@ const translations = {
     'features.realTimeInfo.description': 'Access live data on crowd levels, weather conditions, transportation schedules, and venue availability for better planning.',
     'features.community.title': 'Community Features',
     'features.community.description': 'Join Q&A discussions, share travel experiences, get tips from locals and fellow travelers in our vibrant community platform.',
+
+    // Areas page (title/subtitle)
+    'areas.page.title': 'Explore Japan',
+    'areas.page.subtitle': 'Discover amazing destinations in the Tokyo metropolitan area',
     
     // Areas
     'areas.tokyo.title': 'Tokyo',
@@ -358,6 +373,12 @@ const translations = {
     'areas.kyoto.description': 'Ancient capital filled with temples, traditional architecture, geishas, and preserved cultural heritage sites.',
     'areas.osaka.title': 'Osaka Food Capital',
     'areas.osaka.description': 'Japan\'s kitchen offering incredible street food, takoyaki, okonomiyaki, and the best culinary adventures.',
+    'areas.yokohama.title': 'Yokohama',
+    'areas.yokohama.description': 'International port city famous for Chinatown, Red Brick Warehouse, Minato Mirai, and waterfront attractions.',
+    'areas.saitama.title': 'Saitama',
+    'areas.saitama.description': 'Historic Kawagoe, Railway Museum in Omiya, and Chichibu’s nature offer culture and outdoor experiences.',
+    'areas.chiba.title': 'Chiba',
+    'areas.chiba.description': 'Home to Tokyo Disney Resort, Narita-san Temple, and scenic Boso Peninsula beaches.',
     
     // Footer
     'footer.explore.title': 'Explore',
@@ -650,6 +671,10 @@ const translations = {
     'features.realTimeInfo.description': '混雑レベル、天候条件、交通スケジュール、施設の利用可能性のライブデータにアクセスしてより良いプランニング。',
     'features.community.title': 'コミュニティ機能',
     'features.community.description': 'Q&Aディスカッションに参加、旅行体験の共有、地元の人々や仲間の旅行者からのヒントを活気あるコミュニティプラットフォームで。',
+
+    // Areas page (title/subtitle)
+    'areas.page.title': '日本を探索',
+    'areas.page.subtitle': '首都圏の素晴らしい目的地を発見しよう',
     
     // Areas
     'areas.tokyo.title': '東京',
@@ -660,6 +685,12 @@ const translations = {
     'areas.kyoto.description': '寺院、伝統的な建築、芸者、保存された文化遺産サイトで満たされた古都。',
     'areas.osaka.title': '大阪グルメの都',
     'areas.osaka.description': '素晴らしい屋台料理、たこ焼き、お好み焼き、最高の料理冒険を提供する日本のキッチン。',
+    'areas.yokohama.title': '横浜',
+    'areas.yokohama.description': 'みなとみらいの夜景、中華街、赤レンガ倉庫など港町の魅力が満載の国際都市。',
+    'areas.saitama.title': '埼玉',
+    'areas.saitama.description': '小江戸・川越の街並み、大宮の鉄道博物館、秩父の自然など歴史と自然が調和。',
+    'areas.chiba.title': '千葉',
+    'areas.chiba.description': '東京ディズニーリゾート、成田山新勝寺、房総半島の美しい海岸線など見どころが豊富。',
     
     // Footer
     'footer.explore.title': '探索',
@@ -854,6 +885,7 @@ const translations = {
     'common.sortByRating': '평점순',
     'common.sortByName': '이름순',
     'common.sortByNewest': '최신순',
+    'common.viewDetails': '자세히 보기',
     
     // Categories
     'category.sightseeing': '🏛️ 관광',
@@ -932,6 +964,10 @@ const translations = {
     'features.realTimeInfo.description': '더 나은 계획을 위해 혼잡 수준, 날씨 조건, 교통 스케줄, 장소 이용 가능성에 대한 실시간 데이터에 액세스하세요.',
     'features.community.title': '커뮤니티 기능',
     'features.community.description': 'Q&A 토론 참여, 여행 경험 공유, 활발한 커뮤니티 플랫폼에서 현지인과 동료 여행자들로부터 팁을 얻으세요.',
+
+    // Areas page (title/subtitle)
+    'areas.page.title': '일본 탐험',
+    'areas.page.subtitle': '도쿄 수도권의 놀라운 목적지를 발견하세요',
     
     // Areas
     'areas.tokyo.title': '도쿄',
@@ -942,6 +978,12 @@ const translations = {
     'areas.kyoto.description': '사원, 전통 건축, 게이샤, 보존된 문화 유산지로 가득한 고도.',
     'areas.osaka.title': '오사카 음식의 수도',
     'areas.osaka.description': '놀라운 길거리 음식, 타코야키, 오코노미야키, 최고의 요리 모험을 제공하는 일본의 주방.',
+    'areas.yokohama.title': '요코하마',
+    'areas.yokohama.description': '미나토미라이 야경, 차이나타운, 붉은 벽돌 창고 등 항구 도시의 매력이 가득한 국제도시.',
+    'areas.saitama.title': '사이타마',
+    'areas.saitama.description': '고에도 가와고에 거리, 오미야 철도박물관, 지치부 자연 등 역사와 자연의 조화.',
+    'areas.chiba.title': '치바',
+    'areas.chiba.description': '도쿄 디즈니 리조트, 나리타산 신쇼지, 보소 반도의 아름다운 해안선 등 볼거리가 풍부.',
     
     // Footer
     'footer.explore.title': '탐색',
@@ -1234,6 +1276,10 @@ const translations = {
     'features.realTimeInfo.description': 'Accédez aux données en direct sur les niveaux de foule, les conditions météorologiques, les horaires de transport et la disponibilité des lieux pour une meilleure planification.',
     'features.community.title': 'Fonctionnalités communautaires',
     'features.community.description': 'Rejoignez les discussions Q&R, partagez des expériences de voyage, obtenez des conseils des locaux et des autres voyageurs dans notre plateforme communautaire dynamique.',
+
+    // Areas page (title/subtitle)
+    'areas.page.title': 'Explorer le Japon',
+    'areas.page.subtitle': 'Découvrez des destinations incroyables dans la région métropolitaine de Tokyo',
     
     // Areas
     'areas.tokyo.title': 'Tokyo',
@@ -1244,6 +1290,12 @@ const translations = {
     'areas.kyoto.description': 'Ancienne capitale remplie de temples, d\'architecture traditionnelle, de geishas et de sites patrimoniaux culturels préservés.',
     'areas.osaka.title': 'Osaka capitale gastronomique',
     'areas.osaka.description': 'La cuisine du Japon offrant une incroyable street food, takoyaki, okonomiyaki et les meilleures aventures culinaires.',
+    'areas.yokohama.title': 'Yokohama',
+    'areas.yokohama.description': 'Ville portuaire internationale célèbre pour Chinatown, les Entrepôts de Briques Rouges, Minato Mirai et les attractions du front de mer.',
+    'areas.saitama.title': 'Saitama',
+    'areas.saitama.description': 'Rues historiques de Kawagoe, Musée du Chemin de fer à Ōmiya, et nature de Chichibu — culture et plein air.',
+    'areas.chiba.title': 'Chiba',
+    'areas.chiba.description': 'Accueil de Tokyo Disney Resort, du temple Narita-san et des magnifiques plages de la presqu’île de Bōsō.',
     
     // Footer
     'footer.explore.title': 'Explorer',

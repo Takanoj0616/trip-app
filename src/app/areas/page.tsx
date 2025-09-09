@@ -1,132 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import { useTranslation } from 'react-i18next';
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-// Translation resources for areas page
-const areasTranslations = {
-  ja: {
-    translation: {
-      page: {
-        title: "日本を探索",
-        subtitle: "首都圏の素晴らしい目的地を発見しよう"
-      },
-      areas: {
-        tokyo: {
-          name: "東京",
-          description: "日本の首都、東京。伝統とモダンが融合する魅力的な都市で、スカイツリー、浅草、渋谷など多彩なスポットが楽しめます。"
-        },
-        yokohama: {
-          name: "横浜", 
-          description: "港町横浜は、みなとみらいの美しい夜景、中華街のグルメ、赤レンガ倉庫など魅力的なスポットが満載の国際都市です。"
-        },
-        saitama: {
-          name: "埼玉",
-          description: "埼玉県は川越の小江戸情緒、大宮の鉄道博物館、秩父の自然など、歴史と文化、自然が調和した魅力的なエリアです。"
-        },
-        chiba: {
-          name: "千葉",
-          description: "千葉県は東京ディズニーランド、房総半島の美しい海岸線、成田山新勝寺など、エンターテイメントと自然が楽しめます。"
-        }
-      },
-      ui: {
-        spots: "スポット",
-        explore: "{{area}}を探索",
-        languages: {
-          ja: "日本語",
-          en: "English", 
-          ko: "한국어"
-        }
-      }
-    }
-  },
-  en: {
-    translation: {
-      page: {
-        title: "Explore Japan",
-        subtitle: "Discover amazing destinations in the Tokyo metropolitan area"
-      },
-      areas: {
-        tokyo: {
-          name: "Tokyo",
-          description: "Japan's vibrant capital city where cutting-edge technology meets ancient traditions. Explore Shibuya, Asakusa, Ginza, Tokyo Skytree, and countless temples, museums, and world-class restaurants."
-        },
-        yokohama: {
-          name: "Yokohama",
-          description: "International port city famous for Chinatown, Red Brick Warehouse, Minato Mirai skyline, and coastal attractions. Perfect for day trips from Tokyo."
-        },
-        saitama: {
-          name: "Saitama", 
-          description: "Experience traditional Japan in Kawagoe's historic Edo-period streets and enjoy natural beauty in Chichibu. Great for cultural tourism and hiking."
-        },
-        chiba: {
-          name: "Chiba",
-          description: "Home to Narita Airport, Tokyo Disneyland, and beautiful Boso Peninsula beaches. Combines theme parks, nature, and traditional Japanese culture."
-        }
-      },
-      ui: {
-        spots: "spots",
-        explore: "Explore {{area}}",
-        languages: {
-          ja: "日本語",
-          en: "English",
-          ko: "한국어"
-        }
-      }
-    }
-  },
-  ko: {
-    translation: {
-      page: {
-        title: "일본 탐험",
-        subtitle: "도쿄 수도권의 놀라운 목적지를 발견하세요"
-      },
-      areas: {
-        tokyo: {
-          name: "도쿄",
-          description: "최첨단 기술과 고대 전통이 만나는 일본의 수도. 시부야, 아사쿠사, 긴자, 도쿄 스카이트리, 그리고 수많은 사원, 박물관, 세계적인 레스토랑을 탐험하세요."
-        },
-        yokohama: {
-          name: "요코하마",
-          description: "차이나타운, 레드브릭 웨어하우스, 미나토미라이 스카이라인, 해안 관광지로 유명한 국제 항구 도시. 도쿄에서의 당일치기 여행에 완벽합니다."
-        },
-        saitama: {
-          name: "사이타마",
-          description: "가와고에의 역사적인 에도 시대 거리에서 전통적인 일본을 경험하고, 지치부의 자연미를 즐기세요. 문화 관광과 하이킹에 최적입니다."
-        },
-        chiba: {
-          name: "지바",
-          description: "나리타 공항, 도쿄 디즈니랜드, 아름다운 보소 반도 해변의 본거지. 테마파크, 자연, 전통적인 일본 문화를 결합합니다."
-        }
-      },
-      ui: {
-        spots: "스팟",
-        explore: "{{area}} 탐험",
-        languages: {
-          ja: "日本語",
-          en: "English",
-          ko: "한국어"
-        }
-      }
-    }
-  }
-};
-
-// Initialize i18n for this page only
-i18n
-  .use(initReactI18next)
-  .init({
-    resources: areasTranslations,
-    lng: typeof window !== 'undefined' ? localStorage.getItem('areas-language') || 'ja' : 'ja',
-    fallbackLng: 'ja',
-    interpolation: {
-      escapeValue: false,
-    },
-  });
+// Page now uses the global LanguageContext from Header
 
 interface AreaData {
   icon: string;
@@ -140,7 +19,7 @@ interface AreaData {
 const areas: AreaData[] = [
   {
     icon: '🗼',
-    nameKey: 'areas.tokyo.name',
+    nameKey: 'areas.tokyo.title',
     rating: 4.8,
     descriptionKey: 'areas.tokyo.description',
     spots: 185,
@@ -148,7 +27,7 @@ const areas: AreaData[] = [
   },
   {
     icon: '🌊',
-    nameKey: 'areas.yokohama.name',
+    nameKey: 'areas.yokohama.title',
     rating: 4.5,
     descriptionKey: 'areas.yokohama.description',
     spots: 124,
@@ -156,7 +35,7 @@ const areas: AreaData[] = [
   },
   {
     icon: '⛩️',
-    nameKey: 'areas.saitama.name',
+    nameKey: 'areas.saitama.title',
     rating: 4.3,
     descriptionKey: 'areas.saitama.description',
     spots: 98,
@@ -164,7 +43,7 @@ const areas: AreaData[] = [
   },
   {
     icon: '🏖️',
-    nameKey: 'areas.chiba.name',
+    nameKey: 'areas.chiba.title',
     rating: 4.4,
     descriptionKey: 'areas.chiba.description',
     spots: 112,
@@ -173,16 +52,9 @@ const areas: AreaData[] = [
 ];
 
 export default function AreasPage() {
-  const { t } = useTranslation();
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+  const { t } = useLanguage();
   const heroBackgroundRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const changeLanguage = (lang: string) => {
-    i18n.changeLanguage(lang);
-    setCurrentLanguage(lang);
-    localStorage.setItem('areas-language', lang);
-  };
 
   // Parallax effect
   useEffect(() => {
@@ -292,8 +164,8 @@ export default function AreasPage() {
     ? window.location.origin
     : 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
   
-  const pageTitle = t('page.title');
-  const pageDescription = t('page.subtitle');
+  const pageTitle = t('areas.page.title');
+  const pageDescription = t('areas.page.subtitle');
   
   const jsonLdData = {
     "@context": "https://schema.org",
@@ -404,44 +276,7 @@ export default function AreasPage() {
           z-index: 1;
         }
 
-        .language-switcher {
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          z-index: 2000;
-          display: flex;
-          background: rgba(255, 255, 255, 0.95);
-          border-radius: 25px;
-          padding: 0.5rem;
-          gap: 0.25rem;
-          border: 1px solid rgba(0, 0, 0, 0.1);
-          backdrop-filter: blur(15px);
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .lang-button {
-          padding: 0.5rem 1rem;
-          border: none;
-          border-radius: 20px;
-          background: transparent;
-          cursor: pointer;
-          font-size: 0.9rem;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          color: #666;
-        }
-
-        .lang-button:hover {
-          background: rgba(102, 126, 234, 0.1);
-          color: #667eea;
-        }
-
-        .lang-button.active {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          font-weight: 600;
-          box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
-        }
+        /* Language is controlled by Header; per-page switcher removed */
 
         .main-content {
           margin-top: 0px;
@@ -741,32 +576,13 @@ export default function AreasPage() {
         <link rel="preload" as="image" href="https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2092&q=80" />
       </div>
 
-      <div className="language-switcher">
-        <button 
-          className={`lang-button ${currentLanguage === 'ja' ? 'active' : ''}`}
-          onClick={() => changeLanguage('ja')}
-        >
-          {t('ui.languages.ja')}
-        </button>
-        <button 
-          className={`lang-button ${currentLanguage === 'en' ? 'active' : ''}`}
-          onClick={() => changeLanguage('en')}
-        >
-          {t('ui.languages.en')}
-        </button>
-        <button 
-          className={`lang-button ${currentLanguage === 'ko' ? 'active' : ''}`}
-          onClick={() => changeLanguage('ko')}
-        >
-          {t('ui.languages.ko')}
-        </button>
-      </div>
+      {/* Removed page-specific language tabs to defer to Header language */}
 
       <main className="main-content">
         <div className="container">
           <div className="page-title">
-            <h1>{t('page.title')}</h1>
-            <p>{t('page.subtitle')}</p>
+            <h1>{t('areas.page.title')}</h1>
+            <p>{t('areas.page.subtitle')}</p>
           </div>
 
           <div className="areas-grid">
@@ -778,7 +594,7 @@ export default function AreasPage() {
                   className="area-card" 
                   role="link" 
                   tabIndex={0} 
-                  aria-label={`${t('ui.explore', { area: areaName })} - ${area.spots} ${t('ui.spots')}`}
+                  aria-label={`${t('common.viewDetails')} - ${area.spots} ${t('area.spots')}`}
                   ref={(el) => cardRefs.current[index] = el}
                   onClick={() => window.location.href = area.href}
                   onKeyDown={(e) => {
@@ -798,10 +614,10 @@ export default function AreasPage() {
                     {t(area.descriptionKey)}
                   </p>
                   <div className="area-spots">
-                    <span className="spot-count">{area.spots}</span> {t('ui.spots')}
+                    <span className="spot-count">{area.spots}</span> {t('area.spots')}
                   </div>
                   <Link href={area.href} className="area-cta">
-                    {t('ui.explore', { area: areaName })}
+                    {t('common.viewDetails')}
                   </Link>
                 </div>
               );
