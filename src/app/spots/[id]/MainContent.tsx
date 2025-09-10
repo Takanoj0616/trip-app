@@ -207,6 +207,9 @@ export default function MainContent({
       crowdForecast: '混雑予報',
       reviewSummary: 'レビュー要約',
       snsRealtime: 'SNSリアルタイム',
+      facilities: '設備・注意事項',
+      faq: 'よくある質問',
+      nearbyAttractions: '近隣の観光スポット',
     },
     en: {
       gallery: 'Photo Gallery',
@@ -244,6 +247,9 @@ export default function MainContent({
       crowdForecast: 'Crowd Forecast',
       reviewSummary: 'Review Summary',
       snsRealtime: 'Social Media Updates',
+      facilities: 'Facilities & Important Notes',
+      faq: 'Frequently Asked Questions',
+      nearbyAttractions: 'Nearby Attractions',
     },
     ko: {
       gallery: '사진 갤러리',
@@ -269,6 +275,21 @@ export default function MainContent({
       ticketsBtn: '티켓 예약',
       fallbackDescription: '인기 있는 장소입니다. 볼거리와 정보를 확인해 일정을 계획해 보세요.',
       reviewsTitle: '리뷰',
+      bookTickets: '티켓 예약',
+      addToPlan: '일정에 추가',
+      save: '저장',
+      share: '공유',
+      quickSummary: '3초 요약',
+      ticketInfo: '티켓 정보',
+      accessInfo: '교통 정보',
+      bestTime: '추천 시간',
+      weatherInsight: '날씨・시야',
+      crowdForecast: '혼잡 예보',
+      reviewSummary: '리뷰 요약',
+      snsRealtime: 'SNS 실시간',
+      facilities: '시설・주의사항',
+      faq: '자주 묻는 질문',
+      nearbyAttractions: '주변 관광 명소',
     },
     fr: {
       gallery: 'Galerie Photo',
@@ -294,6 +315,21 @@ export default function MainContent({
       ticketsBtn: 'Réserver des billets',
       fallbackDescription: "Lieu populaire. Consultez les points forts et les infos pour planifier votre visite.",
       reviewsTitle: 'Avis',
+      bookTickets: 'Réserver des billets',
+      addToPlan: 'Ajouter au plan',
+      save: 'Sauvegarder',
+      share: 'Partager',
+      quickSummary: 'Résumé en 3 secondes',
+      ticketInfo: 'Informations sur les billets',
+      accessInfo: 'Informations d\'accès',
+      bestTime: 'Meilleur moment pour visiter',
+      weatherInsight: 'Météo et visibilité',
+      crowdForecast: 'Prévision d\'affluence',
+      reviewSummary: 'Résumé des avis',
+      snsRealtime: 'Mises à jour des réseaux sociaux',
+      facilities: 'Installations et notes importantes',
+      faq: 'Questions fréquemment posées',
+      nearbyAttractions: 'Attractions à proximité',
     },
   }[lang];
 
@@ -856,37 +892,37 @@ export default function MainContent({
   }
 
   return (
-    <main className="min-h-screen">
-      {/* 固定CTAバー */}
-      <div className="fixed top-16 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-4">
-            {/* 主要CTAボタン - Book Tickets */}
+    <main className="min-h-screen pt-32 sm:pt-36 md:pt-40">
+      {/* 固定CTAバー - より洗練されたデザイン */}
+      <div className="fixed top-36 sm:top-40 md:top-44 left-0 right-0 z-40 bg-gradient-to-r from-white/95 via-white/98 to-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between gap-6">
+            {/* 主要CTAボタン - より魅力的なデザイン */}
             <button
               onClick={() => window.open('#tickets', '_self')}
-              className="flex-1 max-w-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+              className="flex-1 max-w-sm bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center justify-center gap-3 shadow-2xl hover:shadow-3xl transform hover:scale-105"
             >
-              <Ticket size={20} />
-              {i18n.bookTickets}
+              <Ticket size={22} />
+              <span className="text-lg">{i18n.bookTickets}</span>
             </button>
             
-            {/* セカンダリアクション */}
-            <div className="flex items-center gap-2">
+            {/* セカンダリアクション - より洗練されたデザイン */}
+            <div className="flex items-center gap-3">
               <button
                 onClick={addToAITravelPlan}
-                className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-colors flex items-center gap-2"
+                className="px-5 py-4 bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 text-emerald-700 rounded-2xl transition-all duration-300 flex items-center gap-2 border border-emerald-200 hover:border-emerald-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 disabled={!isLoggedIn}
               >
-                <Bot size={18} />
-                <span className="hidden sm:inline">{i18n.addToPlan}</span>
+                <Bot size={20} />
+                <span className="hidden sm:inline font-semibold">{i18n.addToPlan}</span>
               </button>
               
               <button
                 onClick={addToFavorites}
-                className="px-4 py-3 bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-700 rounded-xl transition-colors flex items-center gap-2"
+                className="px-5 py-4 bg-gradient-to-r from-rose-50 to-pink-50 hover:from-rose-100 hover:to-pink-100 text-rose-700 rounded-2xl transition-all duration-300 flex items-center gap-2 border border-rose-200 hover:border-rose-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <Heart size={18} />
-                <span className="hidden sm:inline">{i18n.save}</span>
+                <Heart size={20} />
+                <span className="hidden sm:inline font-semibold">{i18n.save}</span>
               </button>
               
               <button
@@ -899,18 +935,18 @@ export default function MainContent({
                     });
                   }
                 }}
-                className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-colors flex items-center gap-2"
+                className="px-5 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 text-blue-700 rounded-2xl transition-all duration-300 flex items-center gap-2 border border-blue-200 hover:border-blue-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <Share2 size={18} />
-                <span className="hidden sm:inline">{i18n.share}</span>
+                <Share2 size={20} />
+                <span className="hidden sm:inline font-semibold">{i18n.share}</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ヒーローセクション */}
-      <section className="relative min-h-[70vh] flex items-center justify-center text-white overflow-hidden mt-32 md:mt-36 lg:mt-40">
+      {/* ヒーローセクション - より魅力的なデザイン */}
+      <section className="relative min-h-[80vh] flex items-center justify-center text-white overflow-hidden pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         {/* 背景（スライドショー） */}
         <div className="absolute inset-0">
           {heroImagesDisplay.map((src, i) => (
@@ -936,27 +972,63 @@ export default function MainContent({
             </div>
           ) : (
             <>
-              <h1 className="text-5xl md:text-6xl font-bold mb-6 text-shadow-lg bg-gradient-to-br from-white to-slate-100 bg-clip-text text-transparent">
-                {spotData?.name || 'Tokyo Tower'}
-              </h1>
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-8 py-6 shadow-xl">
-                <div className="flex flex-wrap items-center justify-center gap-6 text-gray-800">
-                  <div className="flex items-center gap-2">
-                    <Star className="text-yellow-500" size={20} />
-                    <span className="font-semibold">{spotData?.rating || 4.2}</span>
-                    <span className="text-gray-600">({(spotData?.reviewCount || 15032).toLocaleString()} reviews)</span>
+              <div className="text-center mb-8">
+                <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-4 bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent drop-shadow-2xl">
+                  {spotData?.name || 'Tokyo Tower'}
+                </h1>
+                <p className="text-xl md:text-2xl text-white/90 font-light tracking-wide drop-shadow-lg">
+                  {lang === 'en' ? 'Iconic 333m tower with breathtaking city views' :
+                   lang === 'ko' ? '숨막히는 도시 전망을 자랑하는 상징적인 333m 타워' :
+                   lang === 'fr' ? 'Tour emblématique de 333m avec des vues imprenables sur la ville' :
+                   '息をのむような都市の景色を誇る象徴的な333mタワー'}
+                </p>
+              </div>
+              
+              <div className="bg-gradient-to-r from-white/95 via-white/98 to-white/95 backdrop-blur-xl rounded-3xl px-10 py-8 shadow-2xl border border-white/20">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-gray-800">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Star className="text-yellow-500" size={24} />
+                      <span className="text-2xl font-bold">{spotData?.rating || 4.2}</span>
+                    </div>
+                    <span className="text-sm text-gray-600 font-medium">
+                      {(spotData?.reviewCount || 15032).toLocaleString()} reviews
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="text-blue-500" size={20} />
-                    <span>2–3h</span>
+                  
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Clock className="text-blue-500" size={24} />
+                      <span className="text-2xl font-bold">2–3h</span>
+                    </div>
+                    <span className="text-sm text-gray-600 font-medium">
+                      {lang === 'en' ? 'Duration' :
+                       lang === 'ko' ? '소요시간' :
+                       lang === 'fr' ? 'Durée' :
+                       '所要時間'}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <DollarSign className="text-green-500" size={20} />
-                    <span>Paid</span>
+                  
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <DollarSign className="text-green-500" size={24} />
+                      <span className="text-2xl font-bold">¥1,200+</span>
+                    </div>
+                    <span className="text-sm text-gray-600 font-medium">
+                      {lang === 'en' ? 'From' :
+                       lang === 'ko' ? '부터' :
+                       lang === 'fr' ? 'À partir de' :
+                       'から'}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                      Today 9:00–22:30
+                  
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <span className="text-2xl">🕘</span>
+                      <span className="text-lg font-bold text-green-700">Open</span>
+                    </div>
+                    <span className="text-sm bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium">
+                      9:00–22:30
                     </span>
                   </div>
                 </div>
@@ -968,14 +1040,18 @@ export default function MainContent({
 
       {/* トースト通知 */}
       {toastMsg && (
-        <div className="fixed right-4 z-[60] top-40 md:top-44 lg:top-48">
-          <div className="flex items-center gap-3 bg-black/80 text-white px-4 py-3 rounded-xl shadow-lg backdrop-blur">
-            <span>{toastMsg}</span>
+        <div className="fixed right-6 z-[60] top-60 sm:top-64 md:top-68 lg:top-72">
+          <div className="flex items-center gap-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-xl border border-white/20 transform animate-slide-in-right">
+            <CheckCircle size={24} className="text-emerald-200" />
+            <span className="font-semibold">{toastMsg}</span>
             <a
               href="/ai-plan"
-              className="ml-2 px-3 py-1 rounded-lg bg-white text-black text-sm hover:bg-slate-100"
+              className="ml-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-sm font-semibold transition-all duration-200 backdrop-blur-sm border border-white/30"
             >
-              AIプランを見る
+              {lang === 'en' ? 'View AI Plan' :
+               lang === 'ko' ? 'AI 플랜 보기' :
+               lang === 'fr' ? 'Voir le plan IA' :
+               'AIプランを見る'}
             </a>
           </div>
         </div>
@@ -990,15 +1066,20 @@ export default function MainContent({
           35% { opacity: 0 }
           100% { opacity: 0 }
         }
+        @keyframes slideInRight {
+          0% { transform: translateX(100%); opacity: 0; }
+          100% { transform: translateX(0); opacity: 1; }
+        }
         .hero-slide { position: absolute; inset: 0; opacity: 0; animation: fadeSlide 15s infinite ease-in-out; }
         .hero-slide:nth-child(1) { animation-delay: 0s }
         .hero-slide:nth-child(2) { animation-delay: 5s }
         .hero-slide:nth-child(3) { animation-delay: 10s }
+        .animate-slide-in-right { animation: slideInRight 0.5s ease-out; }
       `}</style>
 
       <div className="container mx-auto px-6">
         {/* 3秒要約 */}
-        <section className="relative -mt-16 z-10 mb-8">
+        <section className="relative -mt-32 z-10 mb-12">
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
             <h2 className="flex items-center gap-3 text-xl font-bold text-gray-800 mb-4">
               <Eye className="text-blue-600" size={24} />
@@ -1864,19 +1945,31 @@ export default function MainContent({
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <Twitter className="text-primary" size={24} />
-            SNS・リアルタイム情報
+            {lang === 'en' ? 'Social Media & Real-time Updates' : 
+             lang === 'ko' ? 'SNS・실시간 정보' : 
+             lang === 'fr' ? 'Réseaux sociaux et mises à jour en temps réel' : 
+             'SNS・リアルタイム情報'}
           </h2>
 
           <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-8 text-center">
             <Twitter className="mx-auto mb-4 text-blue-400" size={48} />
             <div className="text-lg font-semibold mb-2">
-              #東京タワー #TokyoTower のリアルタイム投稿
+              {lang === 'en' ? '#TokyoTower real-time posts' :
+               lang === 'ko' ? '#도쿄타워 #TokyoTower 실시간 게시물' :
+               lang === 'fr' ? 'Publications en temps réel #TokyoTower' :
+               '#東京タワー #TokyoTower のリアルタイム投稿'}
             </div>
             <p className="text-text-muted mb-6">
-              最新の投稿や混雑状況をチェックできます
+              {lang === 'en' ? 'Check the latest posts and crowd conditions' :
+               lang === 'ko' ? '최신 게시물과 혼잡 상황을 확인할 수 있습니다' :
+               lang === 'fr' ? 'Consultez les dernières publications et les conditions de foule' :
+               '最新の投稿や混雑状況をチェックできます'}
             </p>
             <button className="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors">
-              最新情報を読み込み
+              {lang === 'en' ? 'Load Latest Updates' :
+               lang === 'ko' ? '최신 정보 불러오기' :
+               lang === 'fr' ? 'Charger les dernières mises à jour' :
+               '最新情報を読み込み'}
             </button>
           </div>
         </section>
@@ -1900,17 +1993,29 @@ export default function MainContent({
           <div className="relative z-10">
             <h2 className="flex items-center justify-center gap-4 mb-4">
               <Ticket size={32} />
-              チケット・予約
+              {lang === 'en' ? 'Tickets & Reservations' :
+               lang === 'ko' ? '티켓・예약' :
+               lang === 'fr' ? 'Billets et réservations' :
+               'チケット・予約'}
             </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
-              事前予約でスムーズに入場！特別料金もご用意しています。
+              {lang === 'en' ? 'Book in advance for smooth entry! Special rates available.' :
+               lang === 'ko' ? '사전 예약으로 원활한 입장! 특별 요금도 준비되어 있습니다.' :
+               lang === 'fr' ? 'Réservez à l\'avance pour une entrée fluide ! Tarifs spéciaux disponibles.' :
+               '事前予約でスムーズに入場！特別料金もご用意しています。'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="px-8 py-4 bg-white/90 text-secondary rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300">
-                公式サイトで予約
+                {lang === 'en' ? 'Book on Official Site' :
+                 lang === 'ko' ? '공식 사이트에서 예약' :
+                 lang === 'fr' ? 'Réserver sur le site officiel' :
+                 '公式サイトで予約'}
               </button>
               <button className="px-8 py-4 bg-white/90 text-secondary rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300">
-                チケット予約サイト
+                {lang === 'en' ? 'Ticket Booking Site' :
+                 lang === 'ko' ? '티켓 예약 사이트' :
+                 lang === 'fr' ? 'Site de réservation de billets' :
+                 'チケット予約サイト'}
               </button>
             </div>
           </div>
@@ -1920,19 +2025,78 @@ export default function MainContent({
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <Info className="text-primary" size={24} />
-            設備・注意事項
+            {lang === 'en' ? 'Facilities & Important Notes' :
+             lang === 'ko' ? '시설・주의사항' :
+             lang === 'fr' ? 'Installations et notes importantes' :
+             '設備・注意事項'}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {[
-              { icon: Baby, text: 'ベビーカー利用可', available: true },
-              { icon: Accessibility, text: 'バリアフリー対応', available: true },
-              { icon: Bath, text: '多目的トイレあり', available: true },
-              { icon: Camera, text: '撮影OK', available: true },
-              { icon: Ban, text: '全館禁煙', available: false },
-              { icon: Wifi, text: '無料Wi-Fi', available: true },
-              { icon: Store, text: 'お土産ショップ', available: true },
-              { icon: Utensils, text: 'レストラン・カフェ', available: true },
+              { 
+                icon: Baby, 
+                text: lang === 'en' ? 'Stroller Friendly' :
+                      lang === 'ko' ? '유모차 이용 가능' :
+                      lang === 'fr' ? 'Accessible aux poussettes' :
+                      'ベビーカー利用可', 
+                available: true 
+              },
+              { 
+                icon: Accessibility, 
+                text: lang === 'en' ? 'Barrier-Free Access' :
+                      lang === 'ko' ? '배리어프리 대응' :
+                      lang === 'fr' ? 'Accès sans barrières' :
+                      'バリアフリー対応', 
+                available: true 
+              },
+              { 
+                icon: Bath, 
+                text: lang === 'en' ? 'Multi-Purpose Restrooms' :
+                      lang === 'ko' ? '다목적 화장실 있음' :
+                      lang === 'fr' ? 'Toilettes polyvalentes' :
+                      '多目的トイレあり', 
+                available: true 
+              },
+              { 
+                icon: Camera, 
+                text: lang === 'en' ? 'Photography OK' :
+                      lang === 'ko' ? '촬영 OK' :
+                      lang === 'fr' ? 'Photographie autorisée' :
+                      '撮影OK', 
+                available: true 
+              },
+              { 
+                icon: Ban, 
+                text: lang === 'en' ? 'Non-Smoking Facility' :
+                      lang === 'ko' ? '전관 금연' :
+                      lang === 'fr' ? 'Établissement non-fumeur' :
+                      '全館禁煙', 
+                available: false 
+              },
+              { 
+                icon: Wifi, 
+                text: lang === 'en' ? 'Free Wi-Fi' :
+                      lang === 'ko' ? '무료 Wi-Fi' :
+                      lang === 'fr' ? 'Wi-Fi gratuit' :
+                      '無料Wi-Fi', 
+                available: true 
+              },
+              { 
+                icon: Store, 
+                text: lang === 'en' ? 'Souvenir Shop' :
+                      lang === 'ko' ? '기념품 가게' :
+                      lang === 'fr' ? 'Boutique de souvenirs' :
+                      'お土産ショップ', 
+                available: true 
+              },
+              { 
+                icon: Utensils, 
+                text: lang === 'en' ? 'Restaurant & Café' :
+                      lang === 'ko' ? '레스토랑・카페' :
+                      lang === 'fr' ? 'Restaurant et café' :
+                      'レストラン・カフェ', 
+                available: true 
+              },
             ].map((item, index) => (
               <div
                 key={index}
@@ -1948,13 +2112,43 @@ export default function MainContent({
             ))}
           </div>
 
-          <h3 className="text-lg font-semibold text-secondary mb-4">注意事項</h3>
+          <h3 className="text-lg font-semibold text-secondary mb-4">
+            {lang === 'en' ? 'Important Notes' :
+             lang === 'ko' ? '주의사항' :
+             lang === 'fr' ? 'Notes importantes' :
+             '注意事項'}
+          </h3>
           <ul className="list-disc list-inside space-y-2 text-text-muted">
-            <li>悪天候時は展望台が閉鎖される場合があります</li>
-            <li>大きな荷物は有料ロッカーをご利用ください</li>
-            <li>ペットの同伴はできません（盲導犬等は除く）</li>
-            <li>三脚を使用した撮影は禁止されています</li>
-            <li>混雑時は入場制限を行う場合があります</li>
+            <li>
+              {lang === 'en' ? 'Observation decks may be closed during bad weather' :
+               lang === 'ko' ? '악천후 시 전망대가 폐쇄될 수 있습니다' :
+               lang === 'fr' ? 'Les ponts d\'observation peuvent être fermés par mauvais temps' :
+               '悪天候時は展望台が閉鎖される場合があります'}
+            </li>
+            <li>
+              {lang === 'en' ? 'Large luggage must be stored in paid lockers' :
+               lang === 'ko' ? '큰 짐은 유료 보관함을 이용해 주세요' :
+               lang === 'fr' ? 'Les gros bagages doivent être stockés dans des casiers payants' :
+               '大きな荷物は有料ロッカーをご利用ください'}
+            </li>
+            <li>
+              {lang === 'en' ? 'Pets are not allowed (except guide dogs)' :
+               lang === 'ko' ? '애완동물 동반 불가 (안내견 등 제외)' :
+               lang === 'fr' ? 'Les animaux ne sont pas autorisés (sauf chiens-guides)' :
+               'ペットの同伴はできません（盲導犬等は除く）'}
+            </li>
+            <li>
+              {lang === 'en' ? 'Tripod photography is prohibited' :
+               lang === 'ko' ? '삼각대를 사용한 촬영은 금지되어 있습니다' :
+               lang === 'fr' ? 'La photographie avec trépied est interdite' :
+               '三脚を使用した撮影は禁止されています'}
+            </li>
+            <li>
+              {lang === 'en' ? 'Entry restrictions may apply during busy periods' :
+               lang === 'ko' ? '혼잡 시 입장 제한을 실시할 수 있습니다' :
+               lang === 'fr' ? 'Des restrictions d\'entrée peuvent s\'appliquer pendant les périodes d\'affluence' :
+               '混雑時は入場制限を行う場合があります'}
+            </li>
           </ul>
         </section>
 
@@ -1962,29 +2156,64 @@ export default function MainContent({
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <HelpCircle className="text-primary" size={24} />
-            よくある質問
+            {lang === 'en' ? 'Frequently Asked Questions' :
+             lang === 'ko' ? '자주 묻는 질문' :
+             lang === 'fr' ? 'Questions fréquemment posées' :
+             'よくある質問'}
           </h2>
 
           <div className="space-y-4">
             {[
               {
-                question: '営業時間を教えてください',
-                answer:
+                question: lang === 'en' ? 'What are the operating hours?' :
+                         lang === 'ko' ? '운영시간을 알려주세요' :
+                         lang === 'fr' ? 'Quels sont les horaires d\'ouverture ?' :
+                         '営業時間を教えてください',
+                answer: lang === 'en' ? 
+                  'Main Deck: 9:00-23:00 (Last entry 22:30)\nTop Deck: 9:00-22:45 (Last entry 22:00-22:15)\nFootTown: 10:00-21:00 (varies by store)' :
+                  lang === 'ko' ?
+                  '메인 데크: 9:00~23:00 (마지막 입장 22:30)\n톱 데크: 9:00~22:45 (마지막 입장 22:00~22:15)\n풋타운: 10:00~21:00 (매장별로 다름)' :
+                  lang === 'fr' ?
+                  'Main Deck : 9h00-23h00 (Dernière entrée 22h30)\nTop Deck : 9h00-22h45 (Dernière entrée 22h00-22h15)\nFootTown : 10h00-21h00 (varie selon les magasins)' :
                   'メインデッキ：9:00～23:00（最終入場 22:30）\nトップデッキ：9:00～22:45（最終入場 22:00～22:15）\nフットタウン：10:00～21:00（店舗により異なります）',
               },
               {
-                question: '料金はいくらですか？',
-                answer:
+                question: lang === 'en' ? 'How much does it cost?' :
+                         lang === 'ko' ? '요금은 얼마인가요?' :
+                         lang === 'fr' ? 'Combien cela coûte-t-il ?' :
+                         '料金はいくらですか？',
+                answer: lang === 'en' ?
+                  'Main Deck: Adult ¥1,200, High School ¥1,000, Elementary/Junior High ¥700, Child (4+) ¥500\nTop Deck: +¥2,800 (13+), +¥1,800 (Elementary), +¥1,200 (Child)' :
+                  lang === 'ko' ?
+                  '메인 데크: 성인 1,200엔, 고등학생 1,000엔, 초중학생 700엔, 유아(4세 이상) 500엔\n톱 데크: +2,800엔(13세 이상), +1,800엔(초등학생), +1,200엔(유아)' :
+                  lang === 'fr' ?
+                  'Main Deck : Adulte 1 200¥, Lycéen 1 000¥, Collégien/Élémentaire 700¥, Enfant (4+) 500¥\nTop Deck : +2 800¥ (13+), +1 800¥ (Élémentaire), +1 200¥ (Enfant)' :
                   'メインデッキ：大人 1,200円、高校生 1,000円、小中学生 700円、幼児（4歳以上） 500円\nトップデッキ：+2,800円（13歳以上）、+1,800円（小学生）、+1,200円（幼児）',
               },
               {
-                question: '予約は必要ですか？',
-                answer:
+                question: lang === 'en' ? 'Do I need a reservation?' :
+                         lang === 'ko' ? '예약이 필요한가요?' :
+                         lang === 'fr' ? 'Ai-je besoin d\'une réservation ?' :
+                         '予約は必要ですか？',
+                answer: lang === 'en' ?
+                  'Main Deck requires no reservation, but Top Deck requires advance booking. We recommend booking in advance, especially for weekends and evening hours.' :
+                  lang === 'ko' ?
+                  '메인 데크는 예약이 불필요하지만, 톱 데크는 사전 예약이 필요합니다. 특히 주말과 야경 시간대는 혼잡하므로 사전 예약을 권장합니다.' :
+                  lang === 'fr' ?
+                  'Le Main Deck ne nécessite pas de réservation, mais le Top Deck nécessite une réservation à l\'avance. Nous recommandons de réserver à l\'avance, surtout pour les week-ends et les heures de soirée.' :
                   'メインデッキは予約不要ですが、トップデッキは事前予約が必要です。特に土日祝日や夜景の時間帯は混雑するため、事前予約をおすすめします。',
               },
               {
-                question: '車椅子でも利用できますか？',
-                answer:
+                question: lang === 'en' ? 'Is it wheelchair accessible?' :
+                         lang === 'ko' ? '휠체어로도 이용할 수 있나요?' :
+                         lang === 'fr' ? 'Est-ce accessible en fauteuil roulant ?' :
+                         '車椅子でも利用できますか？',
+                answer: lang === 'en' ?
+                  'Yes, it is barrier-free and wheelchair accessible. Elevators and multi-purpose restrooms are available.' :
+                  lang === 'ko' ?
+                  '네, 배리어프리 대응으로 휠체어로도 이용하실 수 있습니다. 엘리베이터와 다목적 화장실도 완비되어 있습니다.' :
+                  lang === 'fr' ?
+                  'Oui, c\'est sans barrières et accessible en fauteuil roulant. Des ascenseurs et des toilettes polyvalentes sont disponibles.' :
                   'はい、バリアフリー対応しており、車椅子でもご利用いただけます。エレベーターや多目的トイレも完備しています。',
               },
             ].map((faq, index) => (
@@ -2027,41 +2256,97 @@ export default function MainContent({
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <Map className="text-primary" size={24} />
-            近隣の観光スポット
+            {lang === 'en' ? 'Nearby Attractions' :
+             lang === 'ko' ? '주변 관광 명소' :
+             lang === 'fr' ? 'Attractions à proximité' :
+             '近隣の観光スポット'}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                name: '増上寺',
-                distance: '徒歩3分',
-                category: '歴史ある寺院',
-                description:
+                name: lang === 'en' ? 'Zojoji Temple' : '増上寺',
+                distance: lang === 'en' ? '3 min walk' :
+                         lang === 'ko' ? '도보 3분' :
+                         lang === 'fr' ? '3 min à pied' :
+                         '徒歩3分',
+                category: lang === 'en' ? 'Historic Temple' :
+                         lang === 'ko' ? '역사적인 사원' :
+                         lang === 'fr' ? 'Temple historique' :
+                         '歴史ある寺院',
+                description: lang === 'en' ? 
+                  'Beautiful temple with Tokyo Tower as backdrop. Famous as the Tokugawa family temple.' :
+                  lang === 'ko' ?
+                  '도쿄타워를 배경으로 한 아름다운 사원. 도쿠가와 가문의 보리사로 유명합니다.' :
+                  lang === 'fr' ?
+                  'Magnifique temple avec la Tokyo Tower en arrière-plan. Célèbre comme temple familial des Tokugawa.' :
                   '東京タワーを背景にした美しい寺院。徳川家の菩提寺として有名です。',
                 color: 'from-green-400 to-green-600',
+                image: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&auto=format&fit=crop&q=70',
               },
               {
-                name: '芝公園',
-                distance: '徒歩1分',
-                category: '都市公園',
-                description:
+                name: lang === 'en' ? 'Shiba Park' : '芝公園',
+                distance: lang === 'en' ? '1 min walk' :
+                         lang === 'ko' ? '도보 1분' :
+                         lang === 'fr' ? '1 min à pied' :
+                         '徒歩1分',
+                category: lang === 'en' ? 'Urban Park' :
+                         lang === 'ko' ? '도시 공원' :
+                         lang === 'fr' ? 'Parc urbain' :
+                         '都市公園',
+                description: lang === 'en' ?
+                  'Lush green park at the foot of Tokyo Tower. Perfect for walks and picnics.' :
+                  lang === 'ko' ?
+                  '도쿄타워 기슭에 펼쳐진 푸른 공원. 산책과 피크닉에 추천합니다.' :
+                  lang === 'fr' ?
+                  'Parc verdoyant au pied de la Tokyo Tower. Parfait pour les promenades et les pique-niques.' :
                   '東京タワーの足元に広がる緑豊かな公園。散歩やピクニックにおすすめです。',
                 color: 'from-emerald-400 to-emerald-600',
+                image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&auto=format&fit=crop&q=70',
               },
               {
-                name: '愛宕神社',
-                distance: '徒歩8分',
-                category: '神社',
-                description:
+                name: lang === 'en' ? 'Atago Shrine' : '愛宕神社',
+                distance: lang === 'en' ? '8 min walk' :
+                         lang === 'ko' ? '도보 8분' :
+                         lang === 'fr' ? '8 min à pied' :
+                         '徒歩8分',
+                category: lang === 'en' ? 'Shrine' :
+                         lang === 'ko' ? '신사' :
+                         lang === 'fr' ? 'Sanctuaire' :
+                         '神社',
+                description: lang === 'en' ?
+                  'Famous shrine with the "Success Steps". Located on the highest natural hill in Tokyo\'s 23 wards.' :
+                  lang === 'ko' ?
+                  '출세의 돌계단으로 유명한 신사. 도쿄 23구에서 가장 높은 자연 산에 있습니다.' :
+                  lang === 'fr' ?
+                  'Sanctuaire célèbre pour ses "Marches du Succès". Situé sur la plus haute colline naturelle des 23 arrondissements de Tokyo.' :
                   '出世の石段で有名な神社。東京23区で最も高い自然の山にあります。',
                 color: 'from-blue-400 to-blue-600',
+                image: 'https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=800&auto=format&fit=crop&q=70',
               },
             ].map((spot, index) => (
               <div
                 key={index}
                 className="border border-border-light rounded-2xl overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-300 bg-white"
               >
-                <div className={`h-48 bg-gradient-to-br ${spot.color}`} />
+                <div className="relative h-48">
+                  <Image
+                    src={spot.image}
+                    alt={spot.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    onError={(e) => {
+                      // フォールバック：画像が見つからない場合はグラデーション背景を表示
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent) {
+                        parent.className = `h-48 bg-gradient-to-br ${spot.color}`;
+                      }
+                    }}
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="font-semibold text-secondary mb-2">{spot.name}</h3>
                   <p className="text-primary text-sm font-medium mb-3">

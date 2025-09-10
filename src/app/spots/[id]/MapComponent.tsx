@@ -90,7 +90,7 @@ export default function MapComponent({ location, name }: MapComponentProps) {
     <div
       ref={mapContainerRef}
       className="h-96 rounded-2xl border border-border-light shadow-lg"
-      style={{ 
+      style={{
         minHeight: '400px',
         backgroundColor: '#f8fafc'
       }}
