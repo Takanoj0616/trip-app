@@ -503,11 +503,35 @@ export default function MainContent({
 
   const addToAITravelPlan = () => {
     if (!isLoggedIn) {
-      showNotification('この機能は会員限定です。ログイン/新規登録してください');
+      const loginMessage = lang === 'en' ? 'Please log in to use AI travel planning. Redirecting to login...' :
+                           lang === 'ko' ? 'AI 여행 계획을 사용하려면 로그인해 주세요. 로그인 페이지로 이동 중...' :
+                           lang === 'fr' ? 'Veuillez vous connecter pour utiliser la planification de voyage IA. Redirection vers la connexion...' :
+                           'AI旅行プランを使用するにはログインしてください。ログインページに移動中...';
+      
+      showNotification(loginMessage);
+      
+      // ログイン後にAI旅行プラン画面に戻れるように、現在のスポットIDを保存
+      try {
+        sessionStorage.setItem('pending-spot-add', spotId);
+        sessionStorage.setItem('return-to-ai-plan', '1');
+      } catch (error) {
+        console.error('Error saving pending spot:', error);
+      }
+      
+      // 2秒後にログインページに移動
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
       return;
     }
     if (!spotData) {
-      showNotification('スポット情報が読み込めていません', 'info');
+      showNotification(
+        lang === 'en' ? 'Spot information is not loaded yet' :
+        lang === 'ko' ? '스팟 정보가 아직 로드되지 않았습니다' :
+        lang === 'fr' ? 'Les informations sur le lieu ne sont pas encore chargées' :
+        'スポット情報が読み込めていません', 
+        'info'
+      );
       return;
     }
     const spotForPlan = {
@@ -529,8 +553,15 @@ export default function MainContent({
       googlePlaceId: spotData.googlePlaceId,
       reviews: []
     } as any;
-    try { addSpot(spotForPlan); } catch {}
-    // localStorageにも保存（ページ遷移直後の読み込み対策）
+    // コンテキストに追加
+    try { 
+      addSpot(spotForPlan); 
+      console.log('✅ Added spot to context:', spotForPlan.name);
+    } catch (error) {
+      console.error('❌ Error adding spot to context:', error);
+    }
+
+    // localStorageに保存（ページ遷移直後の読み込み対策）
     try {
       const raw = localStorage.getItem('selected-spots');
       const arr = raw ? JSON.parse(raw) : [];
@@ -538,11 +569,44 @@ export default function MainContent({
       if (!exists) {
         const next = Array.isArray(arr) ? [...arr, spotForPlan] : [spotForPlan];
         localStorage.setItem('selected-spots', JSON.stringify(next));
+        console.log('✅ Saved to localStorage. Total spots:', next.length);
+      } else {
+        console.log('ℹ️ Spot already exists in localStorage');
       }
-    } catch {}
-    try { sessionStorage.setItem('ai-plan-added', '1'); } catch {}
+    } catch (error) {
+      console.error('❌ Error saving to localStorage:', error);
+    }
+
+    // セッションストレージにフラグを設定
+    try { 
+      sessionStorage.setItem('ai-plan-added', '1'); 
+      sessionStorage.setItem('last-added-spot', spotId);
+      console.log('✅ Set session storage flags');
+    } catch (error) {
+      console.error('❌ Error setting session storage:', error);
+    }
     const total = (selectedSpotsFromCtx?.length || 0) + 1;
-    showNotification(`AI旅行プランに追加しました（合計${total}件）` , 'success');
+    
+    // 成功メッセージを表示
+    const successMessage = lang === 'en' ? `✅ Added to AI travel plan! Redirecting...` :
+                          lang === 'ko' ? `✅ AI 여행 계획에 추가되었습니다! 이동 중...` :
+                          lang === 'fr' ? `✅ Ajouté au plan de voyage IA ! Redirection...` :
+                          `✅ AI旅行プランに追加しました！移動中...`;
+    
+    showNotification(successMessage, 'success');
+    console.log('🚀 Showing success notification and preparing to navigate');
+    
+    // 1.5秒後にAI旅行プラン画面に移動（より確実に）
+    setTimeout(() => {
+      try {
+        console.log('Navigating to AI plan page...');
+        window.location.href = '/ai-plan';
+      } catch (error) {
+        console.error('Error navigating to AI plan:', error);
+        // フォールバック
+        window.open('/ai-plan', '_self');
+      }
+    }, 1500);
   };
 
 
@@ -1044,15 +1108,16 @@ export default function MainContent({
           <div className="flex items-center gap-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-xl border border-white/20 transform animate-slide-in-right">
             <CheckCircle size={24} className="text-emerald-200" />
             <span className="font-semibold">{toastMsg}</span>
-            <a
-              href="/ai-plan"
-              className="ml-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-sm font-semibold transition-all duration-200 backdrop-blur-sm border border-white/30"
+            <button
+              onClick={() => window.location.href = '/ai-plan'}
+              className="ml-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-sm font-semibold transition-all duration-200 backdrop-blur-sm border border-white/30 flex items-center gap-2"
             >
+              <Eye size={16} />
               {lang === 'en' ? 'View AI Plan' :
                lang === 'ko' ? 'AI 플랜 보기' :
                lang === 'fr' ? 'Voir le plan IA' :
                'AIプランを見る'}
-            </a>
+            </button>
           </div>
         </div>
       )}
@@ -2018,6 +2083,69 @@ export default function MainContent({
                  'チケット予約サイト'}
               </button>
             </div>
+          </div>
+        </section>
+
+        {/* AI旅行プランCTA */}
+        <section
+          id="ai-plan"
+          className="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-3xl p-12 text-center text-white mb-12 relative overflow-hidden"
+        >
+          {/* 背景パターン */}
+          <div className="absolute inset-0 opacity-10">
+            <div
+              className="w-full h-full"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20 20h60v60H20z' fill='none' stroke='white' stroke-width='2'/%3E%3Ccircle cx='50' cy='50' r='15' fill='white'/%3E%3C/svg%3E")`,
+                backgroundSize: '80px 80px',
+              }}
+            />
+          </div>
+
+          <div className="relative z-10">
+            <h2 className="flex items-center justify-center gap-4 mb-4">
+              <Bot size={32} />
+              {lang === 'en' ? 'AI Travel Plan' :
+               lang === 'ko' ? 'AI 여행 계획' :
+               lang === 'fr' ? 'Plan de voyage IA' :
+               'AI旅行プラン'}
+            </h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto">
+              {lang === 'en' ? 'Add this spot to your personalized AI travel plan and get smart recommendations!' :
+               lang === 'ko' ? '이 장소를 개인화된 AI 여행 계획에 추가하고 스마트한 추천을 받아보세요!' :
+               lang === 'fr' ? 'Ajoutez ce lieu à votre plan de voyage IA personnalisé et obtenez des recommandations intelligentes !' :
+               'このスポットを個人化されたAI旅行プランに追加して、スマートな推薦を受け取りましょう！'}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button 
+                onClick={addToAITravelPlan}
+                className="px-8 py-4 bg-white/90 text-emerald-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+              >
+                <Bot size={20} />
+                {lang === 'en' ? 'Add to AI Plan' :
+                 lang === 'ko' ? 'AI 플랜에 추가' :
+                 lang === 'fr' ? 'Ajouter au plan IA' :
+                 'AI旅行プランに追加'}
+              </button>
+              <button 
+                onClick={() => window.location.href = '/ai-plan'}
+                className="px-8 py-4 bg-white/90 text-teal-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+              >
+                <Eye size={20} />
+                {lang === 'en' ? 'View My AI Plan' :
+                 lang === 'ko' ? '내 AI 플랜 보기' :
+                 lang === 'fr' ? 'Voir mon plan IA' :
+                 '私のAIプランを見る'}
+              </button>
+            </div>
+            {!isLoggedIn && (
+              <p className="text-white/80 text-sm mt-4">
+                {lang === 'en' ? 'Please log in to use AI travel planning features' :
+                 lang === 'ko' ? 'AI 여행 계획 기능을 사용하려면 로그인해 주세요' :
+                 lang === 'fr' ? 'Veuillez vous connecter pour utiliser les fonctionnalités de planification de voyage IA' :
+                 'AI旅行プラン機能を使用するにはログインしてください'}
+              </p>
+            )}
           </div>
         </section>
 
