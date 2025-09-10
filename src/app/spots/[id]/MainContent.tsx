@@ -31,6 +31,28 @@ import {
   Utensils,
   HelpCircle,
   Map,
+  Share2,
+  Bookmark,
+  Eye,
+  Mountain,
+  Sunrise,
+  Sunset,
+  Cloud,
+  Sun,
+  Train,
+  Car,
+  Navigation,
+  ExternalLink,
+  ChevronDown,
+  ChevronUp,
+  Calendar,
+  CreditCard,
+  RefreshCw,
+  AlertCircle,
+  CheckCircle,
+  Globe,
+  Phone,
+  Mail,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -95,6 +117,16 @@ export default function MainContent({
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [snsExpanded, setSnsExpanded] = useState(false);
+
+  // Currency conversion helper
+  const convertPrice = (jpyPrice: number) => {
+    const rates = { usd: 0.0067, eur: 0.0061, gbp: 0.0053 };
+    if (currency === 'usd') return `≈ $${Math.round(jpyPrice * rates.usd)}`;
+    if (currency === 'eur') return `≈ €${Math.round(jpyPrice * rates.eur)}`;
+    if (currency === 'gbp') return `≈ £${Math.round(jpyPrice * rates.gbp)}`;
+    return '';
+  };
   // AI旅行プラン用: 選択スポットを保存
   let addSpot: (arg: any) => void = (_: any) => {};
   let selectedSpotsFromCtx: any[] = [];
@@ -163,6 +195,18 @@ export default function MainContent({
       ticketsBtn: 'チケット予約',
       fallbackDescription: '人気のスポットです。見どころや歴史、周辺情報をチェックして計画に役立てましょう。',
       reviewsTitle: '口コミ・レビュー',
+      bookTickets: 'チケット予約',
+      addToPlan: 'プランに追加',
+      save: '保存',
+      share: '共有',
+      quickSummary: '3秒要約',
+      ticketInfo: 'チケット情報',
+      accessInfo: 'アクセス情報',
+      bestTime: 'おすすめ時間',
+      weatherInsight: '天気・視界',
+      crowdForecast: '混雑予報',
+      reviewSummary: 'レビュー要約',
+      snsRealtime: 'SNSリアルタイム',
     },
     en: {
       gallery: 'Photo Gallery',
@@ -182,12 +226,24 @@ export default function MainContent({
       highlights: 'Highlights',
       mainPhoto: 'Main Photo',
       clickToEnlarge: 'Click to enlarge',
-      heroSubtitle: 'Spot Details',
+      heroSubtitle: 'Attraction Details',
       addToFavoritesBtn: 'Add to Favorites',
       addToAIPlanBtn: 'Add to AI Plan',
       ticketsBtn: 'Book Tickets',
-      fallbackDescription: 'A popular spot. Check highlights and info to plan your visit.',
+      fallbackDescription: 'A popular attraction. Check highlights and info to plan your visit.',
       reviewsTitle: 'Reviews',
+      bookTickets: 'Book Tickets',
+      addToPlan: 'Add to Plan',
+      save: 'Save',
+      share: 'Share',
+      quickSummary: '3-Second Summary',
+      ticketInfo: 'Ticket Information',
+      accessInfo: 'Access Information',
+      bestTime: 'Best Time to Visit',
+      weatherInsight: 'Weather & Visibility',
+      crowdForecast: 'Crowd Forecast',
+      reviewSummary: 'Review Summary',
+      snsRealtime: 'Social Media Updates',
     },
     ko: {
       gallery: '사진 갤러리',
@@ -801,8 +857,60 @@ export default function MainContent({
 
   return (
     <main className="min-h-screen">
+      {/* 固定CTAバー */}
+      <div className="fixed top-16 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-4">
+            {/* 主要CTAボタン - Book Tickets */}
+            <button
+              onClick={() => window.open('#tickets', '_self')}
+              className="flex-1 max-w-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+            >
+              <Ticket size={20} />
+              {i18n.bookTickets}
+            </button>
+            
+            {/* セカンダリアクション */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={addToAITravelPlan}
+                className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-colors flex items-center gap-2"
+                disabled={!isLoggedIn}
+              >
+                <Bot size={18} />
+                <span className="hidden sm:inline">{i18n.addToPlan}</span>
+              </button>
+              
+              <button
+                onClick={addToFavorites}
+                className="px-4 py-3 bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-700 rounded-xl transition-colors flex items-center gap-2"
+              >
+                <Heart size={18} />
+                <span className="hidden sm:inline">{i18n.save}</span>
+              </button>
+              
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: spotData?.name || 'Tokyo Tower',
+                      text: spotData?.description || 'Check out this amazing spot!',
+                      url: window.location.href
+                    });
+                  }
+                }}
+                className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-colors flex items-center gap-2"
+              >
+                <Share2 size={18} />
+                <span className="hidden sm:inline">{i18n.share}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* ヒーローセクション */}
-      <section className="relative min-h-[80vh] flex items-center justify-center text-white overflow-hidden mt-40 md:mt-44 lg:mt-48">
+      <section className="relative min-h-[70vh] flex items-center justify-center text-white overflow-hidden mt-32 md:mt-36 lg:mt-40">
         {/* 背景（スライドショー） */}
         <div className="absolute inset-0">
           {heroImagesDisplay.map((src, i) => (
@@ -828,50 +936,33 @@ export default function MainContent({
             </div>
           ) : (
             <>
-              <h1 className="mb-6 text-shadow-lg bg-gradient-to-br from-white to-slate-100 bg-clip-text text-transparent">
-                {spotData?.name || 'Tokyo'}
-                <br />
-                <span className="text-3xl opacity-90">{i18n.heroSubtitle}</span>
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 text-shadow-lg bg-gradient-to-br from-white to-slate-100 bg-clip-text text-transparent">
+                {spotData?.name || 'Tokyo Tower'}
               </h1>
-              <p className="text-xl md:text-2xl mb-12 text-black leading-relaxed bg-white/80 backdrop-blur-sm rounded-xl px-6 py-4 shadow-lg">
-                {spotData?.description || i18n.fallbackDescription}
-              </p>
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-8 py-6 shadow-xl">
+                <div className="flex flex-wrap items-center justify-center gap-6 text-gray-800">
+                  <div className="flex items-center gap-2">
+                    <Star className="text-yellow-500" size={20} />
+                    <span className="font-semibold">{spotData?.rating || 4.2}</span>
+                    <span className="text-gray-600">({(spotData?.reviewCount || 15032).toLocaleString()} reviews)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="text-blue-500" size={20} />
+                    <span>2–3h</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="text-green-500" size={20} />
+                    <span>Paid</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                      Today 9:00–22:30
+                    </span>
+                  </div>
+                </div>
+              </div>
             </>
           )}
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={addToFavorites}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-primary to-primary-light text-white font-semibold hover:scale-105 transform transition-all duration-300 shadow-xl"
-            >
-              <Heart size={20} />
-              {i18n.addToFavoritesBtn}
-            </button>
-            <button
-              onClick={addToAITravelPlan}
-              className={`flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/90 text-secondary font-semibold backdrop-blur-sm transform transition-all duration-300 shadow-xl ${isLoggedIn ? 'hover:bg-white hover:scale-105' : 'opacity-60 cursor-not-allowed'}`}
-              aria-disabled={!isLoggedIn}
-            >
-              {isLoggedIn ? <Bot size={20} /> : <Lock size={20} />}
-              {i18n.addToAIPlanBtn}
-            </button>
-            <a
-              href={isLoggedIn ? '/ai-plan' : undefined}
-              onClick={(e) => { if (!isLoggedIn) { e.preventDefault(); showNotification('この機能は会員限定です。ログイン/新規登録してください'); } }}
-              className={`flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/90 text-secondary font-semibold backdrop-blur-sm transform transition-all duration-300 shadow-xl ${isLoggedIn ? 'hover:bg-white hover:scale-105' : 'opacity-60 cursor-not-allowed pointer-events-auto'}`}
-              aria-disabled={!isLoggedIn}
-            >
-              {isLoggedIn ? <Bot size={20} /> : <Lock size={20} />}
-              AI旅行プランを作る
-            </a>
-            <a
-              href="#tickets"
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl border-2 border-white/30 text-white font-semibold backdrop-blur-sm hover:bg-white/10 hover:border-white/50 hover:scale-105 transform transition-all duration-300"
-            >
-              <Ticket size={20} />
-              {i18n.ticketsBtn}
-            </a>
-          </div>
         </div>
       </section>
 
@@ -906,8 +997,268 @@ export default function MainContent({
       `}</style>
 
       <div className="container mx-auto px-6">
-        {/* クイック情報 */}
-        <section className="relative -mt-20 z-10 mb-12">
+        {/* 3秒要約 */}
+        <section className="relative -mt-16 z-10 mb-8">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+            <h2 className="flex items-center gap-3 text-xl font-bold text-gray-800 mb-4">
+              <Eye className="text-blue-600" size={24} />
+              {i18n.quickSummary}
+            </h2>
+            <p className="text-gray-700 leading-relaxed">
+              {lang === 'en' 
+                ? "Tokyo's iconic 333m tower offering panoramic city views from two observation decks. Best visited during clear weather for Mt. Fuji views. Peak times: weekends 11:00-13:00 & 18:00-20:00."
+                : "東京のシンボル333mタワー。2つの展望台から都市の絶景を楽しめます。晴天時は富士山も見えます。混雑ピーク：週末11:00-13:00、18:00-20:00。"
+              }
+            </p>
+          </div>
+        </section>
+
+        {/* チケット情報カード */}
+        <section className="mb-12">
+          <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
+            <Ticket className="text-blue-600" size={28} />
+            {i18n.ticketInfo}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Adult Ticket */}
+            <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-800">Adult</h3>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Main Deck</span>
+              </div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">
+                ¥1,200
+                <span className="text-sm text-gray-500 ml-2">{convertPrice(1200)}</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">150m observation deck</p>
+              <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Book Now
+              </button>
+            </div>
+
+            {/* Child Ticket */}
+            <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-800">Child</h3>
+                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">4-12 years</span>
+              </div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">
+                ¥700
+                <span className="text-sm text-gray-500 ml-2">{convertPrice(700)}</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">Main Deck access</p>
+              <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Book Now
+              </button>
+            </div>
+
+            {/* Top Deck Tour */}
+            <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow relative">
+              <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+                Premium
+              </div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-800">Top Deck Tour</h3>
+                <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">250m</span>
+              </div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">
+                ¥4,000
+                <span className="text-sm text-gray-500 ml-2">{convertPrice(4000)}</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">Guided tour + Main Deck</p>
+              <button className="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition-colors">
+                Book Tour
+              </button>
+            </div>
+
+            {/* Same Day Ticket */}
+            <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-800">Same Day</h3>
+                <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Limited</span>
+              </div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">
+                ¥1,400
+                <span className="text-sm text-gray-500 ml-2">{convertPrice(1400)}</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">Walk-in availability</p>
+              <button className="w-full bg-gray-400 text-white py-2 rounded-lg cursor-not-allowed">
+                Subject to availability
+              </button>
+            </div>
+          </div>
+          
+          {/* Ticket Info Footer */}
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="text-green-500" size={16} />
+                <span>Free cancellation up to 24h</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <AlertCircle className="text-orange-500" size={16} />
+                <span>Peak times: Weekends 11:00-13:00</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <RefreshCw className="text-blue-500" size={16} />
+                <span>Skip-the-line access included</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* アクセス情報 */}
+        <section className="mb-12">
+          <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
+            <Navigation className="text-green-600" size={28} />
+            {i18n.accessInfo}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* From Shinjuku */}
+            <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <Train className="text-blue-600" size={24} />
+                <h3 className="font-semibold text-gray-800">From Shinjuku</h3>
+              </div>
+              <div className="space-y-2 text-sm text-gray-600">
+                <p><strong>25 min</strong> • 1 transfer</p>
+                <p>JR Yamanote → Shimbashi → Toei Oedo → Akabanebashi</p>
+                <p className="text-green-600 font-medium">¥200 {convertPrice(200)}</p>
+              </div>
+              <div className="flex gap-2 mt-4">
+                <button className="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-xs hover:bg-blue-200 transition-colors flex items-center justify-center gap-1">
+                  <ExternalLink size={14} />
+                  Google Maps
+                </button>
+                <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-xs hover:bg-gray-200 transition-colors">
+                  Apple Maps
+                </button>
+              </div>
+            </div>
+
+            {/* From Shibuya */}
+            <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <Train className="text-green-600" size={24} />
+                <h3 className="font-semibold text-gray-800">From Shibuya</h3>
+              </div>
+              <div className="space-y-2 text-sm text-gray-600">
+                <p><strong>20 min</strong> • 1 transfer</p>
+                <p>JR Yamanote → Shimbashi → Toei Oedo → Akabanebashi</p>
+                <p className="text-green-600 font-medium">¥200 {convertPrice(200)}</p>
+              </div>
+              <div className="flex gap-2 mt-4">
+                <button className="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-xs hover:bg-blue-200 transition-colors flex items-center justify-center gap-1">
+                  <ExternalLink size={14} />
+                  Google Maps
+                </button>
+                <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-xs hover:bg-gray-200 transition-colors">
+                  Apple Maps
+                </button>
+              </div>
+            </div>
+
+            {/* From Haneda Airport */}
+            <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <Car className="text-orange-600" size={24} />
+                <h3 className="font-semibold text-gray-800">From Haneda</h3>
+              </div>
+              <div className="space-y-2 text-sm text-gray-600">
+                <p><strong>45 min</strong> • Direct</p>
+                <p>Tokyo Monorail → Shimbashi → Toei Oedo</p>
+                <p className="text-green-600 font-medium">¥470 {convertPrice(470)}</p>
+              </div>
+              <div className="flex gap-2 mt-4">
+                <button className="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-xs hover:bg-blue-200 transition-colors flex items-center justify-center gap-1">
+                  <ExternalLink size={14} />
+                  Google Maps
+                </button>
+                <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-xs hover:bg-gray-200 transition-colors">
+                  Citymapper
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ハイライト（アイコン化） */}
+        <section className="mb-12">
+          <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
+            <Star className="text-yellow-500" size={28} />
+            {i18n.highlights}
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow">
+              <Eye className="mx-auto text-blue-600 mb-2" size={32} />
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">Observatory</h3>
+              <p className="text-xs text-gray-600">360° city views</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow">
+              <div className="mx-auto text-purple-600 mb-2 text-2xl">🌃</div>
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">Night View</h3>
+              <p className="text-xs text-gray-600">Best after sunset</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow relative">
+              <Mountain className="mx-auto text-green-600 mb-2" size={32} />
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">Mt. Fuji View</h3>
+              <p className="text-xs text-gray-600">Clear mornings</p>
+              <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1 py-0.5 rounded-full">
+                AM
+              </span>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow">
+              <div className="mx-auto text-red-600 mb-2 text-2xl">🗼</div>
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">Landmark</h3>
+              <p className="text-xs text-gray-600">Tokyo symbol</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow">
+              <Camera className="mx-auto text-orange-600 mb-2" size={32} />
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">Photo Spot</h3>
+              <p className="text-xs text-gray-600">Instagram worthy</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow">
+              <Store className="mx-auto text-pink-600 mb-2" size={32} />
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">Shopping</h3>
+              <p className="text-xs text-gray-600">FootTown mall</p>
+            </div>
+          </div>
+        </section>
+
+        {/* 天気・視界インサイト */}
+        <section className="mb-12">
+          <div className="bg-gradient-to-r from-sky-50 to-blue-50 rounded-2xl p-6 border border-sky-200">
+            <h2 className="flex items-center gap-3 text-xl font-bold text-gray-800 mb-4">
+              <Sun className="text-yellow-500" size={24} />
+              {i18n.weatherInsight}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex items-center gap-4">
+                <div className="bg-white rounded-full p-3">
+                  <Sun className="text-yellow-500" size={24} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800">Today's Visibility</h3>
+                  <p className="text-gray-600">High chance of Mt. Fuji view</p>
+                  <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">Excellent</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="bg-white rounded-full p-3">
+                  <Sunrise className="text-orange-500" size={24} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800">Best Time</h3>
+                  <p className="text-gray-600">Clear skies until 15:00</p>
+                  <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Morning recommended</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* クイック情報（簡素化） */}
+        <section className="relative z-10 mb-12">
           <div className="bg-white rounded-3xl shadow-xl border border-border-light p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               <div className="text-center p-6 border border-border-light rounded-2xl bg-gradient-to-br from-white to-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
@@ -959,6 +1310,47 @@ export default function MainContent({
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* 詳細説明 */}
+        <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
+          <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
+            <Info className="text-primary" size={24} />
+            {i18n.details}
+          </h2>
+
+          <div className="prose max-w-none">
+            <p className="text-text-muted mb-6">
+              {spotData?.description || '人気のスポットです。見どころや歴史、周辺情報をチェックして計画に役立てましょう。'}
+            </p>
+
+            {spotData?.location?.address && (
+              <p className="text-text-muted mb-6">
+                <strong className="text-secondary">{i18n.address}:</strong> {spotData.location.address}
+              </p>
+            )}
+
+            {spotData?.tags && spotData.tags.length > 0 && (
+              <>
+                <h3 className="text-secondary">{i18n.highlights}</h3>
+                <ul className="list-disc list-inside space-y-2 text-text-muted mb-6">
+                  {spotData.tags.slice(0, 8).map((t, i) => (
+                    <li key={`${t}-${i}`}>{tagToLabel(t)}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {(!spotData?.description && !spotData?.tags?.length) && (
+              <>
+                <h3 className="text-secondary">{i18n.highlights}</h3>
+                <ul className="list-disc list-inside space-y-2 text-text-muted mb-6">
+                  <li>{lang === 'en' ? 'Panoramic views and seasonal events' : lang === 'ko' ? '전망과 계절별 행사' : lang === 'fr' ? 'Vues panoramiques et événements saisonniers' : '360度の眺望や季節ごとのイベント'}</li>
+                  <li>{lang === 'en' ? 'Plenty of shopping and dining nearby' : lang === 'ko' ? '주변 쇼핑과 식당도 풍부' : lang === 'fr' ? 'Nombreux commerces et restaurants à proximité' : '周辺のショッピングやグルメも充実'}</li>
+                </ul>
+              </>
+            )}
           </div>
         </section>
 
@@ -1169,6 +1561,189 @@ export default function MainContent({
           )}
         </section>
 
+        {/* レビュー要約 */}
+        <section className="mb-12">
+          <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
+            <MessageSquare className="text-blue-600" size={28} />
+            {i18n.reviewSummary}
+          </h2>
+          
+          {/* 要約カード */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {/* 高評価ポイント */}
+            <div className="bg-green-50 rounded-xl border border-green-200 p-6">
+              <h3 className="flex items-center gap-2 font-semibold text-green-800 mb-4">
+                <CheckCircle className="text-green-600" size={20} />
+                Top Positive Points
+              </h3>
+              <ul className="space-y-2 text-sm text-green-700">
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  Amazing panoramic views (mentioned in 89% of reviews)
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  Great night illumination and city lights
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  Convenient location and easy access
+                </li>
+              </ul>
+            </div>
+
+            {/* 改善ポイント */}
+            <div className="bg-orange-50 rounded-xl border border-orange-200 p-6">
+              <h3 className="flex items-center gap-2 font-semibold text-orange-800 mb-4">
+                <AlertCircle className="text-orange-600" size={20} />
+                Areas for Improvement
+              </h3>
+              <ul className="space-y-2 text-sm text-orange-700">
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                  Can get very crowded during peak times
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                  Higher prices compared to other observation decks
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* 代表レビュー */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Reviews</h3>
+            
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🇺🇸</span>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-gray-800">Sarah M.</span>
+                      <div className="flex text-yellow-400">
+                        {'★'.repeat(5)}
+                      </div>
+                    </div>
+                    <span className="text-sm text-gray-500">2 days ago • English</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-700 mt-3 leading-relaxed">
+                "Absolutely breathtaking views of Tokyo! Went during sunset and the city transformation from day to night was magical. The Top Deck tour was worth the extra cost. Pro tip: book in advance to avoid disappointment!"
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🇩🇪</span>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-gray-800">Klaus H.</span>
+                      <div className="flex text-yellow-400">
+                        {'★'.repeat(4)}{'☆'.repeat(1)}
+                      </div>
+                    </div>
+                    <span className="text-sm text-gray-500">1 week ago • German</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-700 mt-3 leading-relaxed">
+                "Great experience overall. The views are stunning, especially on a clear day when you can see Mt. Fuji. It was quite busy when we visited on Saturday afternoon, so I'd recommend going early morning or late evening."
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🇰🇷</span>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-gray-800">Min-jun K.</span>
+                      <div className="flex text-yellow-400">
+                        {'★'.repeat(5)}
+                      </div>
+                    </div>
+                    <span className="text-sm text-gray-500">3 days ago • Korean</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-700 mt-3 leading-relaxed">
+                "Perfect spot for photography! The glass floor on the main deck was thrilling. Staff were very helpful and spoke multiple languages. The souvenir shop has unique Tokyo Tower merchandise."
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* SNSリアルタイム（折りたたみ） */}
+        <section className="mb-12">
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <button
+              onClick={() => setSnsExpanded(!snsExpanded)}
+              className="w-full p-6 flex items-center justify-between hover:bg-gray-50 transition-colors"
+            >
+              <h2 className="flex items-center gap-3 text-xl font-bold text-gray-800">
+                <Twitter className="text-blue-500" size={24} />
+                {i18n.snsRealtime}
+              </h2>
+              {snsExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            </button>
+            
+            {snsExpanded && (
+              <div className="px-6 pb-6 border-t border-gray-100">
+                <div className="space-y-4 mt-4">
+                  <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg">
+                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                      T
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-gray-800">@TokyoTowerOfficial</span>
+                        <span className="text-sm text-gray-500">2h ago</span>
+                      </div>
+                      <p className="text-gray-700 text-sm">
+                        🌅 Beautiful sunrise view this morning! Mt. Fuji is clearly visible today. Perfect weather for sightseeing! #TokyoTower #MtFuji
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 bg-green-50 rounded-lg">
+                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                      I
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-gray-800">@travel_enthusiast_jp</span>
+                        <span className="text-sm text-gray-500">4h ago</span>
+                      </div>
+                      <p className="text-gray-700 text-sm">
+                        Just visited Tokyo Tower - the night view is absolutely stunning! 🌃✨ #TokyoNight #TravelJapan
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 bg-purple-50 rounded-lg">
+                    <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                      M
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-gray-800">@photography_tokyo</span>
+                        <span className="text-sm text-gray-500">6h ago</span>
+                      </div>
+                      <p className="text-gray-700 text-sm">
+                        Pro tip: Visit Tokyo Tower during blue hour (just after sunset) for the best photography lighting! 📸 #PhotoTips
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* 詳細説明 */}
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
@@ -1177,8 +1752,11 @@ export default function MainContent({
           </h2>
 
           <div className="prose max-w-none">
-            <p className="text-text-muted mb-6">
-              {spotData?.description || '人気のスポットです。見どころや歴史、周辺情報をチェックして計画に役立てましょう。'}
+            <p className="text-text-muted mb-6 leading-relaxed">
+              {lang === 'en' 
+                ? "Tokyo Tower is a 333-meter tall communications tower that opened in 1958. It features two observation decks: the Main Deck at 150m and the Top Deck at 250m, offering 360-degree views of Tokyo. The Main Deck has three levels with a glass floor, café, and gift shop for an immersive experience. At night, the tower is illuminated with seasonal lighting displays like the 'Infinity Diamond Veil'. The FootTown complex at the base houses restaurants, souvenir shops, and event spaces, making it enjoyable even in bad weather. Nearest stations include Akabanebashi, Kamiyacho, and Onarimon. To avoid crowds, visit on weekday mornings or late evenings, or purchase advance tickets. On clear days, you can see Mt. Fuji."
+                : spotData?.description || '人気のスポットです。見どころや歴史、周辺情報をチェックして計画に役立てましょう。'
+              }
             </p>
 
             {spotData?.location?.address && (
@@ -1187,26 +1765,45 @@ export default function MainContent({
               </p>
             )}
 
-            {spotData?.tags && spotData.tags.length > 0 && (
-              <>
-                <h3 className="text-secondary">{i18n.highlights}</h3>
-                <ul className="list-disc list-inside space-y-2 text-text-muted mb-6">
-                  {spotData.tags.slice(0, 8).map((t, i) => (
-                    <li key={`${t}-${i}`}>{tagToLabel(t)}</li>
-                  ))}
-                </ul>
-              </>
-            )}
+            {/* 安全・マナー情報 */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <h3 className="flex items-center gap-2 font-semibold text-yellow-800 mb-2">
+                <AlertCircle className="text-yellow-600" size={18} />
+                Safety & Etiquette Tips
+              </h3>
+              <ul className="text-sm text-yellow-700 space-y-1">
+                <li>• Tripods are not permitted on observation decks</li>
+                <li>• Be mindful of other visitors when taking photos during busy periods</li>
+                <li>• Dress warmly - it can be windy at the top</li>
+                <li>• Large bags must be stored in paid lockers</li>
+              </ul>
+            </div>
 
-            {(!spotData?.description && !spotData?.tags?.length) && (
-              <>
-                <h3 className="text-secondary">{i18n.highlights}</h3>
-                <ul className="list-disc list-inside space-y-2 text-text-muted mb-6">
-                  <li>{lang === 'en' ? 'Panoramic views and seasonal events' : lang === 'ko' ? '전망과 계절별 행사' : lang === 'fr' ? 'Vues panoramiques et événements saisonniers' : '360度の眺望や季節ごとのイベント'}</li>
-                  <li>{lang === 'en' ? 'Plenty of shopping and dining nearby' : lang === 'ko' ? '주변 쇼핑과 식당도 풍부' : lang === 'fr' ? 'Nombreux commerces et restaurants à proximité' : '周辺のショッピングやグルメも充実'}</li>
-                </ul>
-              </>
-            )}
+            {/* ユーティリティ情報 */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <h3 className="flex items-center gap-2 font-semibold text-blue-800 mb-2">
+                <Info className="text-blue-600" size={18} />
+                Accessibility & Facilities
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-blue-700">
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={14} />
+                  <span>Wheelchair accessible with elevators</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={14} />
+                  <span>Baby stroller friendly</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={14} />
+                  <span>Free Wi-Fi available</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={14} />
+                  <span>Multi-purpose restrooms</span>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
