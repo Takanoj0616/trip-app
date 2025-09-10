@@ -7,7 +7,7 @@ import { heroFeatures } from '../data/homepage';
 
 export default function Home() {
   const { t, currentLanguage } = useLanguage();
-  
+
   // Multilingual features data
   const getMainFeatures = () => [
     {
@@ -128,7 +128,8 @@ export default function Home() {
         color: 'white',
         position: 'relative',
         paddingTop: '140px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        zIndex: 1
       }}>
         <div style={{
           position: 'absolute',
@@ -143,9 +144,10 @@ export default function Home() {
             linear-gradient(45deg, rgba(255, 228, 225, 0.2) 0%, rgba(255, 245, 238, 0.1) 100%)
           `,
           animation: 'sakuraDrift 25s ease-in-out infinite alternate',
-          zIndex: 1
+          zIndex: 1,
+          pointerEvents: 'none'
         }}></div>
-        
+
         <style jsx>{`
           @keyframes sakuraFloat {
             0%, 100% { 
@@ -179,7 +181,9 @@ export default function Home() {
         `}</style>
         <div style={{
           maxWidth: '800px',
-          padding: '0 2rem'
+          padding: '0 2rem',
+          position: 'relative',
+          zIndex: 10
         }}>
           <div style={{
             display: 'inline-flex',
@@ -194,7 +198,7 @@ export default function Home() {
             <span style={{ fontWeight: 'bold' }}>✓</span>
             {t('home.trustedBy')}
           </div>
-          
+
           <h1 style={{
             fontSize: '3.5rem',
             fontWeight: 800,
@@ -205,7 +209,7 @@ export default function Home() {
           }}>
             {t('home.heroTitle')}
           </h1>
-          
+
           <p style={{
             fontSize: '1.25rem',
             marginBottom: '2rem',
@@ -215,16 +219,18 @@ export default function Home() {
           }}>
             {t('home.heroSubtitle')}
           </p>
-          
+
           <div style={{
             display: 'flex',
             gap: '1rem',
             justifyContent: 'center',
             marginBottom: '3rem',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            position: 'relative',
+            zIndex: 20
           }}>
-            <Link 
-              href="/plan" 
+            <Link
+              href="/areas"
               style={{
                 display: 'inline-block',
                 padding: '1rem 2rem',
@@ -242,25 +248,31 @@ export default function Home() {
                 backdropFilter: 'blur(15px)',
                 boxShadow: '0 8px 25px rgba(255, 255, 255, 0.2)',
                 userSelect: 'none',
-                WebkitTapHighlightColor: 'transparent'
+                WebkitTapHighlightColor: 'transparent',
+                position: 'relative',
+                zIndex: 30,
+                pointerEvents: 'auto'
               }}
               onMouseEnter={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
                 target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.7))';
-                target.style.transform = 'translateY(-3px)';
+                target.style.transform = 'translateY(-3px) scale(1.05)';
                 target.style.boxShadow = '0 12px 35px rgba(255, 255, 255, 0.3)';
               }}
               onMouseLeave={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
                 target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8))';
-                target.style.transform = 'translateY(0)';
+                target.style.transform = 'translateY(0) scale(1)';
                 target.style.boxShadow = '0 8px 25px rgba(255, 255, 255, 0.2)';
+              }}
+              onClick={(e) => {
+                console.log('Primary button clicked!');
               }}
             >
               {t('home.ctaPrimary')}
             </Link>
-            <Link 
-              href="#" 
+            <Link
+              href="/areas"
               style={{
                 padding: '1rem 2rem',
                 fontSize: '1.1rem',
@@ -274,25 +286,31 @@ export default function Home() {
                 background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3))',
                 color: 'white',
                 border: '2px solid rgba(255, 255, 255, 0.5)',
-                backdropFilter: 'blur(15px)'
+                backdropFilter: 'blur(15px)',
+                position: 'relative',
+                zIndex: 30,
+                pointerEvents: 'auto'
               }}
               onMouseEnter={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
                 target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))';
                 target.style.borderColor = 'rgba(255, 255, 255, 0.8)';
-                target.style.transform = 'translateY(-3px)';
+                target.style.transform = 'translateY(-3px) scale(1.05)';
               }}
               onMouseLeave={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
                 target.style.background = 'linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3))';
                 target.style.borderColor = 'rgba(255, 255, 255, 0.5)';
-                target.style.transform = 'translateY(0)';
+                target.style.transform = 'translateY(0) scale(1)';
+              }}
+              onClick={(e) => {
+                console.log('Secondary button clicked!');
               }}
             >
               {t('home.ctaSecondary')}
             </Link>
           </div>
-          
+
           <div style={{
             display: 'flex',
             justifyContent: 'center',
@@ -364,7 +382,7 @@ export default function Home() {
             gap: '2rem'
           }}>
             {getMainFeatures().map((feature, index) => (
-              <div 
+              <div
                 key={index}
                 style={{
                   background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6))',
@@ -449,7 +467,7 @@ export default function Home() {
             gap: '2rem'
           }}>
             {getAreas().map((area, index) => (
-              <div 
+              <div
                 key={index}
                 style={{
                   background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5))',
@@ -576,14 +594,14 @@ export default function Home() {
                         transition: 'color 0.3s',
                         fontSize: '0.9rem'
                       }}
-                      onMouseEnter={(e) => {
-                        const target = e.currentTarget as HTMLAnchorElement;
-                        target.style.color = '#e2e8f0';
-                      }}
-                      onMouseLeave={(e) => {
-                        const target = e.currentTarget as HTMLAnchorElement;
-                        target.style.color = '#94a3b8';
-                      }}>
+                        onMouseEnter={(e) => {
+                          const target = e.currentTarget as HTMLAnchorElement;
+                          target.style.color = '#e2e8f0';
+                        }}
+                        onMouseLeave={(e) => {
+                          const target = e.currentTarget as HTMLAnchorElement;
+                          target.style.color = '#94a3b8';
+                        }}>
                         {link.label}
                       </Link>
                     </li>
@@ -592,7 +610,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          
+
           <div style={{
             borderTop: '1px solid #334155',
             paddingTop: '2rem',
