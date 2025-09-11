@@ -128,13 +128,13 @@ export default function MainContent({
     return '';
   };
   // AI旅行プラン用: 選択スポットを保存
-  let addSpot: (arg: any) => void = (_: any) => {};
+  let addSpot: (arg: any) => void = (_: any) => { };
   let selectedSpotsFromCtx: any[] = [];
   try {
     // Hooks must be called unconditionally during render
     // eslint-disable-next-line react-hooks/rules-of-hooks
     ({ addSpot, selectedSpots: selectedSpotsFromCtx } = useRoute() as any);
-  } catch {}
+  } catch { }
 
   // i18n labels（URLの ?lang が優先、なければ props → ja）
   const searchParams = useSearchParams();
@@ -365,7 +365,7 @@ export default function MainContent({
       }
 
       // First check local bookstore data
-      const localSpot = allBookstoreSpots.find(spot => 
+      const localSpot = allBookstoreSpots.find(spot =>
         spot.id === spotId || spot.googlePlaceId === spotId
       );
 
@@ -374,8 +374,8 @@ export default function MainContent({
           name: localSpot.name,
           description: localSpot.description || '人気のスポットです',
           location: localSpot.location,
-          price: (localSpot as any).priceText || (localSpot.priceRange === 'expensive' ? '¥3,000以上' : 
-                 localSpot.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下'),
+          price: (localSpot as any).priceText || (localSpot.priceRange === 'expensive' ? '¥3,000以上' :
+            localSpot.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下'),
           hours: localSpot.openingHours ? Object.values(localSpot.openingHours)[0] : '営業時間未定',
           rating: localSpot.rating || 4.0,
           images: localSpot.images || [],
@@ -419,8 +419,8 @@ export default function MainContent({
             name: data.name,
             description: data.description || '人気のスポットです',
             location: data.location,
-            price: (data as any).priceText || (data.priceRange === 'expensive' ? '¥3,000以上' : 
-                   data.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下'),
+            price: (data as any).priceText || (data.priceRange === 'expensive' ? '¥3,000以上' :
+              data.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下'),
             hours: data.openingHours ? Object.values(data.openingHours)[0] : '営業時間未定',
             rating: data.rating || 4.0,
             images: data.images || [],
@@ -493,7 +493,7 @@ export default function MainContent({
     setToastMsg(message);
     try {
       clearTimeout((window as any).__toastTimer);
-    } catch {}
+    } catch { }
     (window as any).__toastTimer = setTimeout(() => setToastMsg(null), 2600);
   };
 
@@ -504,12 +504,12 @@ export default function MainContent({
   const addToAITravelPlan = () => {
     if (!isLoggedIn) {
       const loginMessage = lang === 'en' ? 'Please log in to use AI travel planning. Redirecting to login...' :
-                           lang === 'ko' ? 'AI 여행 계획을 사용하려면 로그인해 주세요. 로그인 페이지로 이동 중...' :
-                           lang === 'fr' ? 'Veuillez vous connecter pour utiliser la planification de voyage IA. Redirection vers la connexion...' :
-                           'AI旅行プランを使用するにはログインしてください。ログインページに移動中...';
-      
+        lang === 'ko' ? 'AI 여행 계획을 사용하려면 로그인해 주세요. 로그인 페이지로 이동 중...' :
+          lang === 'fr' ? 'Veuillez vous connecter pour utiliser la planification de voyage IA. Redirection vers la connexion...' :
+            'AI旅行プランを使用するにはログインしてください。ログインページに移動中...';
+
       showNotification(loginMessage);
-      
+
       // ログイン後にAI旅行プラン画面に戻れるように、現在のスポットIDを保存
       try {
         sessionStorage.setItem('pending-spot-add', spotId);
@@ -517,7 +517,7 @@ export default function MainContent({
       } catch (error) {
         console.error('Error saving pending spot:', error);
       }
-      
+
       // 2秒後にログインページに移動
       setTimeout(() => {
         window.location.href = '/login';
@@ -527,9 +527,9 @@ export default function MainContent({
     if (!spotData) {
       showNotification(
         lang === 'en' ? 'Spot information is not loaded yet' :
-        lang === 'ko' ? '스팟 정보가 아직 로드되지 않았습니다' :
-        lang === 'fr' ? 'Les informations sur le lieu ne sont pas encore chargées' :
-        'スポット情報が読み込めていません', 
+          lang === 'ko' ? '스팟 정보가 아직 로드되지 않았습니다' :
+            lang === 'fr' ? 'Les informations sur le lieu ne sont pas encore chargées' :
+              'スポット情報が読み込めていません',
         'info'
       );
       return;
@@ -554,8 +554,8 @@ export default function MainContent({
       reviews: []
     } as any;
     // コンテキストに追加
-    try { 
-      addSpot(spotForPlan); 
+    try {
+      addSpot(spotForPlan);
       console.log('✅ Added spot to context:', spotForPlan.name);
     } catch (error) {
       console.error('❌ Error adding spot to context:', error);
@@ -578,24 +578,24 @@ export default function MainContent({
     }
 
     // セッションストレージにフラグを設定
-    try { 
-      sessionStorage.setItem('ai-plan-added', '1'); 
+    try {
+      sessionStorage.setItem('ai-plan-added', '1');
       sessionStorage.setItem('last-added-spot', spotId);
       console.log('✅ Set session storage flags');
     } catch (error) {
       console.error('❌ Error setting session storage:', error);
     }
     const total = (selectedSpotsFromCtx?.length || 0) + 1;
-    
+
     // 成功メッセージを表示
     const successMessage = lang === 'en' ? `✅ Added to AI travel plan! Redirecting...` :
-                          lang === 'ko' ? `✅ AI 여행 계획에 추가되었습니다! 이동 중...` :
-                          lang === 'fr' ? `✅ Ajouté au plan de voyage IA ! Redirection...` :
-                          `✅ AI旅行プランに追加しました！移動中...`;
-    
+      lang === 'ko' ? `✅ AI 여행 계획에 추가되었습니다! 이동 중...` :
+        lang === 'fr' ? `✅ Ajouté au plan de voyage IA ! Redirection...` :
+          `✅ AI旅行プランに追加しました！移動中...`;
+
     showNotification(successMessage, 'success');
     console.log('🚀 Showing success notification and preparing to navigate');
-    
+
     // 1.5秒後にAI旅行プラン画面に移動（より確実に）
     setTimeout(() => {
       try {
@@ -694,7 +694,7 @@ export default function MainContent({
   const getBusinessHours = () => {
     const prefix = lang === 'en' ? 'Today: ' : lang === 'ko' ? '오늘: ' : lang === 'fr' ? "Aujourd'hui: " : '本日: ';
     if (spotData?.openingHours) {
-      const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'] as const;
+      const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
       const key = days[new Date().getDay()];
       const today = (spotData.openingHours as Record<string, string | undefined>)[key];
       if (today) return `${prefix}${today}`;
@@ -812,7 +812,7 @@ export default function MainContent({
   // スポットタイプに応じた写真カテゴリを生成
   const generateSpotPhotos = (spotName: string) => {
     const name = spotName.toLowerCase();
-    
+
     if (name.includes('タワー') || name.includes('tower')) {
       return [
         { id: 'exterior', label: '外観', icon: '🏢', gradient: 'linear-gradient(135deg, #ff6b6b, #ee5a24)' },
@@ -823,7 +823,7 @@ export default function MainContent({
         { id: 'view', label: '眺望', icon: '🏙️', gradient: 'linear-gradient(135deg, #26de81, #20bf6b)' },
       ];
     }
-    
+
     if (name.includes('スカイツリー') || name.includes('skytree')) {
       return [
         { id: 'exterior', label: '外観', icon: '🗼', gradient: 'linear-gradient(135deg, #3742fa, #2f3542)' },
@@ -895,7 +895,7 @@ export default function MainContent({
     const photos = generateSpotPhotos(spotName);
     const photo = photos.find(p => p.id === modalId);
     if (photo) return photo.gradient;
-    
+
     // 個別のモーダル用
     if (modalId === 'main') return getSpotMainPhotoGradient(spotName);
     return 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
@@ -905,7 +905,7 @@ export default function MainContent({
     const photos = generateSpotPhotos(spotName);
     const photo = photos.find(p => p.id === modalId);
     if (photo) return photo.icon;
-    
+
     if (modalId === 'main') return getSpotIcon(spotName);
     return '📸';
   };
@@ -914,7 +914,7 @@ export default function MainContent({
     const photos = generateSpotPhotos(spotName);
     const photo = photos.find(p => p.id === modalId);
     if (photo) return photo.label;
-    
+
     if (modalId === 'main') return i18n.mainPhoto;
     return '写真';
   };
@@ -969,7 +969,7 @@ export default function MainContent({
               <Ticket size={22} />
               <span className="text-lg">{i18n.bookTickets}</span>
             </button>
-            
+
             {/* セカンダリアクション - より洗練されたデザイン */}
             <div className="flex items-center gap-3">
               <button
@@ -980,7 +980,7 @@ export default function MainContent({
                 <Bot size={20} />
                 <span className="hidden sm:inline font-semibold">{i18n.addToPlan}</span>
               </button>
-              
+
               <button
                 onClick={addToFavorites}
                 className="px-5 py-4 bg-gradient-to-r from-rose-50 to-pink-50 hover:from-rose-100 hover:to-pink-100 text-rose-700 rounded-2xl transition-all duration-300 flex items-center gap-2 border border-rose-200 hover:border-rose-300 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -988,7 +988,7 @@ export default function MainContent({
                 <Heart size={20} />
                 <span className="hidden sm:inline font-semibold">{i18n.save}</span>
               </button>
-              
+
               <button
                 onClick={() => {
                   if (navigator.share) {
@@ -1042,12 +1042,12 @@ export default function MainContent({
                 </h1>
                 <p className="text-xl md:text-2xl text-white/90 font-light tracking-wide drop-shadow-lg">
                   {lang === 'en' ? 'Iconic 333m tower with breathtaking city views' :
-                   lang === 'ko' ? '숨막히는 도시 전망을 자랑하는 상징적인 333m 타워' :
-                   lang === 'fr' ? 'Tour emblématique de 333m avec des vues imprenables sur la ville' :
-                   '息をのむような都市の景色を誇る象徴的な333mタワー'}
+                    lang === 'ko' ? '숨막히는 도시 전망을 자랑하는 상징적인 333m 타워' :
+                      lang === 'fr' ? 'Tour emblématique de 333m avec des vues imprenables sur la ville' :
+                        '息をのむような都市の景色を誇る象徴的な333mタワー'}
                 </p>
               </div>
-              
+
               <div className="bg-gradient-to-r from-white/95 via-white/98 to-white/95 backdrop-blur-xl rounded-3xl px-10 py-8 shadow-2xl border border-white/20">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-gray-800">
                   <div className="text-center">
@@ -1059,7 +1059,7 @@ export default function MainContent({
                       {(spotData?.reviewCount || 15032).toLocaleString()} reviews
                     </span>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <Clock className="text-blue-500" size={24} />
@@ -1067,12 +1067,12 @@ export default function MainContent({
                     </div>
                     <span className="text-sm text-gray-600 font-medium">
                       {lang === 'en' ? 'Duration' :
-                       lang === 'ko' ? '소요시간' :
-                       lang === 'fr' ? 'Durée' :
-                       '所要時間'}
+                        lang === 'ko' ? '소요시간' :
+                          lang === 'fr' ? 'Durée' :
+                            '所要時間'}
                     </span>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <DollarSign className="text-green-500" size={24} />
@@ -1080,12 +1080,12 @@ export default function MainContent({
                     </div>
                     <span className="text-sm text-gray-600 font-medium">
                       {lang === 'en' ? 'From' :
-                       lang === 'ko' ? '부터' :
-                       lang === 'fr' ? 'À partir de' :
-                       'から'}
+                        lang === 'ko' ? '부터' :
+                          lang === 'fr' ? 'À partir de' :
+                            'から'}
                     </span>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <span className="text-2xl">🕘</span>
@@ -1114,9 +1114,9 @@ export default function MainContent({
             >
               <Eye size={16} />
               {lang === 'en' ? 'View AI Plan' :
-               lang === 'ko' ? 'AI 플랜 보기' :
-               lang === 'fr' ? 'Voir le plan IA' :
-               'AIプランを見る'}
+                lang === 'ko' ? 'AI 플랜 보기' :
+                  lang === 'fr' ? 'Voir le plan IA' :
+                    'AIプランを見る'}
             </button>
           </div>
         </div>
@@ -1140,18 +1140,19 @@ export default function MainContent({
         .hero-slide:nth-child(2) { animation-delay: 5s }
         .hero-slide:nth-child(3) { animation-delay: 10s }
         .animate-slide-in-right { animation: slideInRight 0.5s ease-out; }
+        .large-spacing { margin-bottom: 5rem !important; }
       `}</style>
 
       <div className="container mx-auto px-6">
         {/* 3秒要約 */}
-        <section className="relative -mt-32 z-10 mb-12">
+        <section className="relative -mt-32 z-10 large-spacing" style={{ marginBottom: '5rem !important' }}>
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
             <h2 className="flex items-center gap-3 text-xl font-bold text-gray-800 mb-4">
               <Eye className="text-blue-600" size={24} />
               {i18n.quickSummary}
             </h2>
             <p className="text-gray-700 leading-relaxed">
-              {lang === 'en' 
+              {lang === 'en'
                 ? "Tokyo's iconic 333m tower offering panoramic city views from two observation decks. Best visited during clear weather for Mt. Fuji views. Peak times: weekends 11:00-13:00 & 18:00-20:00."
                 : "東京のシンボル333mタワー。2つの展望台から都市の絶景を楽しめます。晴天時は富士山も見えます。混雑ピーク：週末11:00-13:00、18:00-20:00。"
               }
@@ -1159,8 +1160,72 @@ export default function MainContent({
           </div>
         </section>
 
+        {/* AI旅行プランCTA */}
+        <section
+          id="ai-plan"
+          className="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-3xl p-12 text-center text-white relative overflow-hidden large-spacing"
+          style={{ marginBottom: '5rem !important' }}
+        >
+          {/* 背景パターン */}
+          <div className="absolute inset-0 opacity-10">
+            <div
+              className="w-full h-full"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20 20h60v60H20z' fill='none' stroke='white' stroke-width='2'/%3E%3Ccircle cx='50' cy='50' r='15' fill='white'/%3E%3C/svg%3E")`,
+                backgroundSize: '80px 80px',
+              }}
+            />
+          </div>
+
+          <div className="relative z-10">
+            <h2 className="flex items-center justify-center gap-4 mb-4">
+              <Bot size={32} />
+              {lang === 'en' ? 'AI Travel Plan' :
+                lang === 'ko' ? 'AI 여행 계획' :
+                  lang === 'fr' ? 'Plan de voyage IA' :
+                    'AI旅行プラン'}
+            </h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto">
+              {lang === 'en' ? 'Add this spot to your personalized AI travel plan and get smart recommendations!' :
+                lang === 'ko' ? '이 장소를 개인화된 AI 여행 계획에 추가하고 스마트한 추천을 받아보세요!' :
+                  lang === 'fr' ? 'Ajoutez ce lieu à votre plan de voyage IA personnalisé et obtenez des recommandations intelligentes !' :
+                    'このスポットを個人化されたAI旅行プランに追加して、スマートな推薦を受け取りましょう！'}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={addToAITravelPlan}
+                className="px-8 py-4 bg-white/90 text-emerald-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+              >
+                <Bot size={20} />
+                {lang === 'en' ? 'Add to AI Plan' :
+                  lang === 'ko' ? 'AI 플랜에 추가' :
+                    lang === 'fr' ? 'Ajouter au plan IA' :
+                      'AI旅行プランに追加'}
+              </button>
+              <button
+                onClick={() => window.location.href = '/ai-plan'}
+                className="px-8 py-4 bg-white/90 text-teal-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+              >
+                <Eye size={20} />
+                {lang === 'en' ? 'View My AI Plan' :
+                  lang === 'ko' ? '내 AI 플랜 보기' :
+                    lang === 'fr' ? 'Voir mon plan IA' :
+                      '私のAIプランを見る'}
+              </button>
+            </div>
+            {!isLoggedIn && (
+              <p className="text-white/80 text-sm mt-4">
+                {lang === 'en' ? 'Please log in to use AI travel planning features' :
+                  lang === 'ko' ? 'AI 여행 계획 기능을 사용하려면 로그인해 주세요' :
+                    lang === 'fr' ? 'Veuillez vous connecter pour utiliser les fonctionnalités de planification de voyage IA' :
+                      'AI旅行プラン機能を使用するにはログインしてください'}
+              </p>
+            )}
+          </div>
+        </section>
+
         {/* チケット情報カード */}
-        <section className="mb-12">
+        <section className="large-spacing" style={{ marginBottom: '5rem !important' }}>
           <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
             <Ticket className="text-blue-600" size={28} />
             {i18n.ticketInfo}
@@ -1233,7 +1298,7 @@ export default function MainContent({
               </button>
             </div>
           </div>
-          
+
           {/* Ticket Info Footer */}
           <div className="mt-4 p-4 bg-gray-50 rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
@@ -1448,9 +1513,8 @@ export default function MainContent({
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div
                       key={i}
-                      className={`w-6 h-1.5 rounded-full ${
-                        i <= getCrowd().score ? 'bg-warning' : 'bg-border'
-                      }`}
+                      className={`w-6 h-1.5 rounded-full ${i <= getCrowd().score ? 'bg-warning' : 'bg-border'
+                        }`}
                     />
                   ))}
                 </div>
@@ -1507,7 +1571,7 @@ export default function MainContent({
             {i18n.accessMap}
           </h2>
 
-          <MapComponent 
+          <MapComponent
             location={spotData?.location || { lat: 35.6586, lng: 139.7454 }}
             name={spotData?.name || '東京タワー'}
           />
@@ -1594,12 +1658,12 @@ export default function MainContent({
                     }
                   }}
                 >
-                  <Image 
-                    src={galleryImages[0]} 
-                    alt={`${spotData?.name || 'スポット'} - ${i18n.mainPhoto}`} 
-                    fill 
-                    className="object-cover group-hover:scale-105 transition-transform duration-300" 
-                    sizes="100vw" 
+                  <Image
+                    src={galleryImages[0]}
+                    alt={`${spotData?.name || 'スポット'} - ${i18n.mainPhoto}`}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    sizes="100vw"
                     priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -1626,12 +1690,12 @@ export default function MainContent({
                       }
                     }}
                   >
-                    <Image 
-                      src={src} 
-                      alt={`${spotData?.name || 'スポット'}の写真 ${idx + 2}`} 
-                      fill 
-                      className="object-cover group-hover:scale-110 transition-transform duration-300" 
-                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw" 
+                    <Image
+                      src={src}
+                      alt={`${spotData?.name || 'スポット'}の写真 ${idx + 2}`}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw"
                     />
                     <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
@@ -1640,7 +1704,7 @@ export default function MainContent({
 
               {(galleryImages.length || 0) > 13 && (
                 <div className="text-center mt-6">
-                  <button 
+                  <button
                     className="px-6 py-3 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-colors"
                     onClick={() => openModal('allPhotos')}
                   >
@@ -1713,7 +1777,7 @@ export default function MainContent({
             <MessageSquare className="text-blue-600" size={28} />
             {i18n.reviewSummary}
           </h2>
-          
+
           {/* 要約カード */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* 高評価ポイント */}
@@ -1760,7 +1824,7 @@ export default function MainContent({
           {/* 代表レビュー */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Reviews</h3>
-            
+
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <div className="flex items-start gap-4">
                 <div className="flex items-center gap-2">
@@ -1836,7 +1900,7 @@ export default function MainContent({
               </h2>
               {snsExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </button>
-            
+
             {snsExpanded && (
               <div className="px-6 pb-6 border-t border-gray-100">
                 <div className="space-y-4 mt-4">
@@ -1899,7 +1963,7 @@ export default function MainContent({
 
           <div className="prose max-w-none">
             <p className="text-text-muted mb-6 leading-relaxed">
-              {lang === 'en' 
+              {lang === 'en'
                 ? "Tokyo Tower is a 333-meter tall communications tower that opened in 1958. It features two observation decks: the Main Deck at 150m and the Top Deck at 250m, offering 360-degree views of Tokyo. The Main Deck has three levels with a glass floor, café, and gift shop for an immersive experience. At night, the tower is illuminated with seasonal lighting displays like the 'Infinity Diamond Veil'. The FootTown complex at the base houses restaurants, souvenir shops, and event spaces, making it enjoyable even in bad weather. Nearest stations include Akabanebashi, Kamiyacho, and Onarimon. To avoid crowds, visit on weekday mornings or late evenings, or purchase advance tickets. On clear days, you can see Mt. Fuji."
                 : spotData?.description || '人気のスポットです。見どころや歴史、周辺情報をチェックして計画に役立てましょう。'
               }
@@ -2010,31 +2074,31 @@ export default function MainContent({
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <Twitter className="text-primary" size={24} />
-            {lang === 'en' ? 'Social Media & Real-time Updates' : 
-             lang === 'ko' ? 'SNS・실시간 정보' : 
-             lang === 'fr' ? 'Réseaux sociaux et mises à jour en temps réel' : 
-             'SNS・リアルタイム情報'}
+            {lang === 'en' ? 'Social Media & Real-time Updates' :
+              lang === 'ko' ? 'SNS・실시간 정보' :
+                lang === 'fr' ? 'Réseaux sociaux et mises à jour en temps réel' :
+                  'SNS・リアルタイム情報'}
           </h2>
 
           <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-8 text-center">
             <Twitter className="mx-auto mb-4 text-blue-400" size={48} />
             <div className="text-lg font-semibold mb-2">
               {lang === 'en' ? '#TokyoTower real-time posts' :
-               lang === 'ko' ? '#도쿄타워 #TokyoTower 실시간 게시물' :
-               lang === 'fr' ? 'Publications en temps réel #TokyoTower' :
-               '#東京タワー #TokyoTower のリアルタイム投稿'}
+                lang === 'ko' ? '#도쿄타워 #TokyoTower 실시간 게시물' :
+                  lang === 'fr' ? 'Publications en temps réel #TokyoTower' :
+                    '#東京タワー #TokyoTower のリアルタイム投稿'}
             </div>
             <p className="text-text-muted mb-6">
               {lang === 'en' ? 'Check the latest posts and crowd conditions' :
-               lang === 'ko' ? '최신 게시물과 혼잡 상황을 확인할 수 있습니다' :
-               lang === 'fr' ? 'Consultez les dernières publications et les conditions de foule' :
-               '最新の投稿や混雑状況をチェックできます'}
+                lang === 'ko' ? '최신 게시물과 혼잡 상황을 확인할 수 있습니다' :
+                  lang === 'fr' ? 'Consultez les dernières publications et les conditions de foule' :
+                    '最新の投稿や混雑状況をチェックできます'}
             </p>
             <button className="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors">
               {lang === 'en' ? 'Load Latest Updates' :
-               lang === 'ko' ? '최신 정보 불러오기' :
-               lang === 'fr' ? 'Charger les dernières mises à jour' :
-               '最新情報を読み込み'}
+                lang === 'ko' ? '최신 정보 불러오기' :
+                  lang === 'fr' ? 'Charger les dernières mises à jour' :
+                    '最新情報を読み込み'}
             </button>
           </div>
         </section>
@@ -2059,93 +2123,30 @@ export default function MainContent({
             <h2 className="flex items-center justify-center gap-4 mb-4">
               <Ticket size={32} />
               {lang === 'en' ? 'Tickets & Reservations' :
-               lang === 'ko' ? '티켓・예약' :
-               lang === 'fr' ? 'Billets et réservations' :
-               'チケット・予約'}
+                lang === 'ko' ? '티켓・예약' :
+                  lang === 'fr' ? 'Billets et réservations' :
+                    'チケット・予約'}
             </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
               {lang === 'en' ? 'Book in advance for smooth entry! Special rates available.' :
-               lang === 'ko' ? '사전 예약으로 원활한 입장! 특별 요금도 준비되어 있습니다.' :
-               lang === 'fr' ? 'Réservez à l\'avance pour une entrée fluide ! Tarifs spéciaux disponibles.' :
-               '事前予約でスムーズに入場！特別料金もご用意しています。'}
+                lang === 'ko' ? '사전 예약으로 원활한 입장! 특별 요금도 준비되어 있습니다.' :
+                  lang === 'fr' ? 'Réservez à l\'avance pour une entrée fluide ! Tarifs spéciaux disponibles.' :
+                    '事前予約でスムーズに入場！特別料金もご用意しています。'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="px-8 py-4 bg-white/90 text-secondary rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300">
                 {lang === 'en' ? 'Book on Official Site' :
-                 lang === 'ko' ? '공식 사이트에서 예약' :
-                 lang === 'fr' ? 'Réserver sur le site officiel' :
-                 '公式サイトで予約'}
+                  lang === 'ko' ? '공식 사이트에서 예약' :
+                    lang === 'fr' ? 'Réserver sur le site officiel' :
+                      '公式サイトで予約'}
               </button>
               <button className="px-8 py-4 bg-white/90 text-secondary rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300">
                 {lang === 'en' ? 'Ticket Booking Site' :
-                 lang === 'ko' ? '티켓 예약 사이트' :
-                 lang === 'fr' ? 'Site de réservation de billets' :
-                 'チケット予約サイト'}
+                  lang === 'ko' ? '티켓 예약 사이트' :
+                    lang === 'fr' ? 'Site de réservation de billets' :
+                      'チケット予約サイト'}
               </button>
             </div>
-          </div>
-        </section>
-
-        {/* AI旅行プランCTA */}
-        <section
-          id="ai-plan"
-          className="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-3xl p-12 text-center text-white mb-12 relative overflow-hidden"
-        >
-          {/* 背景パターン */}
-          <div className="absolute inset-0 opacity-10">
-            <div
-              className="w-full h-full"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20 20h60v60H20z' fill='none' stroke='white' stroke-width='2'/%3E%3Ccircle cx='50' cy='50' r='15' fill='white'/%3E%3C/svg%3E")`,
-                backgroundSize: '80px 80px',
-              }}
-            />
-          </div>
-
-          <div className="relative z-10">
-            <h2 className="flex items-center justify-center gap-4 mb-4">
-              <Bot size={32} />
-              {lang === 'en' ? 'AI Travel Plan' :
-               lang === 'ko' ? 'AI 여행 계획' :
-               lang === 'fr' ? 'Plan de voyage IA' :
-               'AI旅行プラン'}
-            </h2>
-            <p className="text-xl mb-8 max-w-2xl mx-auto">
-              {lang === 'en' ? 'Add this spot to your personalized AI travel plan and get smart recommendations!' :
-               lang === 'ko' ? '이 장소를 개인화된 AI 여행 계획에 추가하고 스마트한 추천을 받아보세요!' :
-               lang === 'fr' ? 'Ajoutez ce lieu à votre plan de voyage IA personnalisé et obtenez des recommandations intelligentes !' :
-               'このスポットを個人化されたAI旅行プランに追加して、スマートな推薦を受け取りましょう！'}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={addToAITravelPlan}
-                className="px-8 py-4 bg-white/90 text-emerald-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
-              >
-                <Bot size={20} />
-                {lang === 'en' ? 'Add to AI Plan' :
-                 lang === 'ko' ? 'AI 플랜에 추가' :
-                 lang === 'fr' ? 'Ajouter au plan IA' :
-                 'AI旅行プランに追加'}
-              </button>
-              <button 
-                onClick={() => window.location.href = '/ai-plan'}
-                className="px-8 py-4 bg-white/90 text-teal-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
-              >
-                <Eye size={20} />
-                {lang === 'en' ? 'View My AI Plan' :
-                 lang === 'ko' ? '내 AI 플랜 보기' :
-                 lang === 'fr' ? 'Voir mon plan IA' :
-                 '私のAIプランを見る'}
-              </button>
-            </div>
-            {!isLoggedIn && (
-              <p className="text-white/80 text-sm mt-4">
-                {lang === 'en' ? 'Please log in to use AI travel planning features' :
-                 lang === 'ko' ? 'AI 여행 계획 기능을 사용하려면 로그인해 주세요' :
-                 lang === 'fr' ? 'Veuillez vous connecter pour utiliser les fonctionnalités de planification de voyage IA' :
-                 'AI旅行プラン機能を使用するにはログインしてください'}
-              </p>
-            )}
           </div>
         </section>
 
@@ -2154,85 +2155,84 @@ export default function MainContent({
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <Info className="text-primary" size={24} />
             {lang === 'en' ? 'Facilities & Important Notes' :
-             lang === 'ko' ? '시설・주의사항' :
-             lang === 'fr' ? 'Installations et notes importantes' :
-             '設備・注意事項'}
+              lang === 'ko' ? '시설・주의사항' :
+                lang === 'fr' ? 'Installations et notes importantes' :
+                  '設備・注意事項'}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {[
-              { 
-                icon: Baby, 
+              {
+                icon: Baby,
                 text: lang === 'en' ? 'Stroller Friendly' :
-                      lang === 'ko' ? '유모차 이용 가능' :
-                      lang === 'fr' ? 'Accessible aux poussettes' :
-                      'ベビーカー利用可', 
-                available: true 
+                  lang === 'ko' ? '유모차 이용 가능' :
+                    lang === 'fr' ? 'Accessible aux poussettes' :
+                      'ベビーカー利用可',
+                available: true
               },
-              { 
-                icon: Accessibility, 
+              {
+                icon: Accessibility,
                 text: lang === 'en' ? 'Barrier-Free Access' :
-                      lang === 'ko' ? '배리어프리 대응' :
-                      lang === 'fr' ? 'Accès sans barrières' :
-                      'バリアフリー対応', 
-                available: true 
+                  lang === 'ko' ? '배리어프리 대응' :
+                    lang === 'fr' ? 'Accès sans barrières' :
+                      'バリアフリー対応',
+                available: true
               },
-              { 
-                icon: Bath, 
+              {
+                icon: Bath,
                 text: lang === 'en' ? 'Multi-Purpose Restrooms' :
-                      lang === 'ko' ? '다목적 화장실 있음' :
-                      lang === 'fr' ? 'Toilettes polyvalentes' :
-                      '多目的トイレあり', 
-                available: true 
+                  lang === 'ko' ? '다목적 화장실 있음' :
+                    lang === 'fr' ? 'Toilettes polyvalentes' :
+                      '多目的トイレあり',
+                available: true
               },
-              { 
-                icon: Camera, 
+              {
+                icon: Camera,
                 text: lang === 'en' ? 'Photography OK' :
-                      lang === 'ko' ? '촬영 OK' :
-                      lang === 'fr' ? 'Photographie autorisée' :
-                      '撮影OK', 
-                available: true 
+                  lang === 'ko' ? '촬영 OK' :
+                    lang === 'fr' ? 'Photographie autorisée' :
+                      '撮影OK',
+                available: true
               },
-              { 
-                icon: Ban, 
+              {
+                icon: Ban,
                 text: lang === 'en' ? 'Non-Smoking Facility' :
-                      lang === 'ko' ? '전관 금연' :
-                      lang === 'fr' ? 'Établissement non-fumeur' :
-                      '全館禁煙', 
-                available: false 
+                  lang === 'ko' ? '전관 금연' :
+                    lang === 'fr' ? 'Établissement non-fumeur' :
+                      '全館禁煙',
+                available: false
               },
-              { 
-                icon: Wifi, 
+              {
+                icon: Wifi,
                 text: lang === 'en' ? 'Free Wi-Fi' :
-                      lang === 'ko' ? '무료 Wi-Fi' :
-                      lang === 'fr' ? 'Wi-Fi gratuit' :
-                      '無料Wi-Fi', 
-                available: true 
+                  lang === 'ko' ? '무료 Wi-Fi' :
+                    lang === 'fr' ? 'Wi-Fi gratuit' :
+                      '無料Wi-Fi',
+                available: true
               },
-              { 
-                icon: Store, 
+              {
+                icon: Store,
                 text: lang === 'en' ? 'Souvenir Shop' :
-                      lang === 'ko' ? '기념품 가게' :
-                      lang === 'fr' ? 'Boutique de souvenirs' :
-                      'お土産ショップ', 
-                available: true 
+                  lang === 'ko' ? '기념품 가게' :
+                    lang === 'fr' ? 'Boutique de souvenirs' :
+                      'お土産ショップ',
+                available: true
               },
-              { 
-                icon: Utensils, 
+              {
+                icon: Utensils,
                 text: lang === 'en' ? 'Restaurant & Café' :
-                      lang === 'ko' ? '레스토랑・카페' :
-                      lang === 'fr' ? 'Restaurant et café' :
-                      'レストラン・カフェ', 
-                available: true 
+                  lang === 'ko' ? '레스토랑・카페' :
+                    lang === 'fr' ? 'Restaurant et café' :
+                      'レストラン・カフェ',
+                available: true
               },
             ].map((item, index) => (
               <div
                 key={index}
-                className={`flex items-center gap-3 p-4 rounded-2xl border transition-transform hover:scale-105 ${
-                  item.available
+                className={`flex items-center gap-3 p-4 rounded-2xl border transition-transform hover:scale-105 ${item.available
                     ? 'border-success/20 text-success bg-green-50'
                     : 'border-danger/20 text-danger bg-red-50'
-                }`}
+                  }`}
               >
                 <item.icon size={20} />
                 <span className="font-medium">{item.text}</span>
@@ -2242,40 +2242,40 @@ export default function MainContent({
 
           <h3 className="text-lg font-semibold text-secondary mb-4">
             {lang === 'en' ? 'Important Notes' :
-             lang === 'ko' ? '주의사항' :
-             lang === 'fr' ? 'Notes importantes' :
-             '注意事項'}
+              lang === 'ko' ? '주의사항' :
+                lang === 'fr' ? 'Notes importantes' :
+                  '注意事項'}
           </h3>
           <ul className="list-disc list-inside space-y-2 text-text-muted">
             <li>
               {lang === 'en' ? 'Observation decks may be closed during bad weather' :
-               lang === 'ko' ? '악천후 시 전망대가 폐쇄될 수 있습니다' :
-               lang === 'fr' ? 'Les ponts d\'observation peuvent être fermés par mauvais temps' :
-               '悪天候時は展望台が閉鎖される場合があります'}
+                lang === 'ko' ? '악천후 시 전망대가 폐쇄될 수 있습니다' :
+                  lang === 'fr' ? 'Les ponts d\'observation peuvent être fermés par mauvais temps' :
+                    '悪天候時は展望台が閉鎖される場合があります'}
             </li>
             <li>
               {lang === 'en' ? 'Large luggage must be stored in paid lockers' :
-               lang === 'ko' ? '큰 짐은 유료 보관함을 이용해 주세요' :
-               lang === 'fr' ? 'Les gros bagages doivent être stockés dans des casiers payants' :
-               '大きな荷物は有料ロッカーをご利用ください'}
+                lang === 'ko' ? '큰 짐은 유료 보관함을 이용해 주세요' :
+                  lang === 'fr' ? 'Les gros bagages doivent être stockés dans des casiers payants' :
+                    '大きな荷物は有料ロッカーをご利用ください'}
             </li>
             <li>
               {lang === 'en' ? 'Pets are not allowed (except guide dogs)' :
-               lang === 'ko' ? '애완동물 동반 불가 (안내견 등 제외)' :
-               lang === 'fr' ? 'Les animaux ne sont pas autorisés (sauf chiens-guides)' :
-               'ペットの同伴はできません（盲導犬等は除く）'}
+                lang === 'ko' ? '애완동물 동반 불가 (안내견 등 제외)' :
+                  lang === 'fr' ? 'Les animaux ne sont pas autorisés (sauf chiens-guides)' :
+                    'ペットの同伴はできません（盲導犬等は除く）'}
             </li>
             <li>
               {lang === 'en' ? 'Tripod photography is prohibited' :
-               lang === 'ko' ? '삼각대를 사용한 촬영은 금지되어 있습니다' :
-               lang === 'fr' ? 'La photographie avec trépied est interdite' :
-               '三脚を使用した撮影は禁止されています'}
+                lang === 'ko' ? '삼각대를 사용한 촬영은 금지되어 있습니다' :
+                  lang === 'fr' ? 'La photographie avec trépied est interdite' :
+                    '三脚を使用した撮影は禁止されています'}
             </li>
             <li>
               {lang === 'en' ? 'Entry restrictions may apply during busy periods' :
-               lang === 'ko' ? '혼잡 시 입장 제한을 실시할 수 있습니다' :
-               lang === 'fr' ? 'Des restrictions d\'entrée peuvent s\'appliquer pendant les périodes d\'affluence' :
-               '混雑時は入場制限を行う場合があります'}
+                lang === 'ko' ? '혼잡 시 입장 제한을 실시할 수 있습니다' :
+                  lang === 'fr' ? 'Des restrictions d\'entrée peuvent s\'appliquer pendant les périodes d\'affluence' :
+                    '混雑時は入場制限を行う場合があります'}
             </li>
           </ul>
         </section>
@@ -2285,64 +2285,64 @@ export default function MainContent({
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <HelpCircle className="text-primary" size={24} />
             {lang === 'en' ? 'Frequently Asked Questions' :
-             lang === 'ko' ? '자주 묻는 질문' :
-             lang === 'fr' ? 'Questions fréquemment posées' :
-             'よくある質問'}
+              lang === 'ko' ? '자주 묻는 질문' :
+                lang === 'fr' ? 'Questions fréquemment posées' :
+                  'よくある質問'}
           </h2>
 
           <div className="space-y-4">
             {[
               {
                 question: lang === 'en' ? 'What are the operating hours?' :
-                         lang === 'ko' ? '운영시간을 알려주세요' :
-                         lang === 'fr' ? 'Quels sont les horaires d\'ouverture ?' :
-                         '営業時間を教えてください',
-                answer: lang === 'en' ? 
+                  lang === 'ko' ? '운영시간을 알려주세요' :
+                    lang === 'fr' ? 'Quels sont les horaires d\'ouverture ?' :
+                      '営業時間を教えてください',
+                answer: lang === 'en' ?
                   'Main Deck: 9:00-23:00 (Last entry 22:30)\nTop Deck: 9:00-22:45 (Last entry 22:00-22:15)\nFootTown: 10:00-21:00 (varies by store)' :
                   lang === 'ko' ?
-                  '메인 데크: 9:00~23:00 (마지막 입장 22:30)\n톱 데크: 9:00~22:45 (마지막 입장 22:00~22:15)\n풋타운: 10:00~21:00 (매장별로 다름)' :
-                  lang === 'fr' ?
-                  'Main Deck : 9h00-23h00 (Dernière entrée 22h30)\nTop Deck : 9h00-22h45 (Dernière entrée 22h00-22h15)\nFootTown : 10h00-21h00 (varie selon les magasins)' :
-                  'メインデッキ：9:00～23:00（最終入場 22:30）\nトップデッキ：9:00～22:45（最終入場 22:00～22:15）\nフットタウン：10:00～21:00（店舗により異なります）',
+                    '메인 데크: 9:00~23:00 (마지막 입장 22:30)\n톱 데크: 9:00~22:45 (마지막 입장 22:00~22:15)\n풋타운: 10:00~21:00 (매장별로 다름)' :
+                    lang === 'fr' ?
+                      'Main Deck : 9h00-23h00 (Dernière entrée 22h30)\nTop Deck : 9h00-22h45 (Dernière entrée 22h00-22h15)\nFootTown : 10h00-21h00 (varie selon les magasins)' :
+                      'メインデッキ：9:00～23:00（最終入場 22:30）\nトップデッキ：9:00～22:45（最終入場 22:00～22:15）\nフットタウン：10:00～21:00（店舗により異なります）',
               },
               {
                 question: lang === 'en' ? 'How much does it cost?' :
-                         lang === 'ko' ? '요금은 얼마인가요?' :
-                         lang === 'fr' ? 'Combien cela coûte-t-il ?' :
-                         '料金はいくらですか？',
+                  lang === 'ko' ? '요금은 얼마인가요?' :
+                    lang === 'fr' ? 'Combien cela coûte-t-il ?' :
+                      '料金はいくらですか？',
                 answer: lang === 'en' ?
                   'Main Deck: Adult ¥1,200, High School ¥1,000, Elementary/Junior High ¥700, Child (4+) ¥500\nTop Deck: +¥2,800 (13+), +¥1,800 (Elementary), +¥1,200 (Child)' :
                   lang === 'ko' ?
-                  '메인 데크: 성인 1,200엔, 고등학생 1,000엔, 초중학생 700엔, 유아(4세 이상) 500엔\n톱 데크: +2,800엔(13세 이상), +1,800엔(초등학생), +1,200엔(유아)' :
-                  lang === 'fr' ?
-                  'Main Deck : Adulte 1 200¥, Lycéen 1 000¥, Collégien/Élémentaire 700¥, Enfant (4+) 500¥\nTop Deck : +2 800¥ (13+), +1 800¥ (Élémentaire), +1 200¥ (Enfant)' :
-                  'メインデッキ：大人 1,200円、高校生 1,000円、小中学生 700円、幼児（4歳以上） 500円\nトップデッキ：+2,800円（13歳以上）、+1,800円（小学生）、+1,200円（幼児）',
+                    '메인 데크: 성인 1,200엔, 고등학생 1,000엔, 초중학생 700엔, 유아(4세 이상) 500엔\n톱 데크: +2,800엔(13세 이상), +1,800엔(초등학생), +1,200엔(유아)' :
+                    lang === 'fr' ?
+                      'Main Deck : Adulte 1 200¥, Lycéen 1 000¥, Collégien/Élémentaire 700¥, Enfant (4+) 500¥\nTop Deck : +2 800¥ (13+), +1 800¥ (Élémentaire), +1 200¥ (Enfant)' :
+                      'メインデッキ：大人 1,200円、高校生 1,000円、小中学生 700円、幼児（4歳以上） 500円\nトップデッキ：+2,800円（13歳以上）、+1,800円（小学生）、+1,200円（幼児）',
               },
               {
                 question: lang === 'en' ? 'Do I need a reservation?' :
-                         lang === 'ko' ? '예약이 필요한가요?' :
-                         lang === 'fr' ? 'Ai-je besoin d\'une réservation ?' :
-                         '予約は必要ですか？',
+                  lang === 'ko' ? '예약이 필요한가요?' :
+                    lang === 'fr' ? 'Ai-je besoin d\'une réservation ?' :
+                      '予約は必要ですか？',
                 answer: lang === 'en' ?
                   'Main Deck requires no reservation, but Top Deck requires advance booking. We recommend booking in advance, especially for weekends and evening hours.' :
                   lang === 'ko' ?
-                  '메인 데크는 예약이 불필요하지만, 톱 데크는 사전 예약이 필요합니다. 특히 주말과 야경 시간대는 혼잡하므로 사전 예약을 권장합니다.' :
-                  lang === 'fr' ?
-                  'Le Main Deck ne nécessite pas de réservation, mais le Top Deck nécessite une réservation à l\'avance. Nous recommandons de réserver à l\'avance, surtout pour les week-ends et les heures de soirée.' :
-                  'メインデッキは予約不要ですが、トップデッキは事前予約が必要です。特に土日祝日や夜景の時間帯は混雑するため、事前予約をおすすめします。',
+                    '메인 데크는 예약이 불필요하지만, 톱 데크는 사전 예약이 필요합니다. 특히 주말과 야경 시간대는 혼잡하므로 사전 예약을 권장합니다.' :
+                    lang === 'fr' ?
+                      'Le Main Deck ne nécessite pas de réservation, mais le Top Deck nécessite une réservation à l\'avance. Nous recommandons de réserver à l\'avance, surtout pour les week-ends et les heures de soirée.' :
+                      'メインデッキは予約不要ですが、トップデッキは事前予約が必要です。特に土日祝日や夜景の時間帯は混雑するため、事前予約をおすすめします。',
               },
               {
                 question: lang === 'en' ? 'Is it wheelchair accessible?' :
-                         lang === 'ko' ? '휠체어로도 이용할 수 있나요?' :
-                         lang === 'fr' ? 'Est-ce accessible en fauteuil roulant ?' :
-                         '車椅子でも利用できますか？',
+                  lang === 'ko' ? '휠체어로도 이용할 수 있나요?' :
+                    lang === 'fr' ? 'Est-ce accessible en fauteuil roulant ?' :
+                      '車椅子でも利用できますか？',
                 answer: lang === 'en' ?
                   'Yes, it is barrier-free and wheelchair accessible. Elevators and multi-purpose restrooms are available.' :
                   lang === 'ko' ?
-                  '네, 배리어프리 대응으로 휠체어로도 이용하실 수 있습니다. 엘리베이터와 다목적 화장실도 완비되어 있습니다.' :
-                  lang === 'fr' ?
-                  'Oui, c\'est sans barrières et accessible en fauteuil roulant. Des ascenseurs et des toilettes polyvalentes sont disponibles.' :
-                  'はい、バリアフリー対応しており、車椅子でもご利用いただけます。エレベーターや多目的トイレも完備しています。',
+                    '네, 배리어프리 대응으로 휠체어로도 이용하실 수 있습니다. 엘리베이터와 다목적 화장실도 완비되어 있습니다.' :
+                    lang === 'fr' ?
+                      'Oui, c\'est sans barrières et accessible en fauteuil roulant. Des ascenseurs et des toilettes polyvalentes sont disponibles.' :
+                      'はい、バリアフリー対応しており、車椅子でもご利用いただけます。エレベーターや多目的トイレも完備しています。',
               },
             ].map((faq, index) => (
               <div
@@ -2355,9 +2355,8 @@ export default function MainContent({
                 >
                   <span className="font-semibold text-secondary">{faq.question}</span>
                   <svg
-                    className={`w-5 h-5 text-primary transition-transform ${
-                      activeFAQ === index ? 'rotate-180' : ''
-                    }`}
+                    className={`w-5 h-5 text-primary transition-transform ${activeFAQ === index ? 'rotate-180' : ''
+                      }`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -2385,9 +2384,9 @@ export default function MainContent({
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <Map className="text-primary" size={24} />
             {lang === 'en' ? 'Nearby Attractions' :
-             lang === 'ko' ? '주변 관광 명소' :
-             lang === 'fr' ? 'Attractions à proximité' :
-             '近隣の観光スポット'}
+              lang === 'ko' ? '주변 관광 명소' :
+                lang === 'fr' ? 'Attractions à proximité' :
+                  '近隣の観光スポット'}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -2395,60 +2394,60 @@ export default function MainContent({
               {
                 name: lang === 'en' ? 'Zojoji Temple' : '増上寺',
                 distance: lang === 'en' ? '3 min walk' :
-                         lang === 'ko' ? '도보 3분' :
-                         lang === 'fr' ? '3 min à pied' :
-                         '徒歩3分',
+                  lang === 'ko' ? '도보 3분' :
+                    lang === 'fr' ? '3 min à pied' :
+                      '徒歩3分',
                 category: lang === 'en' ? 'Historic Temple' :
-                         lang === 'ko' ? '역사적인 사원' :
-                         lang === 'fr' ? 'Temple historique' :
-                         '歴史ある寺院',
-                description: lang === 'en' ? 
+                  lang === 'ko' ? '역사적인 사원' :
+                    lang === 'fr' ? 'Temple historique' :
+                      '歴史ある寺院',
+                description: lang === 'en' ?
                   'Beautiful temple with Tokyo Tower as backdrop. Famous as the Tokugawa family temple.' :
                   lang === 'ko' ?
-                  '도쿄타워를 배경으로 한 아름다운 사원. 도쿠가와 가문의 보리사로 유명합니다.' :
-                  lang === 'fr' ?
-                  'Magnifique temple avec la Tokyo Tower en arrière-plan. Célèbre comme temple familial des Tokugawa.' :
-                  '東京タワーを背景にした美しい寺院。徳川家の菩提寺として有名です。',
+                    '도쿄타워를 배경으로 한 아름다운 사원. 도쿠가와 가문의 보리사로 유명합니다.' :
+                    lang === 'fr' ?
+                      'Magnifique temple avec la Tokyo Tower en arrière-plan. Célèbre comme temple familial des Tokugawa.' :
+                      '東京タワーを背景にした美しい寺院。徳川家の菩提寺として有名です。',
                 color: 'from-green-400 to-green-600',
                 image: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&auto=format&fit=crop&q=70',
               },
               {
                 name: lang === 'en' ? 'Shiba Park' : '芝公園',
                 distance: lang === 'en' ? '1 min walk' :
-                         lang === 'ko' ? '도보 1분' :
-                         lang === 'fr' ? '1 min à pied' :
-                         '徒歩1分',
+                  lang === 'ko' ? '도보 1분' :
+                    lang === 'fr' ? '1 min à pied' :
+                      '徒歩1分',
                 category: lang === 'en' ? 'Urban Park' :
-                         lang === 'ko' ? '도시 공원' :
-                         lang === 'fr' ? 'Parc urbain' :
-                         '都市公園',
+                  lang === 'ko' ? '도시 공원' :
+                    lang === 'fr' ? 'Parc urbain' :
+                      '都市公園',
                 description: lang === 'en' ?
                   'Lush green park at the foot of Tokyo Tower. Perfect for walks and picnics.' :
                   lang === 'ko' ?
-                  '도쿄타워 기슭에 펼쳐진 푸른 공원. 산책과 피크닉에 추천합니다.' :
-                  lang === 'fr' ?
-                  'Parc verdoyant au pied de la Tokyo Tower. Parfait pour les promenades et les pique-niques.' :
-                  '東京タワーの足元に広がる緑豊かな公園。散歩やピクニックにおすすめです。',
+                    '도쿄타워 기슭에 펼쳐진 푸른 공원. 산책과 피크닉에 추천합니다.' :
+                    lang === 'fr' ?
+                      'Parc verdoyant au pied de la Tokyo Tower. Parfait pour les promenades et les pique-niques.' :
+                      '東京タワーの足元に広がる緑豊かな公園。散歩やピクニックにおすすめです。',
                 color: 'from-emerald-400 to-emerald-600',
                 image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&auto=format&fit=crop&q=70',
               },
               {
                 name: lang === 'en' ? 'Atago Shrine' : '愛宕神社',
                 distance: lang === 'en' ? '8 min walk' :
-                         lang === 'ko' ? '도보 8분' :
-                         lang === 'fr' ? '8 min à pied' :
-                         '徒歩8分',
+                  lang === 'ko' ? '도보 8분' :
+                    lang === 'fr' ? '8 min à pied' :
+                      '徒歩8分',
                 category: lang === 'en' ? 'Shrine' :
-                         lang === 'ko' ? '신사' :
-                         lang === 'fr' ? 'Sanctuaire' :
-                         '神社',
+                  lang === 'ko' ? '신사' :
+                    lang === 'fr' ? 'Sanctuaire' :
+                      '神社',
                 description: lang === 'en' ?
                   'Famous shrine with the "Success Steps". Located on the highest natural hill in Tokyo\'s 23 wards.' :
                   lang === 'ko' ?
-                  '출세의 돌계단으로 유명한 신사. 도쿄 23구에서 가장 높은 자연 산에 있습니다.' :
-                  lang === 'fr' ?
-                  'Sanctuaire célèbre pour ses "Marches du Succès". Situé sur la plus haute colline naturelle des 23 arrondissements de Tokyo.' :
-                  '出世の石段で有名な神社。東京23区で最も高い自然の山にあります。',
+                    '출세의 돌계단으로 유명한 신사. 도쿄 23구에서 가장 높은 자연 산에 있습니다.' :
+                    lang === 'fr' ?
+                      'Sanctuaire célèbre pour ses "Marches du Succès". Situé sur la plus haute colline naturelle des 23 arrondissements de Tokyo.' :
+                      '出世の石段で有名な神社。東京23区で最も高い自然の山にあります。',
                 color: 'from-blue-400 to-blue-600',
                 image: 'https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=800&auto=format&fit=crop&q=70',
               },
@@ -2508,10 +2507,10 @@ export default function MainContent({
                 <Image src={selectedImage} alt={`${spotData?.name || 'スポット'}の写真`} fill className="object-contain bg-slate-50" sizes="90vw" />
               </div>
             ) : (
-              <div 
+              <div
                 className="w-full h-72 md:h-80 flex items-center justify-center"
-                style={{ 
-                  background: activeModal ? getModalPhotoBackground(activeModal, spotData?.name || '') : 'linear-gradient(135deg, #ff6b6b, #ee5a24)' 
+                style={{
+                  background: activeModal ? getModalPhotoBackground(activeModal, spotData?.name || '') : 'linear-gradient(135deg, #ff6b6b, #ee5a24)'
                 }}
               >
                 <div className="text-center text-white">
