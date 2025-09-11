@@ -149,34 +149,34 @@ export default function Home() {
         }}></div>
 
         <style jsx>{`
+          .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(1.1) brightness(0.85); z-index: 0; }
+          .hero-overlay { position: absolute; inset: 0; z-index: 1; background:
+            radial-gradient(circle at 20% 20%, rgba(2, 6, 23, 0.25) 0%, transparent 45%),
+            radial-gradient(circle at 80% 40%, rgba(2, 6, 23, 0.25) 0%, transparent 45%),
+            linear-gradient(0deg, rgba(2, 6, 23, 0.35) 0%, rgba(2, 6, 23, 0.15) 40%, rgba(2, 6, 23, 0.55) 100%);
+            backdrop-filter: blur(1.5px);
+          }
           @keyframes sakuraFloat {
-            0%, 100% { 
-              background-position: center, center;
+            0%, 100% {
               filter: hue-rotate(0deg) brightness(1);
             }
-            25% { 
-              background-position: center top, center bottom;
+            25% {
               filter: hue-rotate(5deg) brightness(1.1);
             }
-            50% { 
-              background-position: center bottom, center top;
+            50% {
               filter: hue-rotate(10deg) brightness(0.95);
             }
-            75% { 
-              background-position: center, center;
+            75% {
               filter: hue-rotate(5deg) brightness(1.05);
             }
           }
-          
           @keyframes sakuraDrift {
-            0% { 
-              transform: translateX(-2%) translateY(-1%);
-              opacity: 0.7;
-            }
-            100% { 
-              transform: translateX(2%) translateY(1%);
-              opacity: 0.9;
-            }
+            0% { transform: translateX(-2%) translateY(-1%); opacity: 0.7; }
+            100% { transform: translateX(2%) translateY(1%); opacity: 0.9; }
+          }
+          @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
           }
         `}</style>
         <div style={{
@@ -518,43 +518,306 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Visual Section */}
+      {/* Experience Japan Video Section */}
       <section style={{
-        height: '60vh',
-        background: 'linear-gradient(rgba(15, 23, 42, 0.7), rgba(30, 58, 138, 0.6)), url("https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        color: 'white',
-        margin: '2rem',
-        borderRadius: '20px',
+        margin: '4rem 2rem',
+        borderRadius: '24px',
         overflow: 'hidden',
-        border: '1px solid rgba(148, 163, 184, 0.2)',
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+        boxShadow: '0 25px 50px rgba(0, 0, 0, 0.4)',
+        position: 'relative',
+        background: 'linear-gradient(135deg, #1e293b, #0f172a)'
       }}>
-        <div>
-          <h2 style={{
-            fontSize: '3rem',
-            fontWeight: 'bold',
-            marginBottom: '1rem',
-            color: '#f8fafc',
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+        {/* Video Container */}
+        <div style={{
+          position: 'relative',
+          height: '65vh',
+          minHeight: '420px',
+          overflow: 'hidden'
+        }}>
+          {/* Background Video */}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              zIndex: 1
+            }}
+            onError={(e) => {
+              // フォールバック：動画が読み込めない場合は背景画像を設定
+              const target = e.currentTarget;
+              target.style.display = 'none';
+              const parent = target.parentElement;
+              if (parent) {
+                parent.style.background = 'linear-gradient(rgba(15, 23, 42, 0.7), rgba(30, 58, 138, 0.6)), url("https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")';
+                parent.style.backgroundSize = 'cover';
+                parent.style.backgroundPosition = 'center';
+              }
+            }}
+          >
+            <source src="/douga.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+
+          {/* Video Overlay */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `
+              linear-gradient(45deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.5) 100%),
+              radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at 70% 70%, rgba(147, 51, 234, 0.15) 0%, transparent 50%)
+            `,
+            zIndex: 2
+          }}></div>
+
+          {/* Content Overlay */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            zIndex: 3,
+            padding: '2rem',
+            display: 'none'
           }}>
-            {t('home.experienceTitle')}
-          </h2>
-          <p style={{
-            fontSize: '1.2rem',
-            opacity: 0.9,
-            color: '#e2e8f0'
+            <div style={{
+              maxWidth: '800px',
+              animation: 'fadeInUp 1.5s ease-out'
+            }}>
+              <h2 style={{
+                fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+                fontWeight: 'bold',
+                marginBottom: '1.5rem',
+                color: '#ffffff',
+                textShadow: '0 4px 8px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 255, 255, 0.2)',
+                lineHeight: 1.2
+              }}>
+                {t('home.experienceTitle')}
+              </h2>
+              <p style={{
+                fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)',
+                opacity: 0.95,
+                color: '#f1f5f9',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)',
+                marginBottom: '2.5rem',
+                lineHeight: 1.6
+              }}>
+                {t('home.experienceSubtitle')}
+              </p>
+
+              {/* Call to Action Buttons */}
+              <div style={{
+                display: 'flex',
+                gap: '1.5rem',
+                justifyContent: 'center',
+                flexWrap: 'wrap'
+              }}>
+                <Link
+                  href="/areas"
+                  style={{
+                    padding: '1rem 2.5rem',
+                    fontSize: '1.1rem',
+                    borderRadius: '50px',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    transition: 'all 0.3s',
+                    cursor: 'pointer',
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8))',
+                    color: '#1e293b',
+                    backdropFilter: 'blur(15px)',
+                    boxShadow: '0 8px 25px rgba(255, 255, 255, 0.2)',
+                    border: 'none',
+                    display: 'inline-block'
+                  }}
+                  onMouseEnter={(e) => {
+                    const target = e.currentTarget as HTMLAnchorElement;
+                    target.style.transform = 'translateY(-3px) scale(1.05)';
+                    target.style.boxShadow = '0 12px 35px rgba(255, 255, 255, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    const target = e.currentTarget as HTMLAnchorElement;
+                    target.style.transform = 'translateY(0) scale(1)';
+                    target.style.boxShadow = '0 8px 25px rgba(255, 255, 255, 0.2)';
+                  }}
+                >
+                  🗾 Explore Japan
+                </Link>
+
+                <Link
+                  href="/spots/101"
+                  style={{
+                    padding: '1rem 2.5rem',
+                    fontSize: '1.1rem',
+                    borderRadius: '50px',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    transition: 'all 0.3s',
+                    cursor: 'pointer',
+                    background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3))',
+                    color: 'white',
+                    border: '2px solid rgba(255, 255, 255, 0.5)',
+                    backdropFilter: 'blur(15px)',
+                    display: 'inline-block'
+                  }}
+                  onMouseEnter={(e) => {
+                    const target = e.currentTarget as HTMLAnchorElement;
+                    target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))';
+                    target.style.borderColor = 'rgba(255, 255, 255, 0.8)';
+                    target.style.transform = 'translateY(-3px) scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    const target = e.currentTarget as HTMLAnchorElement;
+                    target.style.background = 'linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3))';
+                    target.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+                    target.style.transform = 'translateY(0) scale(1)';
+                  }}
+                >
+                  🗼 Visit Tokyo Tower
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Video Controls */}
+          <div style={{
+            position: 'absolute',
+            bottom: '2rem',
+            right: '2rem',
+            display: 'none',
+            gap: '1rem',
+            zIndex: 4
           }}>
-            {t('home.experienceSubtitle')}
-          </p>
+            <button
+              onClick={() => {
+                const video = document.querySelector('section video');
+                if (video) {
+                  if (video.paused) {
+                    video.play();
+                  } else {
+                    video.pause();
+                  }
+                }
+              }}
+              style={{
+                padding: '0.75rem',
+                background: 'rgba(0, 0, 0, 0.6)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '50%',
+                color: 'white',
+                cursor: 'pointer',
+                backdropFilter: 'blur(10px)',
+                transition: 'all 0.3s',
+                fontSize: '1rem',
+                width: '48px',
+                height: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.transform = 'scale(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.6)';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              ⏯️
+            </button>
+
+            <button
+              onClick={() => {
+                const video = document.querySelector('section video');
+                if (video) {
+                  video.muted = !video.muted;
+                }
+              }}
+              style={{
+                padding: '0.75rem',
+                background: 'rgba(0, 0, 0, 0.6)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '50%',
+                color: 'white',
+                cursor: 'pointer',
+                backdropFilter: 'blur(10px)',
+                transition: 'all 0.3s',
+                fontSize: '1rem',
+                width: '48px',
+                height: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.transform = 'scale(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.6)';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              🔊
+            </button>
+          </div>
+        </div>
+
+        {/* Bottom Info Bar */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95))',
+          padding: '2rem',
+          backdropFilter: 'blur(20px)',
+          display: 'none'
+        }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '2rem',
+            textAlign: 'center',
+            color: 'white'
+          }}>
+            <div>
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🏯</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>1000+</div>
+              <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Historic Temples</div>
+            </div>
+            <div>
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🗼</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>500+</div>
+              <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Modern Landmarks</div>
+            </div>
+            <div>
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🍜</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>10000+</div>
+              <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Local Restaurants</div>
+            </div>
+            <div>
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⭐</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>4.8/5</div>
+              <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>User Rating</div>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* fadeInUp keyframes moved to the hero <style jsx> to avoid nested styled-jsx tags */}
 
       {/* Footer */}
       <footer style={{
