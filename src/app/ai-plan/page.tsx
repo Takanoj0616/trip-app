@@ -62,8 +62,21 @@ export default function AIPlanPage() {
       if (!resp.ok) throw new Error('ルート生成に失敗しました');
       const json = await resp.json();
       if (!json?.route) throw new Error('不正なレスポンス');
-      const encoded = encodeURIComponent(JSON.stringify(json.route));
-      router.push(`/route/result?data=${encoded}`);
+      // Avoid extremely long URLs that can trigger 431/414.
+      // Store the route client-side and navigate with a small id param.
+      try {
+        const route = json.route;
+        const id = route.id || `route_${Date.now()}`;
+        // Persist to sessionStorage for this browsing session
+        sessionStorage.setItem(`route:${id}`, JSON.stringify(route));
+        sessionStorage.setItem('last-route-id', id);
+        // Also keep a simple latest pointer
+        sessionStorage.setItem('last-route', JSON.stringify(route));
+        router.push(`/route/result?id=${encodeURIComponent(id)}`);
+      } catch {
+        // Fallback: minimal payload in URL (only id)
+        router.push(`/route/result`);
+      }
     } catch (e: unknown) {
       setError((e as Error)?.message || 'エラーが発生しました');
     } finally {

@@ -91,21 +91,66 @@ function RouteResultContent() {
 
     const sakuraInterval = setInterval(createSakura, 800);
 
-    // URLパラメータからルートデータを取得
+    // URLパラメータ/クライアントストレージからルートデータを取得
+    const idParam = searchParams.get('id');
     const routeData = searchParams.get('data');
+
+    // 1) 推奨: id 経由で sessionStorage から取得
+    if (idParam) {
+      try {
+        const raw = sessionStorage.getItem(`route:${idParam}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          setRoute(parsed);
+          setLoading(false);
+          return;
+        }
+      } catch {}
+      // idがあるが見つからない場合、last-route をフォールバック
+      try {
+        const latestRaw = sessionStorage.getItem('last-route');
+        if (latestRaw) {
+          const parsed = JSON.parse(latestRaw);
+          setRoute(parsed);
+          setLoading(false);
+          return;
+        }
+      } catch {}
+    }
+
+    // 2) 旧仕様: data クエリ（長いURL）対応。到達時は保存しておく。
     if (routeData) {
       try {
         const decodedRoute = JSON.parse(decodeURIComponent(routeData));
         setRoute(decodedRoute);
+        try {
+          const id = (decodedRoute && decodedRoute.id) || `route_${Date.now()}`;
+          sessionStorage.setItem(`route:${id}`, JSON.stringify(decodedRoute));
+          sessionStorage.setItem('last-route-id', id);
+          sessionStorage.setItem('last-route', JSON.stringify(decodedRoute));
+        } catch {}
         setLoading(false);
+        return;
       } catch (err) {
         setError('ルートデータの読み込みに失敗しました');
         setLoading(false);
+        return;
       }
-    } else {
-      setError('ルートデータが見つかりません');
-      setLoading(false);
     }
+
+    // 3) 最終フォールバック: last-route
+    try {
+      const latestRaw = sessionStorage.getItem('last-route');
+      if (latestRaw) {
+        const parsed = JSON.parse(latestRaw);
+        setRoute(parsed);
+        setLoading(false);
+        return;
+      }
+    } catch {}
+
+    setError('ルートデータが見つかりません');
+    setLoading(false);
 
     return () => {
       clearInterval(sakuraInterval);
