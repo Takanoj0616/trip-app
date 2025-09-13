@@ -824,6 +824,44 @@ header {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Header dark-text mode (ensure readability on white backgrounds) */
+header.header--dark-text .header-content .logo {
+  color: #111 !important;
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+}
+header.header--dark-text .header-content .nav-link,
+header.header--dark-text .header-content .btn-ghost,
+header.header--dark-text .header-content .lang-btn,
+header.header--dark-text .header-content .small-text {
+  color: #111 !important;
+}
+header.header--dark-text .header-content .nav-link:hover,
+header.header--dark-text .header-content .btn-ghost:hover,
+header.header--dark-text .header-content .lang-btn:hover {
+  color: #111 !important;
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+header.header--dark-text .header-content .hamburger-btn {
+  border-color: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.05);
+}
+header.header--dark-text .header-content .hamburger-btn span {
+  background: #111 !important;
+}
+header.header--dark-text .header-content .lang-selector {
+  border-color: rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.75);
+}
+header.header--dark-text .header-content .user-pill {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+header.header--dark-text .header-content .user-pill .small-text {
+  color: #111 !important;
+}
+
 .header-content {
   display: flex;
   justify-content: space-between;

@@ -85,7 +85,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header>
+    <header className="header--dark-text">
       <div className="header-content">
         <Link href="/" className="logo">
           <span>🗾</span>
@@ -175,7 +175,7 @@ const Header: React.FC = () => {
                   }}>
                     {!user.avatar && (user.name ? user.name.charAt(0) : user.email.charAt(0))}
                   </div>
-                  <span className="small-text" style={{ color: 'white' }}>
+                  <span className="small-text" style={{ color: '#111' }}>
                     {user.name || 'User'}
                   </span>
                 </div>
