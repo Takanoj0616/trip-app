@@ -37,14 +37,22 @@ export default function MapComponent({ location, name }: MapComponentProps) {
       maxZoom: 19,
     }).addTo(map);
 
+    // メインラベル（Skytree の場合は明示的に二言語ラベル）
+    const isSkytree = /スカイツリー|skytree/i.test(name);
+    const mainLabel = isSkytree ? '東京スカイツリー（Skytree）' : name;
+
     // スポットのマーカー
     const marker = L.marker([location.lat, location.lng]).addTo(map);
-    marker.bindPopup(`
+    marker
+      .bindPopup(
+        `
       <div class="text-center">
-        <h3 class="font-semibold text-lg mb-2">${name}</h3>
+        <h3 class="font-semibold text-lg mb-2">${mainLabel}</h3>
         <p class="text-sm text-gray-600">観光スポット</p>
       </div>
-    `).openPopup();
+    `
+      )
+      .openPopup();
 
     // カスタムスタイルでポップアップを調整
     const style = document.createElement('style');
@@ -59,23 +67,26 @@ export default function MapComponent({ location, name }: MapComponentProps) {
     `;
     document.head.appendChild(style);
 
-    // 周辺の主要スポット（参考用）
-    const nearbySpots = [
-      { name: '増上寺', coords: [35.6567, 139.7456] },
-      { name: '芝公園', coords: [35.6577, 139.7469] },
-      { name: '赤羽橋駅', coords: [35.6548, 139.7434] },
-    ];
+    // 周辺の主要スポット（東京タワーのときのみ表示）
+    const isTokyoTower = /東京タワー|Tokyo\s*Tower/i.test(name);
+    if (isTokyoTower) {
+      const nearbySpots = [
+        { name: '増上寺', coords: [35.6567, 139.7456] },
+        { name: '芝公園', coords: [35.6577, 139.7469] },
+        { name: '赤羽橋駅', coords: [35.6548, 139.7434] },
+      ];
 
-    nearbySpots.forEach(spot => {
-      const spotIcon = L.divIcon({
-        html: `<div class="bg-primary-light text-white text-xs px-2 py-1 rounded-full font-semibold">${spot.name}</div>`,
-        className: 'custom-marker',
-        iconSize: [80, 30],
-        iconAnchor: [40, 15],
+      nearbySpots.forEach((spot) => {
+        const spotIcon = L.divIcon({
+          html: `<div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-semibold shadow">${spot.name}</div>`,
+          className: 'custom-marker',
+          iconSize: [80, 30],
+          iconAnchor: [40, 15],
+        });
+
+        L.marker(spot.coords as [number, number], { icon: spotIcon }).addTo(map);
       });
-
-      L.marker(spot.coords as [number, number], { icon: spotIcon }).addTo(map);
-    });
+    }
 
     // クリーンアップ
     return () => {

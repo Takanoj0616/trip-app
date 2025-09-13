@@ -961,57 +961,7 @@ export default function MainContent({
 
   return (
     <main className="min-h-screen pt-32 sm:pt-36 md:pt-40">
-      {/* 固定CTAバー - より洗練されたデザイン */}
-      <div className="fixed top-36 sm:top-40 md:top-44 left-0 right-0 z-40 bg-gradient-to-r from-white/95 via-white/98 to-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between gap-6">
-            {/* 主要CTAボタン - より魅力的なデザイン */}
-            <button
-              onClick={() => window.open('#tickets', '_self')}
-              className="flex-1 max-w-sm bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center justify-center gap-3 shadow-2xl hover:shadow-3xl transform hover:scale-105"
-            >
-              <Ticket size={22} />
-              <span className="text-lg">{i18n.bookTickets}</span>
-            </button>
-
-            {/* セカンダリアクション - より洗練されたデザイン */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={addToAITravelPlan}
-                className="px-5 py-4 bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 text-emerald-700 rounded-2xl transition-all duration-300 flex items-center gap-2 border border-emerald-200 hover:border-emerald-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                disabled={!isLoggedIn}
-              >
-                <Bot size={20} />
-                <span className="hidden sm:inline font-semibold">{i18n.addToPlan}</span>
-              </button>
-
-              <button
-                onClick={addToFavorites}
-                className="px-5 py-4 bg-gradient-to-r from-rose-50 to-pink-50 hover:from-rose-100 hover:to-pink-100 text-rose-700 rounded-2xl transition-all duration-300 flex items-center gap-2 border border-rose-200 hover:border-rose-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <Heart size={20} />
-                <span className="hidden sm:inline font-semibold">{i18n.save}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  if (navigator.share) {
-                    navigator.share({
-                      title: spotData?.name || 'Tokyo Tower',
-                      text: spotData?.description || 'Check out this amazing spot!',
-                      url: window.location.href
-                    });
-                  }
-                }}
-                className="px-5 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 text-blue-700 rounded-2xl transition-all duration-300 flex items-center gap-2 border border-blue-200 hover:border-blue-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <Share2 size={20} />
-                <span className="hidden sm:inline font-semibold">{i18n.share}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* 上部固定CTAバーはUX簡素化のため削除 */}
 
       {/* 下部固定CTA（予約ボタン） */}
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
@@ -1039,7 +989,8 @@ export default function MainContent({
               />
             </div>
           ))}
-          {/* 可読性が必要になったら薄い暗幕を足す（デフォルトはクリア） */}
+          {/* 可読性向上のためのグラデーションオーバーレイ */}
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
         </div>
 
         <div className="relative z-10 text-center max-w-4xl px-8">
@@ -1054,7 +1005,7 @@ export default function MainContent({
                 <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-4 bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent drop-shadow-2xl">
                   {spotData?.name || 'Tokyo Tower'}
                 </h1>
-                <p className="text-xl md:text-2xl text-white/90 font-light tracking-wide drop-shadow-lg">
+                <p className="text-xl md:text-2xl text-white/95 font-light tracking-wide drop-shadow-2xl">
                   {lang === 'en' ? 'Iconic 333m tower with breathtaking city views' :
                     lang === 'ko' ? '숨막히는 도시 전망을 자랑하는 상징적인 333m 타워' :
                       lang === 'fr' ? 'Tour emblématique de 333m avec des vues imprenables sur la ville' :
@@ -1216,10 +1167,10 @@ export default function MainContent({
           </div>
         </section>
 
-        {/* AI旅行プランCTA */}
+        {/* AI旅行プランCTA（白＋青トーンに統一） */}
         <section
           id="ai-plan"
-          className="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-3xl p-12 text-center text-white relative overflow-hidden large-spacing"
+          className="bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 rounded-3xl p-12 text-center text-gray-900 relative overflow-hidden large-spacing"
           style={{ marginBottom: '5rem !important' }}
         >
           {/* 背景パターン */}
@@ -1252,7 +1203,7 @@ export default function MainContent({
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={addToAITravelPlan}
-                className="px-8 py-4 bg-white/90 text-emerald-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+                className="px-8 py-4 bg-white/90 text-sky-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
               >
                 <Bot size={20} />
                 {lang === 'en' ? 'Add to AI Plan' :
@@ -1262,7 +1213,7 @@ export default function MainContent({
               </button>
               <button
                 onClick={() => window.location.href = '/ai-plan'}
-                className="px-8 py-4 bg-white/90 text-teal-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+                className="px-8 py-4 bg-white/90 text-sky-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
               >
                 <Eye size={20} />
                 {lang === 'en' ? 'View My AI Plan' :
@@ -1274,12 +1225,12 @@ export default function MainContent({
             </div>
             {!isLoggedIn && (
               <>
-                <p className="text-white/80 text-sm mt-4">
-                  {lang === 'en' ? 'Please log in to use AI travel planning features' :
-                    lang === 'ko' ? 'AI 여행 계획 기능을 사용하려면 로그인해 주세요' :
-                    lang === 'fr' ? 'Veuillez vous connecter pour utiliser les fonctionnalités de planification de voyage IA' :
-                    lang === 'ar' ? 'يرجى تسجيل الدخول لاستخدام ميزات تخطيط السفر بالذكاء الاصطناعي' :
-                    'AI旅行プラン機能を使用するにはログインしてください'}
+                <p className="text-gray-700 text-sm mt-4">
+                  {lang === 'en' ? 'The rest of the sample itinerary appears after sign‑in' :
+                    lang === 'ko' ? '나머지 모델 코스는 로그인 후 표시됩니다' :
+                    lang === 'fr' ? "La suite de l'itinéraire s'affiche après connexion" :
+                    lang === 'ar' ? 'ستظهر بقية المسار بعد تسجيل الدخول' :
+                    '続きのモデルコースは登録後に表示されます'}
                 </p>
 
                 {/* サンプルプランのチラ見せ */}
@@ -1361,18 +1312,18 @@ export default function MainContent({
                       </li>
                     </ol>
                     <div className="mt-3 text-xs text-gray-600">
-                      {lang === 'en' ? 'Log in to see the full plan' :
-                       lang === 'ko' ? '전체 플랜 보기는 로그인 필요' :
-                       lang === 'fr' ? 'Connectez-vous pour voir le plan complet' :
-                       lang === 'ar' ? 'سجّل الدخول لعرض الخطة كاملة' :
-                       '続きを見るには無料登録が必要です'}
+                      {lang === 'en' ? 'Sign in to view the full itinerary' :
+                       lang === 'ko' ? '전체 일정은 로그인 후 확인' :
+                       lang === 'fr' ? "Connectez‑vous pour voir l'itinéraire complet" :
+                       lang === 'ar' ? 'سجّل الدخول لعرض المسار الكامل' :
+                       '続きのモデルコースは登録後に表示されます'}
                     </div>
                   </div>
 
                   <div className="flex flex-col justify-center gap-3">
                     <button
                       onClick={() => signInWithGoogle().catch(() => {})}
-                      className="w-full px-5 py-4 bg-white text-emerald-700 rounded-xl font-bold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
+                      className="w-full px-5 py-4 bg-white text-sky-700 rounded-xl font-bold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
                     >
                       {lang === 'en' ? 'Create my plan for free (30s)' :
                        lang === 'ko' ? '무료로 나만의 플랜 만들기 (30초)' :
@@ -1666,10 +1617,10 @@ export default function MainContent({
           </div>
         </section>
 
-        {/* クイック情報（簡素化） */}
+        {/* クイック情報（2列レイアウト） */}
         <section className="relative z-10 mb-12">
           <div className="bg-white rounded-3xl shadow-xl border border-border-light p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
               <div className="text-center p-6 border border-border-light rounded-2xl bg-gradient-to-br from-white to-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <Clock className="mx-auto mb-4 text-primary" size={40} />
                 <h3 className="font-semibold text-secondary mb-2">{i18n.hours}</h3>
@@ -2027,9 +1978,41 @@ export default function MainContent({
             </div>
           </div>
 
+          {/* 平均スコア + 星分布 */}
+          <div className="bg-white rounded-xl border border-gray-200 p-6 mb-8">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="text-4xl font-black text-gray-900">{(spotData?.rating || 4.4).toFixed(1)}</div>
+                <div>
+                  <div className="text-yellow-400 text-xl leading-none">{'★'.repeat(Math.round(spotData?.rating || 4.4))}{'☆'.repeat(5 - Math.round(spotData?.rating || 4.4))}</div>
+                  <div className="text-sm text-gray-500">{(spotData?.reviewCount || 15032).toLocaleString()} reviews</div>
+                </div>
+              </div>
+              <div className="flex-1 grid grid-cols-1 gap-2">
+                {[
+                  { label: '★5', pct: 62, color: 'bg-green-500' },
+                  { label: '★4', pct: 26, color: 'bg-blue-500' },
+                  { label: '★3', pct: 8, color: 'bg-yellow-500' },
+                  { label: '★2', pct: 3, color: 'bg-orange-500' },
+                  { label: '★1', pct: 1, color: 'bg-red-500' },
+                ].map((row, idx) => (
+                  <div key={idx} className="flex items-center gap-3">
+                    <div className="w-10 text-sm text-gray-600">{row.label}</div>
+                    <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
+                      <div className={`${row.color} h-full`} style={{ width: `${row.pct}%` }} />
+                    </div>
+                    <div className="w-12 text-right text-sm text-gray-600">{row.pct}%</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* 代表レビュー */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Reviews</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              {lang === 'ja' ? '外国人レビュー' : lang === 'ko' ? '외국인 리뷰' : lang === 'fr' ? 'Avis internationaux' : 'International Reviews'}
+            </h3>
 
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <div className="flex items-start gap-4">
@@ -2090,6 +2073,37 @@ export default function MainContent({
                 "Perfect spot for photography! The glass floor on the main deck was thrilling. Staff were very helpful and spoke multiple languages. The souvenir shop has unique Tokyo Tower merchandise."
               </p>
             </div>
+          </div>
+          {/* 日本語レビュー */}
+          <div className="space-y-4 mt-10">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              {lang === 'ja' ? '日本語レビュー' : lang === 'ko' ? '일본어 리뷰' : lang === 'fr' ? 'Avis en japonais' : 'Japanese Reviews'}
+            </h3>
+            {[
+              {
+                name: '田中太郎',
+                rating: 5,
+                date: '2024/08/20',
+                comment:
+                  '夜景が本当に美しかったです！特にトップデッキからの眺めは圧巻でした。少し混雑していましたが、スタッフの対応も良く満足できました。',
+              },
+              {
+                name: '山田花子',
+                rating: 4,
+                date: '2024/08/15',
+                comment:
+                  '家族で訪問しました。子供たちも大興奮でした。フットタウンにもたくさんの楽しい施設があり、一日中楽しめます。',
+              },
+            ].map((review, index) => (
+              <div key={index} className="bg-white rounded-xl border border-gray-200 p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-gray-800">{review.name}</span>
+                  <span className="text-sm text-gray-500">{review.date}</span>
+                </div>
+                <div className="text-yellow-400 mb-2">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
+                <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+              </div>
+            ))}
           </div>
         </section>
         )}
@@ -2165,62 +2179,11 @@ export default function MainContent({
 
         
 
-        {/* 口コミ・レビュー */}
-        <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
-          <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
-            <MessageSquare className="text-primary" size={24} />
-            {i18n.reviewsTitle}
-          </h2>
-
-          <div className="space-y-6">
-            {[
-              {
-                name: '田中太郎',
-                rating: 5,
-                date: '2024/08/20',
-                comment:
-                  '夜景が本当に美しかったです！特にトップデッキからの眺めは圧巻でした。少し混雑していましたが、スタッフの対応も良く満足できました。',
-              },
-              {
-                name: 'Sarah Johnson',
-                rating: 4,
-                date: '2024/08/18',
-                comment:
-                  'Amazing views of Tokyo! The elevator ride was smooth and the observation decks were well-maintained. A bit pricey but worth the experience for first-time visitors.',
-              },
-              {
-                name: '山田花子',
-                rating: 4,
-                date: '2024/08/15',
-                comment:
-                  '家族で訪問しました。子供たちも大興奮でした。フットタウンにもたくさんの楽しい施設があり、一日中楽しめます。',
-              },
-            ].map((review, index) => (
-              <div
-                key={index}
-                className="border-b border-border-light pb-6 hover:bg-slate-50/50 -mx-4 px-4 py-4 rounded-xl transition-colors"
-              >
-                <div className="flex justify-between items-center mb-3">
-                  <span className="font-semibold text-secondary">
-                    {review.name}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-yellow-400">
-                      {'★'.repeat(review.rating)}
-                      {'☆'.repeat(5 - review.rating)}
-                    </span>
-                    <span className="text-text-light text-sm">{review.date}</span>
-                  </div>
-                </div>
-                <p className="text-text-muted leading-relaxed">{review.comment}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-        {/* チケット・予約CTA */}
+        {/* 口コミ・レビュー（重複セクションは削除: 上部タブのレビューに統合） */}
+        {/* チケット予約 CTA（ブランドカラーで統一） */}
         <section
           id="tickets"
-          className="bg-gradient-to-br from-primary to-primary-light rounded-3xl p-12 text-center text-white mb-12 relative overflow-hidden"
+          className="bg-gradient-to-br from-sky-500 to-cyan-500 rounded-3xl p-12 text-center text-white mb-12 relative overflow-hidden"
         >
           {/* 背景パターン */}
           <div className="absolute inset-0 opacity-10">
@@ -2236,10 +2199,10 @@ export default function MainContent({
           <div className="relative z-10">
             <h2 className="flex items-center justify-center gap-4 mb-4">
               <Ticket size={32} />
-              {lang === 'en' ? 'Tickets & Reservations' :
-                lang === 'ko' ? '티켓・예약' :
-                  lang === 'fr' ? 'Billets et réservations' :
-                    'チケット・予約'}
+              {lang === 'en' ? 'Book Tickets' :
+                lang === 'ko' ? '티켓 예약' :
+                  lang === 'fr' ? 'Réserver des billets' :
+                    'チケット予約'}
             </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
               {lang === 'en' ? 'Book in advance for smooth entry! Special rates available.' :
@@ -2248,13 +2211,13 @@ export default function MainContent({
                     '事前予約でスムーズに入場！特別料金もご用意しています。'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-white/90 text-secondary rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300">
+              <button className="px-8 py-4 bg-gradient-to-r from-sky-600 to-cyan-600 text-white rounded-xl font-semibold hover:from-sky-700 hover:to-cyan-700 transition-all duration-300">
                 {lang === 'en' ? 'Book on Official Site' :
                   lang === 'ko' ? '공식 사이트에서 예약' :
                     lang === 'fr' ? 'Réserver sur le site officiel' :
                       '公式サイトで予約'}
               </button>
-              <button className="px-8 py-4 bg-white/90 text-secondary rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300">
+              <button className="px-8 py-4 bg-gradient-to-r from-sky-600 to-cyan-600 text-white rounded-xl font-semibold hover:from-sky-700 hover:to-cyan-700 transition-all duration-300">
                 {lang === 'en' ? 'Ticket Booking Site' :
                   lang === 'ko' ? '티켓 예약 사이트' :
                     lang === 'fr' ? 'Site de réservation de billets' :
