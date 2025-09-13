@@ -118,6 +118,9 @@ export default function MainContent({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [snsExpanded, setSnsExpanded] = useState(false);
+  const [activeTab, setActiveTab] = useState<'reviews' | 'details' | 'tickets' | 'sns' | 'faq' | 'nearby'>('reviews');
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [facilitiesOpen, setFacilitiesOpen] = useState(false);
 
   // Currency conversion helper
   const convertPrice = (jpyPrice: number) => {
@@ -1010,6 +1013,16 @@ export default function MainContent({
         </div>
       </div>
 
+      {/* 下部固定CTA（予約ボタン） */}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+        <div className="backdrop-blur-xl bg-white/80 border border-white/60 shadow-2xl rounded-full px-4 py-2 flex items-center gap-3">
+          <span className="hidden sm:inline text-sm text-gray-700">{spotData?.name || 'Attraction'}</span>
+          <a href="#tickets" className="px-4 py-2 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold shadow hover:opacity-95">
+            {i18n.bookTickets}
+          </a>
+        </div>
+      </div>
+
       {/* ヒーローセクション - より魅力的なデザイン */}
       <section className="relative min-h-[80vh] flex items-center justify-center text-white overflow-hidden pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         {/* 背景（スライドショー） */}
@@ -1145,6 +1158,48 @@ export default function MainContent({
       `}</style>
 
       <div className="container mx-auto px-6">
+        {/* 概要（上部固定カード） */}
+        <div className="sticky top-24 z-30 mb-8">
+          <div className="backdrop-blur-xl bg-white/80 border border-white/60 shadow-xl rounded-2xl px-5 py-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <h1 className="text-xl font-bold text-gray-900">{spotData?.name || 'Attraction'}</h1>
+              <div className="flex items-center gap-3 text-sm text-gray-700">
+                <span className="inline-flex items-center gap-1"><Clock size={16} className="text-blue-600" />{i18n.hours}: {spotData?.hours || (lang === 'en' ? 'Unknown' : lang === 'ko' ? '미정' : lang === 'fr' ? 'Inconnu' : '営業時間未定')}</span>
+                {typeof spotData?.rating !== 'undefined' && (
+                  <span className="inline-flex items-center gap-1"><Star size={16} className="text-yellow-500" />{spotData.rating?.toFixed?.(1) || spotData.rating}</span>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <a href="#tickets" className="px-4 py-2 rounded-lg bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold shadow hover:opacity-95">{i18n.bookTickets}</a>
+              <button onClick={addToAITravelPlan} className="px-4 py-2 rounded-lg bg-white text-sky-700 border border-sky-200 font-semibold hover:bg-sky-50">
+                {lang === 'en' ? 'Add to AI Plan' : lang === 'ko' ? 'AI 플랜에 추가' : lang === 'fr' ? 'Ajouter au plan IA' : 'AI旅行プランに追加'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* タブ切り替え（レビュー / 詳細 / チケット / SNS / FAQ / 近隣） */}
+        <div className="mb-8">
+          <div className="inline-flex rounded-full border border-white/50 bg-white/70 backdrop-blur px-2 py-1 shadow-md">
+            {([
+              { key: 'reviews', label: lang === 'en' ? 'Reviews' : lang === 'ko' ? '리뷰' : lang === 'fr' ? 'Avis' : 'レビュー' },
+              { key: 'details', label: lang === 'en' ? 'Details' : lang === 'ko' ? '상세' : lang === 'fr' ? 'Détails' : '詳細' },
+              { key: 'tickets', label: lang === 'en' ? 'Tickets' : lang === 'ko' ? '티켓' : lang === 'fr' ? 'Billets' : 'チケット' },
+              { key: 'sns', label: 'SNS' },
+              { key: 'faq', label: 'FAQ' },
+              { key: 'nearby', label: lang === 'en' ? 'Nearby' : lang === 'ko' ? '근처' : lang === 'fr' ? 'À proximité' : '近隣' },
+            ] as const).map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key as any)}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${activeTab === tab.key ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white' : 'text-gray-700 hover:bg-white'}`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
         {/* 3秒要約 */}
         <section className="relative -mt-32 z-10 large-spacing" style={{ marginBottom: '5rem !important' }}>
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
@@ -1352,8 +1407,9 @@ export default function MainContent({
           </div>
         </section>
 
-        {/* チケット情報カード */}
-        <section className="large-spacing" style={{ marginBottom: '5rem !important' }}>
+        {/* タブ: チケット情報 */}
+        {activeTab === 'tickets' && (
+        <section id="tickets" className="large-spacing" style={{ marginBottom: '5rem !important' }}>
           <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
             <Ticket className="text-blue-600" size={28} />
             {i18n.ticketInfo}
@@ -1445,11 +1501,13 @@ export default function MainContent({
             </div>
           </div>
         </section>
+        )}
 
-        {/* アクセス情報 */}
-        <section className="mb-12">
+        {/* 詳細タブ内: 地図・アクセス */}
+        {activeTab === 'details' && (
+        <section id="access" className="mb-12">
           <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
-            <Navigation className="text-green-600" size={28} />
+            <Navigation className="text-blue-600" size={28} />
             {i18n.accessInfo}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1462,7 +1520,7 @@ export default function MainContent({
               <div className="space-y-2 text-sm text-gray-600">
                 <p><strong>25 min</strong> • 1 transfer</p>
                 <p>JR Yamanote → Shimbashi → Toei Oedo → Akabanebashi</p>
-                <p className="text-green-600 font-medium">¥200 {convertPrice(200)}</p>
+                <p className="text-blue-600 font-medium">¥200 {convertPrice(200)}</p>
               </div>
               <div className="flex gap-2 mt-4">
                 <button className="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-xs hover:bg-blue-200 transition-colors flex items-center justify-center gap-1">
@@ -1484,7 +1542,7 @@ export default function MainContent({
               <div className="space-y-2 text-sm text-gray-600">
                 <p><strong>20 min</strong> • 1 transfer</p>
                 <p>JR Yamanote → Shimbashi → Toei Oedo → Akabanebashi</p>
-                <p className="text-green-600 font-medium">¥200 {convertPrice(200)}</p>
+                <p className="text-blue-600 font-medium">¥200 {convertPrice(200)}</p>
               </div>
               <div className="flex gap-2 mt-4">
                 <button className="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-xs hover:bg-blue-200 transition-colors flex items-center justify-center gap-1">
@@ -1500,13 +1558,13 @@ export default function MainContent({
             {/* From Haneda Airport */}
             <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
               <div className="flex items-center gap-3 mb-4">
-                <Car className="text-orange-600" size={24} />
+                <Car className="text-cyan-600" size={24} />
                 <h3 className="font-semibold text-gray-800">From Haneda</h3>
               </div>
               <div className="space-y-2 text-sm text-gray-600">
                 <p><strong>45 min</strong> • Direct</p>
                 <p>Tokyo Monorail → Shimbashi → Toei Oedo</p>
-                <p className="text-green-600 font-medium">¥470 {convertPrice(470)}</p>
+                <p className="text-blue-600 font-medium">¥470 {convertPrice(470)}</p>
               </div>
               <div className="flex gap-2 mt-4">
                 <button className="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-xs hover:bg-blue-200 transition-colors flex items-center justify-center gap-1">
@@ -1519,7 +1577,19 @@ export default function MainContent({
               </div>
             </div>
           </div>
+          {/* 現在のスポットをGoogle Mapsで開く */}
+          <div className="mt-6">
+            <a
+              href={spotData?.location?.lat && spotData?.location?.lng ? `https://www.google.com/maps/search/?api=1&query=${spotData.location.lat},${spotData.location.lng}` : `https://www.google.com/maps/search/${encodeURIComponent(spotData?.name || 'Tokyo Tower')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow hover:bg-blue-700"
+            >
+              <ExternalLink size={16} /> Google Mapsで開く
+            </a>
+          </div>
         </section>
+        )}
 
         {/* ハイライト（アイコン化） */}
         <section className="mb-12">
@@ -1651,13 +1721,18 @@ export default function MainContent({
           </div>
         </section>
 
-        {/* 詳細説明 */}
+        {/* タブ: 詳細（詳細説明 + 地図アクセス + 設備） */}
+        {activeTab === 'details' && (
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
-          <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
-            <Info className="text-primary" size={24} />
-            {i18n.details}
-          </h2>
+          <button
+            onClick={() => setDetailsOpen(!detailsOpen)}
+            className="w-full flex items-center justify-between gap-4 text-secondary border-b border-border-light pb-4 mb-6"
+          >
+            <span className="inline-flex items-center gap-3"><Info className="text-primary" size={24} />{i18n.details}</span>
+            <span className={`transition-transform ${detailsOpen ? 'rotate-180' : ''}`}>⌄</span>
+          </button>
 
+          {detailsOpen && (
           <div className="prose max-w-none">
             <p className="text-text-muted mb-6">
               {spotData?.description || '人気のスポットです。見どころや歴史、周辺情報をチェックして計画に役立てましょう。'}
@@ -1690,7 +1765,9 @@ export default function MainContent({
               </>
             )}
           </div>
+          )}
         </section>
+        )}
 
         {/* 地図・アクセス */}
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
@@ -1899,8 +1976,9 @@ export default function MainContent({
           )}
         </section>
 
-        {/* レビュー要約 */}
-        <section className="mb-12">
+        {/* タブ: レビュー（要約 + 個別） */}
+        {activeTab === 'reviews' && (
+        <section id="reviews" className="mb-12">
           <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
             <MessageSquare className="text-blue-600" size={28} />
             {i18n.reviewSummary}
@@ -1908,41 +1986,41 @@ export default function MainContent({
 
           {/* 要約カード */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {/* 高評価ポイント */}
-            <div className="bg-green-50 rounded-xl border border-green-200 p-6">
-              <h3 className="flex items-center gap-2 font-semibold text-green-800 mb-4">
-                <CheckCircle className="text-green-600" size={20} />
+            {/* 高評価ポイント（ブランドカラー） */}
+            <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
+              <h3 className="flex items-center gap-2 font-semibold text-blue-800 mb-4">
+                <CheckCircle className="text-blue-600" size={20} />
                 Top Positive Points
               </h3>
-              <ul className="space-y-2 text-sm text-green-700">
+              <ul className="space-y-2 text-sm text-blue-700">
                 <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                   Amazing panoramic views (mentioned in 89% of reviews)
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                   Great night illumination and city lights
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                   Convenient location and easy access
                 </li>
               </ul>
             </div>
 
-            {/* 改善ポイント */}
-            <div className="bg-orange-50 rounded-xl border border-orange-200 p-6">
-              <h3 className="flex items-center gap-2 font-semibold text-orange-800 mb-4">
-                <AlertCircle className="text-orange-600" size={20} />
+            {/* 改善ポイント（アクセント1色） */}
+            <div className="bg-cyan-50 rounded-xl border border-cyan-200 p-6">
+              <h3 className="flex items-center gap-2 font-semibold text-cyan-800 mb-4">
+                <AlertCircle className="text-cyan-600" size={20} />
                 Areas for Improvement
               </h3>
-              <ul className="space-y-2 text-sm text-orange-700">
+              <ul className="space-y-2 text-sm text-cyan-700">
                 <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                  <span className="w-2 h-2 bg-cyan-500 rounded-full"></span>
                   Can get very crowded during peak times
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                  <span className="w-2 h-2 bg-cyan-500 rounded-full"></span>
                   Higher prices compared to other observation decks
                 </li>
               </ul>
@@ -2014,8 +2092,10 @@ export default function MainContent({
             </div>
           </div>
         </section>
+        )}
 
-        {/* SNSリアルタイム（折りたたみ） */}
+        {/* タブ: SNSリアルタイム */}
+        {activeTab === 'sns' && (
         <section className="mb-12">
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <button
@@ -2081,69 +2161,9 @@ export default function MainContent({
             )}
           </div>
         </section>
+        )}
 
-        {/* 詳細説明 */}
-        <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
-          <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
-            <Info className="text-primary" size={24} />
-            {i18n.details}
-          </h2>
-
-          <div className="prose max-w-none">
-            <p className="text-text-muted mb-6 leading-relaxed">
-              {lang === 'en'
-                ? "Tokyo Tower is a 333-meter tall communications tower that opened in 1958. It features two observation decks: the Main Deck at 150m and the Top Deck at 250m, offering 360-degree views of Tokyo. The Main Deck has three levels with a glass floor, café, and gift shop for an immersive experience. At night, the tower is illuminated with seasonal lighting displays like the 'Infinity Diamond Veil'. The FootTown complex at the base houses restaurants, souvenir shops, and event spaces, making it enjoyable even in bad weather. Nearest stations include Akabanebashi, Kamiyacho, and Onarimon. To avoid crowds, visit on weekday mornings or late evenings, or purchase advance tickets. On clear days, you can see Mt. Fuji."
-                : spotData?.description || '人気のスポットです。見どころや歴史、周辺情報をチェックして計画に役立てましょう。'
-              }
-            </p>
-
-            {spotData?.location?.address && (
-              <p className="text-text-muted mb-6">
-                <strong className="text-secondary">{i18n.address}:</strong> {spotData.location.address}
-              </p>
-            )}
-
-            {/* 安全・マナー情報 */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-              <h3 className="flex items-center gap-2 font-semibold text-yellow-800 mb-2">
-                <AlertCircle className="text-yellow-600" size={18} />
-                Safety & Etiquette Tips
-              </h3>
-              <ul className="text-sm text-yellow-700 space-y-1">
-                <li>• Tripods are not permitted on observation decks</li>
-                <li>• Be mindful of other visitors when taking photos during busy periods</li>
-                <li>• Dress warmly - it can be windy at the top</li>
-                <li>• Large bags must be stored in paid lockers</li>
-              </ul>
-            </div>
-
-            {/* ユーティリティ情報 */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <h3 className="flex items-center gap-2 font-semibold text-blue-800 mb-2">
-                <Info className="text-blue-600" size={18} />
-                Accessibility & Facilities
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-blue-700">
-                <div className="flex items-center gap-2">
-                  <CheckCircle size={14} />
-                  <span>Wheelchair accessible with elevators</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle size={14} />
-                  <span>Baby stroller friendly</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle size={14} />
-                  <span>Free Wi-Fi available</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle size={14} />
-                  <span>Multi-purpose restrooms</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        
 
         {/* 口コミ・レビュー */}
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
@@ -2197,40 +2217,6 @@ export default function MainContent({
             ))}
           </div>
         </section>
-
-        {/* SNSリアルタイム情報 */}
-        <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
-          <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
-            <Twitter className="text-primary" size={24} />
-            {lang === 'en' ? 'Social Media & Real-time Updates' :
-              lang === 'ko' ? 'SNS・실시간 정보' :
-                lang === 'fr' ? 'Réseaux sociaux et mises à jour en temps réel' :
-                  'SNS・リアルタイム情報'}
-          </h2>
-
-          <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-8 text-center">
-            <Twitter className="mx-auto mb-4 text-blue-400" size={48} />
-            <div className="text-lg font-semibold mb-2">
-              {lang === 'en' ? '#TokyoTower real-time posts' :
-                lang === 'ko' ? '#도쿄타워 #TokyoTower 실시간 게시물' :
-                  lang === 'fr' ? 'Publications en temps réel #TokyoTower' :
-                    '#東京タワー #TokyoTower のリアルタイム投稿'}
-            </div>
-            <p className="text-text-muted mb-6">
-              {lang === 'en' ? 'Check the latest posts and crowd conditions' :
-                lang === 'ko' ? '최신 게시물과 혼잡 상황을 확인할 수 있습니다' :
-                  lang === 'fr' ? 'Consultez les dernières publications et les conditions de foule' :
-                    '最新の投稿や混雑状況をチェックできます'}
-            </p>
-            <button className="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors">
-              {lang === 'en' ? 'Load Latest Updates' :
-                lang === 'ko' ? '최신 정보 불러오기' :
-                  lang === 'fr' ? 'Charger les dernières mises à jour' :
-                    '最新情報を読み込み'}
-            </button>
-          </div>
-        </section>
-
         {/* チケット・予約CTA */}
         <section
           id="tickets"
@@ -2278,16 +2264,22 @@ export default function MainContent({
           </div>
         </section>
 
-        {/* 設備・注意事項 */}
+        {/* 設備・注意事項（折りたたみ） */}
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
-          <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
-            <Info className="text-primary" size={24} />
-            {lang === 'en' ? 'Facilities & Important Notes' :
-              lang === 'ko' ? '시설・주의사항' :
-                lang === 'fr' ? 'Installations et notes importantes' :
-                  '設備・注意事項'}
-          </h2>
+          <button
+            onClick={() => setFacilitiesOpen(!facilitiesOpen)}
+            className="w-full flex items-center justify-between gap-4 text-secondary border-b border-border-light pb-4 mb-6"
+          >
+            <span className="inline-flex items-center gap-3"><Info className="text-primary" size={24} />
+              {lang === 'en' ? 'Facilities & Important Notes' :
+                lang === 'ko' ? '시설・주의사항' :
+                  lang === 'fr' ? 'Installations et notes importantes' :
+                    '設備・注意事項'}
+            </span>
+            <span className={`transition-transform ${facilitiesOpen ? 'rotate-180' : ''}`}>⌄</span>
+          </button>
 
+          {facilitiesOpen && (<>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {[
               {
@@ -2406,9 +2398,11 @@ export default function MainContent({
                     '混雑時は入場制限を行う場合があります'}
             </li>
           </ul>
+          </>)}
         </section>
 
-        {/* よくある質問 */}
+        {/* タブ: FAQ */}
+        {activeTab === 'faq' && (
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <HelpCircle className="text-primary" size={24} />
@@ -2506,8 +2500,10 @@ export default function MainContent({
             ))}
           </div>
         </section>
+        )}
 
-        {/* 近隣スポット */}
+        {/* タブ: 近隣スポット */}
+        {activeTab === 'nearby' && (
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <Map className="text-primary" size={24} />
@@ -2615,6 +2611,7 @@ export default function MainContent({
             ))}
           </div>
         </section>
+        )}
       </div>
 
       {/* モーダル */}
