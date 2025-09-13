@@ -4,9 +4,11 @@ import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { heroFeatures } from '../data/homepage';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home() {
   const { t, currentLanguage } = useLanguage();
+  const { signInWithGoogle, signInWithApple } = useAuth();
 
   // Multilingual features data
   const getMainFeatures = () => [
@@ -340,8 +342,165 @@ export default function Home() {
               </div>
             ))}
           </div>
+
+          {/* AI quick CTA under hero */}
+          <div style={{
+            marginTop: '0.75rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            padding: '0.5rem 0.9rem',
+            borderRadius: '9999px',
+            background: 'rgba(255,255,255,0.85)',
+            color: '#111',
+            boxShadow: '0 6px 18px rgba(0,0,0,.08)'
+          }}>
+            <span>🤖 {t('home.aiQuickPitch')}</span>
+            <a href="#ai-plan-home" style={{
+              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              color: 'white',
+              padding: '6px 12px',
+              borderRadius: '9999px',
+              fontWeight: 700,
+              textDecoration: 'none'
+            }}>{t('home.tryFree')}</a>
+          </div>
         </div>
       </main>
+
+      {/* AI Plan Promo Section (home) */}
+      <section id="ai-plan-home" className="tokyo-tower-night" style={{
+        padding: '4rem 1.5rem',
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)'
+      }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '0.9rem', color: '#7dd3fc', fontWeight: 700, marginBottom: '0.5rem', textShadow: '0 2px 8px rgba(0,0,0,.5)' }}>{t('home.aiPlan.label')}</div>
+            <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#ffffff', textShadow: '0 4px 16px rgba(0,0,0,.6)' }}>{t('home.aiPlan.headline')}</h2>
+            <p style={{ color: 'rgba(255,255,255,0.9)', marginTop: '0.5rem', textShadow: '0 2px 10px rgba(0,0,0,.6)' }}>{t('home.aiPlan.subhead')}</p>
+          </div>
+
+          {/* Benefits */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '12px 14px' }}>
+              <span>✅</span>
+              <span>{t('home.aiPlan.benefit.route')}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '12px 14px' }}>
+              <span>✅</span>
+              <span>{t('home.aiPlan.benefit.save')}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '12px 14px' }}>
+              <span>✅</span>
+              <span>{t('home.aiPlan.benefit.languages')}</span>
+            </div>
+          </div>
+
+          {/* Sample Plan Teaser */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.25rem' }}>
+            {/* preview */}
+            <div style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(255,255,255,0.7)', borderRadius: '16px', padding: '16px', backdropFilter: 'blur(6px)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <div style={{ fontWeight: 700 }}>{t('home.aiPlan.sampleTitle')}</div>
+                <div style={{ fontSize: '12px', color: '#64748b' }}>{t('home.aiPlan.sampleNote')}</div>
+              </div>
+              <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '10px' }}>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 9999, background: '#22c55e', color: 'white', display: 'grid', placeItems: 'center', fontWeight: 700 }}>1</div>
+                  <div>
+                    <div style={{ fontWeight: 700 }}>
+                      {currentLanguage === 'en' ? 'Morning: Asakusa Temple' :
+                       currentLanguage === 'ko' ? '아침: 아사쿠사 사원' :
+                       currentLanguage === 'fr' ? 'Matin : Temple d\'Asakusa' :
+                       currentLanguage === 'ar' ? 'صباحاً: معبد أساكوسا' : '朝: 浅草寺'}
+                    </div>
+                    <div style={{ color: '#475569', fontSize: 14 }}>
+                      {currentLanguage === 'en' ? '9:00–10:30 / Morning stroll in Nakamise' :
+                       currentLanguage === 'ko' ? '9:00–10:30 / 나카미세 산책' :
+                       currentLanguage === 'fr' ? '9:00–10:30 / Promenade à Nakamise' :
+                       currentLanguage === 'ar' ? '9:00–10:30 / جولة صباحية في ناكاميسه' : '9:00 - 10:30 / 仲見世通りで朝散歩'}
+                    </div>
+                  </div>
+                </li>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'center', filter: 'blur(3px)' }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 9999, background: '#22c55e', color: 'white', display: 'grid', placeItems: 'center', fontWeight: 700 }}>2</div>
+                  <div>
+                    <div style={{ fontWeight: 700 }}>
+                      {currentLanguage === 'en' ? 'Noon: Tokyo Skytree' :
+                       currentLanguage === 'ko' ? '점심: 도쿄 스카이트리' :
+                       currentLanguage === 'fr' ? 'Midi : Tokyo Skytree' :
+                       currentLanguage === 'ar' ? 'الظهيرة: برج طوكيو سكاي تري' : '昼: 東京スカイツリー'}
+                    </div>
+                    <div style={{ color: '#475569', fontSize: 14 }}>
+                      {currentLanguage === 'en' ? '11:30–13:00 / Panorama from the deck' :
+                       currentLanguage === 'ko' ? '11:30–13:00 / 전망대 파노라마' :
+                       currentLanguage === 'fr' ? '11:30–13:00 / Panorama depuis la terrasse' :
+                       currentLanguage === 'ar' ? '11:30–13:00 / إطلالة بانورامية' : '11:30 - 13:00 / 展望台で絶景'}
+                    </div>
+                  </div>
+                </li>
+                <li style={{ display: 'flex', gap: '10px', alignItems: 'center', filter: 'blur(3px)' }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 9999, background: '#22c55e', color: 'white', display: 'grid', placeItems: 'center', fontWeight: 700 }}>3</div>
+                  <div>
+                    <div style={{ fontWeight: 700 }}>
+                      {currentLanguage === 'en' ? 'Night: Shibuya Crossing' :
+                       currentLanguage === 'ko' ? '밤: 시부야 스크램블 교차로' :
+                       currentLanguage === 'fr' ? 'Soir : Carrefour de Shibuya' :
+                       currentLanguage === 'ar' ? 'ليلاً: تقاطع شيبويا' : '夜: 渋谷スクランブル交差点'}
+                    </div>
+                    <div style={{ color: '#475569', fontSize: 14 }}>
+                      {currentLanguage === 'en' ? '19:00–20:00 / Night view and food' :
+                       currentLanguage === 'ko' ? '19:00–20:00 / 야경과 미식' :
+                       currentLanguage === 'fr' ? '19:00–20:00 / Vue nocturne et gastronomie' :
+                       currentLanguage === 'ar' ? '19:00–20:00 / منظر ليلي وطعام' : '19:00 - 20:00 / 夜景とグルメ'}
+                    </div>
+                  </div>
+                </li>
+              </ol>
+              <div style={{ marginTop: 12, fontSize: 12, color: '#64748b' }}>{t('home.aiPlan.sampleNote')}</div>
+            </div>
+
+            {/* CTA */}
+            <div style={{ display: 'grid', alignContent: 'center', gap: '12px' }}>
+              <button
+                onClick={() => { /* open auth flow — use one-click first */ signInWithGoogle().catch(()=>{}); }}
+                style={{
+                  padding: '14px 18px',
+                  borderRadius: '14px',
+                  fontWeight: 800,
+                  fontSize: '1rem',
+                  background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                  color: 'white',
+                  border: 'none',
+                  boxShadow: '0 10px 24px rgba(79,172,254,0.45)'
+                }}
+              >
+                {t('home.aiPlan.primaryCta')}
+              </button>
+              <div style={{ display: 'grid', gap: 8 }}>
+                <button
+                  onClick={() => signInWithGoogle()}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.65)', background: 'rgba(255,255,255,0.95)', fontWeight: 600 }}
+                >
+                  <span>G</span>
+                  <span>{t('home.aiPlan.continueGoogle')}</span>
+                </button>
+                <button
+                  onClick={() => signInWithApple().catch(() => alert('Appleログインはサーバー設定後に有効化されます'))}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.2)', background: 'black', color: 'white', fontWeight: 600 }}
+                >
+                  <span style={{ fontSize: 16 }}></span>
+                  <span>{t('home.aiPlan.continueApple')}</span>
+                </button>
+              </div>
+              <div style={{ textAlign: 'center', fontSize: 13, color: 'rgba(255,255,255,0.9)', textShadow: '0 2px 10px rgba(0,0,0,.5)' }}>
+                {t('common.or')} <Link href="/register" style={{ color: '#2563eb', textDecoration: 'underline' }}>{t('home.aiPlan.registerWithEmail')}</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Features Section */}
       <section style={{

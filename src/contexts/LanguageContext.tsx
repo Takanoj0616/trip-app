@@ -56,6 +56,23 @@ const translations = {
     'home.popularDestinations': 'وجهات شهيرة',
     'home.footerCopyright': '© 2025 دليل السياحة في اليابان. جميع الحقوق محفوظة.',
 
+    // Home: AI plan promo
+    'home.aiQuickPitch': 'الذكاء الاصطناعي ينشئ خطتك المثالية',
+    'home.tryFree': 'جرّبه مجاناً',
+    'home.aiPlan.label': 'خطة السفر بالذكاء الاصطناعي',
+    'home.aiPlan.headline': 'ينشئ الذكاء الاصطناعي خطتك المثالية تلقائياً',
+    'home.aiPlan.subhead': 'احفظ الأماكن وأضفها إلى مذكرة رحلتك. تجربة مجانية خلال 30 ثانية.',
+    'home.aiPlan.benefit.route': 'الذكاء الاصطناعي يقترح أقصر المسارات وتوزيع الوقت',
+    'home.aiPlan.benefit.save': 'احفظ الأماكن وأضفها إلى مذكرة الرحلة',
+    'home.aiPlan.benefit.languages': 'اللغات المدعومة: اليابانية والإنجليزية وغيرها',
+    'home.aiPlan.sampleTitle': 'نموذج مسار يومي مخصص لك (عيّنة)',
+    'home.aiPlan.sampleNote': 'معاينة جزئية قبل تسجيل الدخول',
+    'home.aiPlan.primaryCta': 'أنشئ خطتك الشخصية مجاناً (30 ثانية)',
+    'home.aiPlan.continueGoogle': 'المتابعة باستخدام Google',
+    'home.aiPlan.continueApple': 'المتابعة باستخدام Apple',
+    'home.aiPlan.registerWithEmail': 'التسجيل بالبريد الإلكتروني',
+    'common.or': 'أو',
+
     // Main Features
     'features.multilingual.title': 'دعم متعدد اللغات',
     'features.multilingual.description': 'دعم كامل للغات اليابانية والإنجليزية والكورية مع تجربة استخدام محلية بالكامل.',
@@ -345,6 +362,40 @@ const translations = {
     'home.experienceSubtitle': 'Discover hidden temples, traditional streets, and unforgettable moments in the land of the rising sun.',
     'home.popularDestinations': 'Popular Destinations',
     'home.footerCopyright': '© 2025 Japan Tourism Guide. All rights reserved.',
+
+    // Home: AI plan promo
+    'home.aiQuickPitch': 'AI가 당신에게 딱 맞는 일정을 만듭니다',
+    'home.tryFree': '무료로 체험',
+    'home.aiPlan.label': 'AI 여행 플랜',
+    'home.aiPlan.headline': 'AI가 최적의 일정을 자동 생성',
+    'home.aiPlan.subhead': '스팟을 저장하고 여행 노트에 추가. 30초 무료 체험.',
+    'home.aiPlan.benefit.route': 'AI가 최단 동선과 시간 배분을 제안',
+    'home.aiPlan.benefit.save': '스팟 저장 및 여행 노트에 추가',
+    'home.aiPlan.benefit.languages': '언어 지원: 일본어·영어 등',
+    'home.aiPlan.sampleTitle': '당신만의 1일 모델 코스 (샘플)',
+    'home.aiPlan.sampleNote': '로그인 전 일부 미리보기',
+    'home.aiPlan.primaryCta': '무료로 나만의 플랜 만들기 (30초)',
+    'home.aiPlan.continueGoogle': 'Google로 계속',
+    'home.aiPlan.continueApple': 'Apple로 계속',
+    'home.aiPlan.registerWithEmail': '이메일로 가입',
+    'common.or': '또는',
+
+    // Home: AI plan promo
+    'home.aiQuickPitch': 'AI creates your perfect itinerary',
+    'home.tryFree': 'Try for free',
+    'home.aiPlan.label': 'AI Travel Plan',
+    'home.aiPlan.headline': 'AI automatically creates your best itinerary',
+    'home.aiPlan.subhead': 'Save spots and add them to your itinerary. Try it free in 30 seconds.',
+    'home.aiPlan.benefit.route': 'AI suggests fastest routes and time allocation',
+    'home.aiPlan.benefit.save': 'Save spots and build your trip notebook',
+    'home.aiPlan.benefit.languages': 'Language support: Japanese, English and more',
+    'home.aiPlan.sampleTitle': 'Your personalized 1‑day sample itinerary',
+    'home.aiPlan.sampleNote': 'Partial preview before login',
+    'home.aiPlan.primaryCta': 'Create my plan for free (30s)',
+    'home.aiPlan.continueGoogle': 'Continue with Google',
+    'home.aiPlan.continueApple': 'Continue with Apple',
+    'home.aiPlan.registerWithEmail': 'Sign up with email',
+    'common.or': 'or',
     
     // Main Features
     'features.multilingual.title': 'Multilingual Support',
@@ -657,6 +708,23 @@ const translations = {
     'home.experienceSubtitle': '隠れた寺院、伝統的な街並み、そして日出ずる国での忘れられない瞬間を発見してください。',
     'home.popularDestinations': '人気の目的地',
     'home.footerCopyright': '© 2025 日本観光ガイド. All rights reserved.',
+
+    // Home: AI plan promo
+    'home.aiQuickPitch': 'AIがあなたに最適な旅程を作成します',
+    'home.tryFree': '無料で試す',
+    'home.aiPlan.label': 'AI Travel Plan',
+    'home.aiPlan.headline': 'AIがあなたに最適な旅程を自動生成',
+    'home.aiPlan.subhead': 'スポットを保存して旅のしおりに追加。30秒で無料体験できます。',
+    'home.aiPlan.benefit.route': 'AIが最短ルートと時間配分を提案',
+    'home.aiPlan.benefit.save': 'スポットを保存して旅のしおりに追加',
+    'home.aiPlan.benefit.languages': '言語対応：日本語・英語ほか',
+    'home.aiPlan.sampleTitle': 'あなた専用の1日モデルコース（サンプル）',
+    'home.aiPlan.sampleNote': 'ログイン前の一部プレビュー',
+    'home.aiPlan.primaryCta': '無料で自分専用プランを作る（30秒）',
+    'home.aiPlan.continueGoogle': 'Googleで続行',
+    'home.aiPlan.continueApple': 'Appleで続行',
+    'home.aiPlan.registerWithEmail': 'メールアドレスで登録',
+    'common.or': 'または',
     
     // Main Features
     'features.multilingual.title': '多言語サポート',
@@ -1262,6 +1330,23 @@ const translations = {
     'home.experienceSubtitle': 'Découvrez des temples cachés, des rues traditionnelles et des moments inoubliables dans le pays du soleil levant.',
     'home.popularDestinations': 'Destinations populaires',
     'home.footerCopyright': '© 2025 Guide touristique du Japon. Tous droits réservés.',
+
+    // Home: AI plan promo
+    'home.aiQuickPitch': "L'IA crée votre itinéraire idéal",
+    'home.tryFree': 'Essayer gratuitement',
+    'home.aiPlan.label': 'Plan de voyage IA',
+    'home.aiPlan.headline': "L'IA génère automatiquement votre meilleur itinéraire",
+    'home.aiPlan.subhead': "Enregistrez des lieux et ajoutez-les à votre carnet de voyage. Essai gratuit en 30 secondes.",
+    'home.aiPlan.benefit.route': "L'IA suggère les trajets les plus rapides et la répartition du temps",
+    'home.aiPlan.benefit.save': 'Enregistrez des lieux et constituez votre carnet',
+    'home.aiPlan.benefit.languages': 'Langues prises en charge : japonais, anglais, etc.',
+    'home.aiPlan.sampleTitle': 'Aperçu de votre itinéraire 1 jour (exemple)',
+    'home.aiPlan.sampleNote': 'Aperçu partiel avant connexion',
+    'home.aiPlan.primaryCta': 'Créer mon plan gratuitement (30s)',
+    'home.aiPlan.continueGoogle': 'Continuer avec Google',
+    'home.aiPlan.continueApple': 'Continuer avec Apple',
+    'home.aiPlan.registerWithEmail': "S'inscrire avec e‑mail",
+    'common.or': 'ou',
     
     // Main Features
     'features.multilingual.title': 'Support multilingue',

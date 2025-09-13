@@ -7,6 +7,7 @@ import {
   createUserWithEmailAndPassword, 
   signOut, 
   GoogleAuthProvider, 
+  OAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
   updateProfile
@@ -123,6 +124,8 @@ export {
   createUserWithEmailAndPassword,
   signOut,
   GoogleAuthProvider,
+  // Expose generic OAuth provider for Apple, etc.
+  OAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
   updateProfile

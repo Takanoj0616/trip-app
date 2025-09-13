@@ -111,6 +111,59 @@ body {
   overflow: hidden;
 }
 
+/* Japan-themed section background (washi + seigaiha + Fuji) */
+.japan-bg-section {
+  position: relative;
+  overflow: hidden;
+  /* Soft washi-like base */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(248,250,252,0.95)),
+    linear-gradient(135deg, #f7efe3 0%, #f2f7fb 50%, #e8f1fb 100%);
+}
+.japan-bg-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Rising sun + seigaiha waves */
+  background:
+    radial-gradient(1200px 600px at 80% -20%, rgba(200,40,40,0.13) 0 220px, transparent 230px),
+    radial-gradient(80px 40px at 0 100%, rgba(30,60,120,0.06) 20%, transparent 21%) 0 100%/160px 80px repeat,
+    radial-gradient(80px 40px at 80px 100%, rgba(30,60,120,0.05) 20%, transparent 21%) 80px 100%/160px 80px repeat;
+  pointer-events: none;
+}
+.japan-bg-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Mt. Fuji silhouette bottom center */
+  background:
+    radial-gradient(45px 20px at 50% calc(100% - 150px), #ffffff 98%, transparent 100%),
+    conic-gradient(from 190deg at 50% calc(100% - 50px), transparent 0 35deg, rgba(43,74,115,0.65) 35deg 145deg, transparent 145deg 360deg);
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* Tokyo Tower night photo background */
+.tokyo-tower-night {
+  position: relative;
+  overflow: hidden;
+  background: url('/images/tokyo_toewr/tokyo_toewr2.jpg') center/cover no-repeat fixed;
+}
+.tokyo-tower-night::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* keep under content */
+  /* Softer vignette + dusk tint to keep the photo bright */
+  background:
+    radial-gradient(120% 70% at 50% 20%, rgba(0,0,0,0.2), rgba(0,0,0,0.35)),
+    linear-gradient(180deg, rgba(15,23,42,0.15), rgba(15,23,42,0.25));
+  pointer-events: none;
+}
+/* Ensure content sits above the overlay */
+.tokyo-tower-night > * { position: relative; z-index: 1; }
+
 .course-detail-bg::before {
   content: '';
   position: absolute;

@@ -109,7 +109,7 @@ export default function MainContent({
   currency = 'jpy',
   unit: _unit = 'metric',
 }: MainContentProps) {
-  const { user } = useAuth();
+  const { user, loading: authLoading, signInWithGoogle, signInWithApple } = useAuth();
   const isLoggedIn = !!user;
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [activeFAQ, setActiveFAQ] = useState<number | null>(null);
@@ -142,7 +142,7 @@ export default function MainContent({
   const router = useRouter();
   const { currentLanguage: ctxLang, setCurrentLanguage } = useLanguage();
   const langParam = searchParams?.get('lang');
-  const lang = (langParam || _language || (ctxLang as string) || 'ja') as 'ja' | 'en' | 'ko' | 'fr';
+  const lang = (langParam || _language || (ctxLang as string) || 'ja') as 'ja' | 'en' | 'ko' | 'fr' | 'ar';
 
   // Sync rule:
   // - If URL has ?lang, treat it as source of truth and update context to it.
@@ -170,7 +170,7 @@ export default function MainContent({
       router.replace(`${pathname}?${sp.toString()}`, { scroll: false });
     }
   }, [ctxLang, langParam]);
-  const i18n = {
+  const dicts = {
     ja: {
       gallery: '写真ギャラリー',
       details: '詳細説明',
@@ -331,7 +331,8 @@ export default function MainContent({
       faq: 'Questions fréquemment posées',
       nearbyAttractions: 'Attractions à proximité',
     },
-  }[lang];
+  } as const;
+  const i18n = (dicts as any)[lang] || dicts.en;
 
   useEffect(() => {
     const fetchSpotData = async () => {
@@ -1182,14 +1183,16 @@ export default function MainContent({
               <Bot size={32} />
               {lang === 'en' ? 'AI Travel Plan' :
                 lang === 'ko' ? 'AI 여행 계획' :
-                  lang === 'fr' ? 'Plan de voyage IA' :
-                    'AI旅行プラン'}
+                lang === 'fr' ? 'Plan de voyage IA' :
+                lang === 'ar' ? 'خطة السفر بالذكاء الاصطناعي' :
+                'AI旅行プラン'}
             </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
               {lang === 'en' ? 'Add this spot to your personalized AI travel plan and get smart recommendations!' :
                 lang === 'ko' ? '이 장소를 개인화된 AI 여행 계획에 추가하고 스마트한 추천을 받아보세요!' :
-                  lang === 'fr' ? 'Ajoutez ce lieu à votre plan de voyage IA personnalisé et obtenez des recommandations intelligentes !' :
-                    'このスポットを個人化されたAI旅行プランに追加して、スマートな推薦を受け取りましょう！'}
+                lang === 'fr' ? 'Ajoutez ce lieu à votre plan de voyage IA personnalisé et obtenez des recommandations intelligentes !' :
+                lang === 'ar' ? 'أضِف هذا الموقع إلى خطة السفر بالذكاء الاصطناعي لتحصل على توصيات ذكية!' :
+                'このスポットを個人化されたAI旅行プランに追加して、スマートな推薦を受け取りましょう！'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
@@ -1209,17 +1212,142 @@ export default function MainContent({
                 <Eye size={20} />
                 {lang === 'en' ? 'View My AI Plan' :
                   lang === 'ko' ? '내 AI 플랜 보기' :
-                    lang === 'fr' ? 'Voir mon plan IA' :
-                      '私のAIプランを見る'}
+                  lang === 'fr' ? 'Voir mon plan IA' :
+                  lang === 'ar' ? 'عرض خطتي' :
+                  '私のAIプランを見る'}
               </button>
             </div>
             {!isLoggedIn && (
-              <p className="text-white/80 text-sm mt-4">
-                {lang === 'en' ? 'Please log in to use AI travel planning features' :
-                  lang === 'ko' ? 'AI 여행 계획 기능을 사용하려면 로그인해 주세요' :
+              <>
+                <p className="text-white/80 text-sm mt-4">
+                  {lang === 'en' ? 'Please log in to use AI travel planning features' :
+                    lang === 'ko' ? 'AI 여행 계획 기능을 사용하려면 로그인해 주세요' :
                     lang === 'fr' ? 'Veuillez vous connecter pour utiliser les fonctionnalités de planification de voyage IA' :
-                      'AI旅行プラン機能を使用するにはログインしてください'}
-              </p>
+                    lang === 'ar' ? 'يرجى تسجيل الدخول لاستخدام ميزات تخطيط السفر بالذكاء الاصطناعي' :
+                    'AI旅行プラン機能を使用するにはログインしてください'}
+                </p>
+
+                {/* サンプルプランのチラ見せ */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 text-left">
+                  <div className="bg-white/95 text-gray-900 rounded-2xl p-5 border border-white/30">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="font-bold">
+                        {lang === 'en' ? 'Your personalized 1‑day sample itinerary' :
+                         lang === 'ko' ? '당신만의 1일 모델 코스 (샘플)' :
+                         lang === 'fr' ? 'Aperçu de votre itinéraire 1 jour (exemple)' :
+                         lang === 'ar' ? 'نموذج مسار يومي مخصص لك' :
+                         'あなた専用の1日モデルコース（サンプル）'}
+                      </div>
+                      <div className="text-xs text-gray-700/70">
+                        {lang === 'en' ? 'Partial preview before login' :
+                         lang === 'ko' ? '로그인 전 일부 미리보기' :
+                         lang === 'fr' ? 'Aperçu partiel avant connexion' :
+                         lang === 'ar' ? 'معاينة جزئية قبل تسجيل الدخول' :
+                         'ログイン前の一部プレビュー'}
+                      </div>
+                    </div>
+                    <ol className="space-y-3">
+                      <li className="flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-full bg-emerald-500 text-white grid place-items-center font-bold">1</div>
+                        <div>
+                          <div className="font-semibold">
+                            {lang === 'en' ? `Morning: Start at ${spotData?.name || 'this spot'}` :
+                             lang === 'ko' ? `아침: ${spotData?.name || '스팟'}에서 시작` :
+                             lang === 'fr' ? `Matin : Départ à ${spotData?.name || 'ce lieu'}` :
+                             lang === 'ar' ? `صباحاً: ابدأ في ${spotData?.name || 'هذا الموقع'}` :
+                             `朝: ${spotData?.name || 'スポット'} をスタート`}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {lang === 'en' ? '9:00–10:30 / Beat the crowds for a smooth visit' :
+                             lang === 'ko' ? '9:00–10:30 / 혼잡을 피해 쾌적하게 관람' :
+                             lang === 'fr' ? '9:00–10:30 / Évitez la foule pour une visite agréable' :
+                             lang === 'ar' ? '9:00–10:30 / تجنّب الازدحام لزيارة مريحة' :
+                             '9:00 - 10:30 / 混雑を避けて気持ちよく観光'}
+                          </div>
+                        </div>
+                      </li>
+                      <li className="flex items-center gap-3 blur-sm select-none">
+                        <div className="w-7 h-7 rounded-full bg-emerald-500 text-white grid place-items-center font-bold">2</div>
+                        <div>
+                          <div className="font-semibold">
+                            {lang === 'en' ? 'Noon: Lunch & nearby walk' :
+                             lang === 'ko' ? '점심: 런치 & 주변 산책' :
+                             lang === 'fr' ? 'Midi : Déjeuner & balade à proximité' :
+                             lang === 'ar' ? 'الظهيرة: غداء وجولة قريبة' :
+                             '昼: ランチ & 周辺散策'}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {lang === 'en' ? '11:30–13:30 / Local lunch suggestions' :
+                             lang === 'ko' ? '11:30–13:30 / 현지 런치 추천' :
+                             lang === 'fr' ? '11:30–13:30 / Suggestions de déjeuner local' :
+                             lang === 'ar' ? '11:30–13:30 / اقتراحات غداء محلي' :
+                             '11:30 - 13:30 / ご当地グルメを提案'}
+                          </div>
+                        </div>
+                      </li>
+                      <li className="flex items-center gap-3 blur-sm select-none">
+                        <div className="w-7 h-7 rounded-full bg-emerald-500 text-white grid place-items-center font-bold">3</div>
+                        <div>
+                          <div className="font-semibold">
+                            {lang === 'en' ? 'Evening: Move to a viewpoint' :
+                             lang === 'ko' ? '저녁: 절경 스팟으로 이동' :
+                             lang === 'fr' ? 'Soir : Rejoindre un point de vue' :
+                             lang === 'ar' ? 'مساءً: الانتقال إلى نقطة المشاهدة' :
+                             '夕方: 絶景スポットへ移動'}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {lang === 'en' ? '16:30–18:00 / Best for sunset' :
+                             lang === 'ko' ? '16:30–18:00 / 노을 명소' :
+                             lang === 'fr' ? '16:30–18:00 / Idéal pour le coucher du soleil' :
+                             lang === 'ar' ? '16:30–18:00 / مثالي لغروب الشمس' :
+                             '16:30 - 18:00 / サンセットの名所'}
+                          </div>
+                        </div>
+                      </li>
+                    </ol>
+                    <div className="mt-3 text-xs text-gray-600">
+                      {lang === 'en' ? 'Log in to see the full plan' :
+                       lang === 'ko' ? '전체 플랜 보기는 로그인 필요' :
+                       lang === 'fr' ? 'Connectez-vous pour voir le plan complet' :
+                       lang === 'ar' ? 'سجّل الدخول لعرض الخطة كاملة' :
+                       '続きを見るには無料登録が必要です'}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col justify-center gap-3">
+                    <button
+                      onClick={() => signInWithGoogle().catch(() => {})}
+                      className="w-full px-5 py-4 bg-white text-emerald-700 rounded-xl font-bold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all"
+                    >
+                      {lang === 'en' ? 'Create my plan for free (30s)' :
+                       lang === 'ko' ? '무료로 나만의 플랜 만들기 (30초)' :
+                       lang === 'fr' ? 'Créer mon plan gratuitement (30s)' :
+                       lang === 'ar' ? 'أنشئ خطتي مجاناً (30 ثانية)' :
+                       '無料で自分専用プランを作る（30秒）'}
+                    </button>
+                    <div className="grid gap-2">
+                      <button
+                        onClick={() => signInWithGoogle()}
+                        className="w-full px-4 py-3 bg-white text-gray-900 rounded-lg font-semibold border border-white/40 flex items-center justify-center gap-2"
+                      >
+                        <span className="inline-block">G</span>
+                        <span>{lang === 'en' ? 'Continue with Google' : lang === 'ko' ? 'Google로 계속' : lang === 'fr' ? 'Continuer avec Google' : lang === 'ar' ? 'المتابعة باستخدام Google' : 'Googleで続行'}</span>
+                      </button>
+                      <button
+                        onClick={() => signInWithApple().catch(() => alert('Appleログインはサーバー設定後に有効化されます'))}
+                        className="w-full px-4 py-3 bg-black text-white rounded-lg font-semibold border border-white/20 flex items-center justify-center gap-2"
+                      >
+                        <span className="text-lg"></span>
+                        <span>{lang === 'en' ? 'Continue with Apple' : lang === 'ko' ? 'Apple로 계속' : lang === 'fr' ? 'Continuer avec Apple' : lang === 'ar' ? 'المتابعة باستخدام Apple' : 'Appleで続行'}</span>
+                      </button>
+                    </div>
+                    <div className="text-center text-sm text-white/90">
+                      {(lang === 'en' ? 'or' : lang === 'ko' ? '또는' : lang === 'fr' ? 'ou' : lang === 'ar' ? 'أو' : 'または')}
+                      {' '}<a href="/register" className="underline font-semibold">{lang === 'en' ? 'Sign up with email' : lang === 'ko' ? '이메일로 가입' : lang === 'fr' ? "S'inscrire avec e‑mail" : lang === 'ar' ? 'التسجيل بالبريد الإلكتروني' : 'メールアドレスで登録'}</a>
+                    </div>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </section>

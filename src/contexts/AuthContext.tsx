@@ -10,6 +10,7 @@ import {
   createUserWithEmailAndPassword, 
   signOut, 
   GoogleAuthProvider, 
+  OAuthProvider,
   signInWithPopup, 
   onAuthStateChanged,
   updateProfile
@@ -22,6 +23,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, name: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInWithApple: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -104,6 +106,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await signInWithPopup(auth, provider);
   };
 
+  const signInWithApple = async () => {
+    if (!auth) {
+      throw new Error('Firebase auth is not available');
+    }
+    try {
+      const provider = new OAuthProvider('apple.com');
+      await signInWithPopup(auth, provider);
+    } catch (e: any) {
+      const msg = e?.message || 'Apple sign-in is not configured';
+      throw new Error(msg);
+    }
+  };
+
   const logout = async () => {
     if (!auth) {
       throw new Error('Firebase auth is not available');
@@ -117,6 +132,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signIn,
     signUp,
     signInWithGoogle,
+    signInWithApple,
     logout
   };
 
