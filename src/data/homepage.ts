@@ -21,7 +21,7 @@ export const mainFeatures: FeatureItem[] = [
   {
     icon: '🌍',
     title: 'Multilingual Support',
-    description: 'Full support for Japanese, English, and Korean languages. Navigate and plan your trip in your preferred language with complete localization.',
+    description: 'No language barrier. Travel Japan in your language.',
   },
   {
     icon: '📍',
@@ -41,7 +41,7 @@ export const mainFeatures: FeatureItem[] = [
   {
     icon: '📱',
     title: 'Real-time Information',
-    description: 'Access live data on crowd levels, weather conditions, transportation schedules, and venue availability for better planning.',
+    description: 'Stay ahead of crowds, weather, and transport delays.',
   },
   {
     icon: '💬',
@@ -54,7 +54,7 @@ export const areas: AreaItem[] = [
   {
     emoji: '🏙️',
     title: 'Tokyo',
-    description: 'Modern metropolis with cutting-edge technology, vibrant nightlife, and world-class shopping districts.',
+    description: 'Where tradition meets neon lights — explore Japan’s capital.',
   },
   {
     emoji: '🗾',
@@ -63,8 +63,8 @@ export const areas: AreaItem[] = [
   },
   {
     emoji: '🏯',
-    title: 'Historic Kyoto',
-    description: 'Ancient capital filled with temples, traditional architecture, geishas, and preserved cultural heritage sites.',
+    title: 'Kyoto',
+    description: 'Step back in time with temples, geishas, and timeless culture.',
   },
   {
     emoji: '🍜',

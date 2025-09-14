@@ -271,7 +271,10 @@ export default function TokyoSpots() {
       actions: {
         search: "キーワードで検索...",
         detailsBtn: "詳細を見る",
-        loadMore: "さらに表示"
+        loadMore: "さらに表示",
+        addToFavorites: "お気に入りに追加",
+        addToAIPlan: "AI旅行プランに入れる",
+        bookTickets: "チケット予約"
       },
       spots: {
         cuisineTypes: {
@@ -377,7 +380,10 @@ export default function TokyoSpots() {
       actions: {
         search: "Search by keyword...",
         detailsBtn: "View Details",
-        loadMore: "Load More"
+        loadMore: "Load More",
+        addToFavorites: "Save to Favorites",
+        addToAIPlan: "Add to AI Travel Plan",
+        bookTickets: "Book Tickets"
       },
       spots: {
         cuisineTypes: {
@@ -483,7 +489,10 @@ export default function TokyoSpots() {
       actions: {
         search: "키워드로 검색...",
         detailsBtn: "상세보기",
-        loadMore: "더 보기"
+        loadMore: "더 보기",
+        addToFavorites: "즐겨찾기에 추가",
+        addToAIPlan: "AI 여행 플랜에 추가",
+        bookTickets: "티켓 예약"
       },
       spots: {
         cuisineTypes: {
@@ -589,7 +598,10 @@ export default function TokyoSpots() {
       actions: {
         search: "Rechercher par mot-clé...",
         detailsBtn: "Voir les détails",
-        loadMore: "Charger plus"
+        loadMore: "Charger plus",
+        addToFavorites: "Ajouter aux favoris",
+        addToAIPlan: "Ajouter au plan IA",
+        bookTickets: "Réserver des billets"
       },
       spots: {
         cuisineTypes: {
@@ -2301,15 +2313,15 @@ export default function TokyoSpots() {
               <div className="cta-buttons">
                 <button className="cta-btn favorite-btn-cta">
                   <span className="btn-icon">♥</span>
-                  <span>お気に入りに追加</span>
+                  <span>{tr.actions.addToFavorites}</span>
                 </button>
                 <button className="cta-btn ai-plan-btn">
                   <span className="btn-icon">🤖</span>
-                  <span>AI旅行プランに入れる</span>
+                  <span>{tr.actions.addToAIPlan}</span>
                 </button>
                 <button className="cta-btn ticket-btn">
                   <span className="btn-icon">🎫</span>
-                  <span>チケット予約</span>
+                  <span>{tr.actions.bookTickets}</span>
                 </button>
               </div>
             </div>

@@ -46,7 +46,7 @@ const translations = {
 
     // Homepage
     'home.trustedBy': 'موثوق من أكثر من 10,000 مسافر حول العالم',
-    'home.heroTitle': 'خطط رحلة أحلامك لليابان في 60 ثانية – مدعوم بالذكاء الاصطناعي، أصيل، ومصمم خصيصاً لك',
+    'home.heroTitle': 'اكتشف اليابان بطريقتك — خطط سفر شخصية بالذكاء الاصطناعي خلال ثوانٍ',
     'home.heroSubtitle': 'احصل على مسارات مخصصة، جواهر مخفية وتجارب أصيلة تناسبك. ابدأ التخطيط في أقل من 60 ثانية.',
     'home.ctaPrimary': 'أنشئ خطة بالذكاء الاصطناعي الآن',
     'home.ctaSecondary': 'عرض الدليل',
@@ -75,7 +75,7 @@ const translations = {
 
     // Main Features
     'features.multilingual.title': 'دعم متعدد اللغات',
-    'features.multilingual.description': 'دعم كامل للغات اليابانية والإنجليزية والكورية مع تجربة استخدام محلية بالكامل.',
+    'features.multilingual.description': 'لا حواجز لغوية. سافر في اليابان بلغتك.',
     'features.areaGuide.title': 'دليل المناطق والفئات',
     'features.areaGuide.description': 'أدلة شاملة لطوكيو ويوكوهاما وسايتاما وتشيبا وغيرها. اكتشف المعالم والمطاعم والجواهر المحلية.',
     'features.userExperience.title': 'تجربة مستخدم محسّنة',
@@ -83,7 +83,7 @@ const translations = {
     'features.aiRecommendation.title': 'نظام توصية بالذكاء الاصطناعي',
     'features.aiRecommendation.description': 'خطط سفر مخصصة بناءً على تفضيلاتك وميزانيتك واهتماماتك.',
     'features.realTimeInfo.title': 'معلومات آنية',
-    'features.realTimeInfo.description': 'بيانات مباشرة حول الازدحام والطقس والجداول والنشاطات المتاحة.',
+    'features.realTimeInfo.description': 'ابقَ متقدماً على الازدحام والطقس وتأخيرات المواصلات.',
     'features.community.title': 'مجتمع المسافرين',
     'features.community.description': 'انضم للنقاشات وشارك التجارب واحصل على نصائح من المحليين والمسافرين.',
 
@@ -93,11 +93,11 @@ const translations = {
 
     // Areas
     'areas.tokyo.title': 'طوكيو',
-    'areas.tokyo.description': 'عاصمة عصرية تجمع بين أحدث التقنيات والتقاليد العريقة. تسوق، مطاعم، وحياة ليلية نابضة.',
+    'areas.tokyo.description': 'حيث تلتقي التقاليد بأضواء النيون — استكشف عاصمة اليابان.',
     'areas.mtFuji.title': 'منطقة جبل فوجي',
     'areas.mtFuji.description': 'جبل أيقوني بمناظر خلابة وينابيع ساخنة وتجارب ريفية يابانية أصيلة.',
-    'areas.kyoto.title': 'كيوتو التاريخية',
-    'areas.kyoto.description': 'عاصمة قديمة مليئة بالمعابد والعمارة التقليدية والحدائق والثقافة المحفوظة.',
+    'areas.kyoto.title': 'كيوتو',
+    'areas.kyoto.description': 'عد بالزمن إلى الوراء مع المعابد والجيشا وثقافة خالدة.',
     'areas.osaka.title': 'أوساكا عاصمة الطعام',
     'areas.osaka.description': 'مأكولات شارع مذهلة مثل تاكوياكي وأوكونوميياكي وتجارب طهي لا تُنسى.',
     'areas.yokohama.title': 'يوكوهاما',
@@ -353,7 +353,7 @@ const translations = {
     
     // Homepage
     'home.trustedBy': 'Trusted by 10,000+ travelers worldwide',
-    'home.heroTitle': 'Plan Your Dream Japan Trip in 60 Seconds – AI-powered, authentic, and tailored just for you.',
+    'home.heroTitle': 'Discover Japan, Your Way — Personalized AI Travel Plans in Seconds',
     'home.heroSubtitle': 'Get personalized itineraries, hidden gems, and authentic experiences tailored just for you. Start planning in under 60 seconds!',
     'home.ctaPrimary': 'FREE AI ITINERARY NOW',
     'home.ctaSecondary': 'SEE HOW IT WORKS',
@@ -399,7 +399,7 @@ const translations = {
     
     // Main Features
     'features.multilingual.title': 'Multilingual Support',
-    'features.multilingual.description': 'Full support for Japanese, English, and Korean languages. Navigate and plan your trip in your preferred language with complete localization.',
+    'features.multilingual.description': 'No language barrier. Travel Japan in your language.',
     'features.areaGuide.title': 'Area & Category Guide',
     'features.areaGuide.description': 'Comprehensive guides for Tokyo, Yokohama, Saitama, Chiba, and more. Discover local attractions, restaurants, and hidden gems in each region.',
     'features.userExperience.title': 'Enhanced User Experience',
@@ -407,7 +407,7 @@ const translations = {
     'features.aiRecommendation.title': 'AI Recommendation System',
     'features.aiRecommendation.description': 'Get personalized travel plans based on your preferences, budget, and interests. Our AI analyzes your needs for optimal itineraries.',
     'features.realTimeInfo.title': 'Real-time Information',
-    'features.realTimeInfo.description': 'Access live data on crowd levels, weather conditions, transportation schedules, and venue availability for better planning.',
+    'features.realTimeInfo.description': 'Stay ahead of crowds, weather, and transport delays.',
     'features.community.title': 'Community Features',
     'features.community.description': 'Join Q&A discussions, share travel experiences, get tips from locals and fellow travelers in our vibrant community platform.',
 
@@ -417,11 +417,11 @@ const translations = {
     
     // Areas
     'areas.tokyo.title': 'Tokyo',
-    'areas.tokyo.description': 'Modern metropolis with cutting-edge technology, vibrant nightlife, and world-class shopping districts.',
+    'areas.tokyo.description': 'Where tradition meets neon lights — explore Japan’s capital.',
     'areas.mtFuji.title': 'Mt. Fuji Area',
     'areas.mtFuji.description': 'Iconic sacred mountain with stunning views, hot springs, and traditional Japanese countryside experiences.',
-    'areas.kyoto.title': 'Historic Kyoto',
-    'areas.kyoto.description': 'Ancient capital filled with temples, traditional architecture, geishas, and preserved cultural heritage sites.',
+    'areas.kyoto.title': 'Kyoto',
+    'areas.kyoto.description': 'Step back in time with temples, geishas, and timeless culture.',
     'areas.osaka.title': 'Osaka Food Capital',
     'areas.osaka.description': 'Japan\'s kitchen offering incredible street food, takoyaki, okonomiyaki, and the best culinary adventures.',
     'areas.yokohama.title': 'Yokohama',
@@ -699,7 +699,7 @@ const translations = {
     
     // Homepage
     'home.trustedBy': '世界中の10,000人以上の旅行者に信頼されています',
-    'home.heroTitle': '60秒であなたの夢の日本旅行をプランニング – AI搭載、本格的、そしてあなただけのオーダーメイド',
+    'home.heroTitle': 'あなたのスタイルで日本を発見 — AIが数秒でパーソナライズ旅行プラン',
     'home.heroSubtitle': 'あなただけのパーソナライズされた旅程、隠れた名所、本格的な体験を60秒以内でプランニング。今すぐ始めましょう！',
     'home.ctaPrimary': '無料AI旅行プラン作成',
     'home.ctaSecondary': '説明ページへ',
@@ -728,7 +728,7 @@ const translations = {
     
     // Main Features
     'features.multilingual.title': '多言語サポート',
-    'features.multilingual.description': '日本語、英語、韓国語を完全サポート。お好みの言語で完全なローカライゼーションと共に旅行をナビゲート・プランニング。',
+    'features.multilingual.description': '言語の壁はありません。あなたの言語で日本を旅しよう。',
     'features.areaGuide.title': 'エリア・カテゴリガイド',
     'features.areaGuide.description': '東京、横浜、埼玉、千葉などの包括的なガイド。各地域の地元アトラクション、レストラン、隠れた名所を発見。',
     'features.userExperience.title': '強化されたユーザー体験',
@@ -736,7 +736,7 @@ const translations = {
     'features.aiRecommendation.title': 'AI推薦システム',
     'features.aiRecommendation.description': 'あなたの好み、予算、興味に基づいたパーソナライズされた旅行プラン。AIがあなたのニーズを分析して最適な旅程を提供。',
     'features.realTimeInfo.title': 'リアルタイム情報',
-    'features.realTimeInfo.description': '混雑レベル、天候条件、交通スケジュール、施設の利用可能性のライブデータにアクセスしてより良いプランニング。',
+    'features.realTimeInfo.description': '混雑・天気・交通遅延を先取り。',
     'features.community.title': 'コミュニティ機能',
     'features.community.description': 'Q&Aディスカッションに参加、旅行体験の共有、地元の人々や仲間の旅行者からのヒントを活気あるコミュニティプラットフォームで。',
 
@@ -746,11 +746,11 @@ const translations = {
     
     // Areas
     'areas.tokyo.title': '東京',
-    'areas.tokyo.description': '最先端技術、活気あるナイトライフ、世界クラスのショッピング地区を持つ現代的な大都市。',
+    'areas.tokyo.description': '伝統とネオンが交わる場所 — 日本の首都を巡ろう。',
     'areas.mtFuji.title': '富士山エリア',
     'areas.mtFuji.description': '素晴らしい景色、温泉、伝統的な日本の田園体験を持つ象徴的な聖なる山。',
-    'areas.kyoto.title': '歴史的な京都',
-    'areas.kyoto.description': '寺院、伝統的な建築、芸者、保存された文化遺産サイトで満たされた古都。',
+    'areas.kyoto.title': '京都',
+    'areas.kyoto.description': '寺院と芸者、そして色褪せない文化で、時を遡る。',
     'areas.osaka.title': '大阪グルメの都',
     'areas.osaka.description': '素晴らしい屋台料理、たこ焼き、お好み焼き、最高の料理冒険を提供する日本のキッチン。',
     'areas.yokohama.title': '横浜',
@@ -1009,7 +1009,7 @@ const translations = {
     
     // Homepage
     'home.trustedBy': '전 세계 10,000명 이상의 여행자들이 신뢰합니다',
-    'home.heroTitle': '60초 만에 꿈의 일본 여행 계획 – AI 기반, 진정성 있고, 당신만을 위한 맞춤형',
+    'home.heroTitle': '당신만의 방식으로 일본을 발견 — AI 맞춤 여행 플랜을 몇 초 만에',
     'home.heroSubtitle': '당신만을 위한 맞춤형 여행 일정, 숨겨진 명소, 그리고 진정한 경험을 60초 안에 계획하세요. 지금 시작하세요!',
     'home.ctaPrimary': '무료 AI 여행 일정',
     'home.ctaSecondary': '가이드 보기',
@@ -1021,7 +1021,7 @@ const translations = {
     
     // Main Features
     'features.multilingual.title': '다국어 지원',
-    'features.multilingual.description': '일본어, 영어, 한국어 완전 지원. 완전한 현지화와 함께 선호하는 언어로 여행을 탐색하고 계획하세요.',
+    'features.multilingual.description': '언어 장벽이 없습니다. 당신의 언어로 일본을 여행하세요.',
     'features.areaGuide.title': '지역 및 카테고리 가이드',
     'features.areaGuide.description': '도쿄, 요코하마, 사이타마, 치바 등을 위한 포괄적인 가이드. 각 지역의 현지 명소, 레스토랑, 숨겨진 보석을 발견하세요.',
     'features.userExperience.title': '향상된 사용자 경험',
@@ -1029,7 +1029,7 @@ const translations = {
     'features.aiRecommendation.title': 'AI 추천 시스템',
     'features.aiRecommendation.description': '선호도, 예산, 관심사를 기반으로 한 맞춤형 여행 계획. AI가 최적의 여행 일정을 위해 필요사항을 분석합니다.',
     'features.realTimeInfo.title': '실시간 정보',
-    'features.realTimeInfo.description': '더 나은 계획을 위해 혼잡 수준, 날씨 조건, 교통 스케줄, 장소 이용 가능성에 대한 실시간 데이터에 액세스하세요.',
+    'features.realTimeInfo.description': '혼잡, 날씨, 교통 지연을 미리 파악하세요.',
     'features.community.title': '커뮤니티 기능',
     'features.community.description': 'Q&A 토론 참여, 여행 경험 공유, 활발한 커뮤니티 플랫폼에서 현지인과 동료 여행자들로부터 팁을 얻으세요.',
 
@@ -1039,11 +1039,11 @@ const translations = {
     
     // Areas
     'areas.tokyo.title': '도쿄',
-    'areas.tokyo.description': '최첨단 기술, 활기찬 나이트라이프, 세계 수준의 쇼핑 지구를 갖춘 현대적인 대도시.',
+    'areas.tokyo.description': '전통과 네온이 만나는 곳 — 일본의 수도를 탐험하세요.',
     'areas.mtFuji.title': '후지산 지역',
     'areas.mtFuji.description': '멋진 전망, 온천, 전통적인 일본 시골 경험을 제공하는 상징적인 성스러운 산.',
-    'areas.kyoto.title': '역사적인 교토',
-    'areas.kyoto.description': '사원, 전통 건축, 게이샤, 보존된 문화 유산지로 가득한 고도.',
+    'areas.kyoto.title': '교토',
+    'areas.kyoto.description': '사원과 게이샤, 그리고 영원한 문화와 함께 과거로 한 걸음.',
     'areas.osaka.title': '오사카 음식의 수도',
     'areas.osaka.description': '놀라운 길거리 음식, 타코야키, 오코노미야키, 최고의 요리 모험을 제공하는 일본의 주방.',
     'areas.yokohama.title': '요코하마',
@@ -1321,7 +1321,7 @@ const translations = {
     
     // Homepage
     'home.trustedBy': 'Fait confiance par plus de 10 000 voyageurs dans le monde',
-    'home.heroTitle': 'Planifiez le voyage de vos rêves au Japon en 60 secondes – alimenté par l\'IA, authentique, et conçu spécialement pour vous',
+    'home.heroTitle': 'Découvrez le Japon, à votre façon — Itinéraires de voyage personnalisés par IA en quelques secondes',
     'home.heroSubtitle': 'Obtenez des itinéraires personnalisés, des joyaux cachés et des expériences authentiques adaptées juste pour vous. Commencez à planifier en moins de 60 secondes !',
     'home.ctaPrimary': 'ITINÉRAIRE IA GRATUIT MAINTENANT',
     'home.ctaSecondary': 'VOIR LE GUIDE',
@@ -1350,7 +1350,7 @@ const translations = {
     
     // Main Features
     'features.multilingual.title': 'Support multilingue',
-    'features.multilingual.description': 'Support complet pour les langues japonaise, anglaise et coréenne. Naviguez et planifiez votre voyage dans votre langue préférée avec une localisation complète.',
+    'features.multilingual.description': 'Aucune barrière de langue. Voyagez au Japon dans votre langue.',
     'features.areaGuide.title': 'Guide des zones et catégories',
     'features.areaGuide.description': 'Guides complets pour Tokyo, Yokohama, Saitama, Chiba et plus encore. Découvrez les attractions locales, restaurants et joyaux cachés de chaque région.',
     'features.userExperience.title': 'Expérience utilisateur améliorée',
@@ -1358,7 +1358,7 @@ const translations = {
     'features.aiRecommendation.title': 'Système de recommandation IA',
     'features.aiRecommendation.description': 'Obtenez des plans de voyage personnalisés basés sur vos préférences, budget et intérêts. Notre IA analyse vos besoins pour des itinéraires optimaux.',
     'features.realTimeInfo.title': 'Informations en temps réel',
-    'features.realTimeInfo.description': 'Accédez aux données en direct sur les niveaux de foule, les conditions météorologiques, les horaires de transport et la disponibilité des lieux pour une meilleure planification.',
+    'features.realTimeInfo.description': 'Anticipez l’affluence, la météo et les retards de transport.',
     'features.community.title': 'Fonctionnalités communautaires',
     'features.community.description': 'Rejoignez les discussions Q&R, partagez des expériences de voyage, obtenez des conseils des locaux et des autres voyageurs dans notre plateforme communautaire dynamique.',
 
@@ -1368,11 +1368,11 @@ const translations = {
     
     // Areas
     'areas.tokyo.title': 'Tokyo',
-    'areas.tokyo.description': 'Métropole moderne avec une technologie de pointe, une vie nocturne animée et des quartiers commerçants de classe mondiale.',
+    'areas.tokyo.description': 'Là où la tradition rencontre les néons — explorez la capitale du Japon.',
     'areas.mtFuji.title': 'Zone du Mont Fuji',
     'areas.mtFuji.description': 'Montagne sacrée emblématique avec des vues époustouflantes, des sources chaudes et des expériences de campagne japonaise traditionnelle.',
-    'areas.kyoto.title': 'Kyoto historique',
-    'areas.kyoto.description': 'Ancienne capitale remplie de temples, d\'architecture traditionnelle, de geishas et de sites patrimoniaux culturels préservés.',
+    'areas.kyoto.title': 'Kyoto',
+    'areas.kyoto.description': 'Remontez le temps avec temples, geishas et une culture intemporelle.',
     'areas.osaka.title': 'Osaka capitale gastronomique',
     'areas.osaka.description': 'La cuisine du Japon offrant une incroyable street food, takoyaki, okonomiyaki et les meilleures aventures culinaires.',
     'areas.yokohama.title': 'Yokohama',
