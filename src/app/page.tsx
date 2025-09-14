@@ -1,14 +1,39 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { heroFeatures } from '../data/homepage';
 import { useAuth } from '@/contexts/AuthContext';
+import { analytics } from '@/lib/firebase';
+import { logEvent } from 'firebase/analytics';
 
 export default function Home() {
   const { t, currentLanguage } = useLanguage();
   const { signInWithGoogle, signInWithApple } = useAuth();
+
+  // Simple A/B variant for CTA (persisted in localStorage)
+  const [ctaVariant, setCtaVariant] = useState<'A' | 'B'>('A');
+  useEffect(() => {
+    try {
+      const stored = typeof window !== 'undefined' ? localStorage.getItem('homeCtaVariant') : null;
+      const v = stored === 'A' || stored === 'B' ? (stored as 'A' | 'B') : (Math.random() < 0.5 ? 'A' : 'B');
+      if (!stored) localStorage.setItem('homeCtaVariant', v);
+      setCtaVariant(v);
+    } catch {
+      setCtaVariant('A');
+    }
+  }, []);
+
+  const trackCta = (location: 'hero' | 'features' | 'footer' | 'bottom_bar', label: 'primary' | 'secondary') => {
+    const params = { location, label, variant: ctaVariant } as const;
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'cta_click', params);
+    } else {
+      console.log('GA4 Event: cta_click', params);
+    }
+    try { if (analytics) logEvent(analytics as any, 'cta_click', params as any); } catch {}
+  };
 
   // Multilingual features data
   const getMainFeatures = () => [
@@ -180,6 +205,14 @@ export default function Home() {
             0% { opacity: 0; transform: translateY(30px); }
             100% { opacity: 1; transform: translateY(0); }
           }
+          @media (max-width: 640px) {
+            .hero-cta-row a { width: 100% !important; display: block !important; text-align: center; }
+            .mobile-cta-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9999; background: rgba(2,6,23,0.75); backdrop-filter: blur(8px); padding: env(safe-area-inset-bottom, 12px) 12px 12px; }
+            .mobile-cta-link { display: block; text-align: center; padding: 14px 16px; border-radius: 9999px; font-weight: 900; color: #fff; text-decoration: none; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); box-shadow: 0 8px 20px rgba(0,0,0,.35); }
+          }
+          @media (min-width: 641px) {
+            .mobile-cta-bar { display: none; }
+          }
         `}</style>
         <div style={{
           maxWidth: '800px',
@@ -187,20 +220,6 @@ export default function Home() {
           position: 'relative',
           zIndex: 10
         }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            background: 'rgba(34, 197, 94, 0.9)',
-            padding: '0.5rem 1rem',
-            borderRadius: '20px',
-            fontSize: '0.9rem',
-            marginBottom: '2rem'
-          }}>
-            <span style={{ fontWeight: 'bold' }}>✓</span>
-            {t('home.trustedBy')}
-          </div>
-
           <h1 style={{
             fontSize: '3.5rem',
             fontWeight: 800,
@@ -222,7 +241,7 @@ export default function Home() {
             {t('home.heroSubtitle')}
           </p>
 
-          <div style={{
+          <div className="hero-cta-row" style={{
             display: 'flex',
             gap: '1rem',
             justifyContent: 'center',
@@ -245,8 +264,8 @@ export default function Home() {
                 transition: 'all 0.3s',
                 border: 'none',
                 cursor: 'pointer',
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8))',
-                color: '#2563eb',
+                background: ctaVariant === 'B' ? 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8))',
+                color: ctaVariant === 'B' ? '#ffffff' : '#2563eb',
                 backdropFilter: 'blur(15px)',
                 boxShadow: '0 8px 25px rgba(255, 255, 255, 0.2)',
                 userSelect: 'none',
@@ -257,21 +276,21 @@ export default function Home() {
               }}
               onMouseEnter={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
-                target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.7))';
+                target.style.background = ctaVariant === 'B' ? 'linear-gradient(135deg, #f43f5e 0%, #fb923c 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.7))';
                 target.style.transform = 'translateY(-3px) scale(1.05)';
                 target.style.boxShadow = '0 12px 35px rgba(255, 255, 255, 0.3)';
               }}
               onMouseLeave={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
-                target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8))';
+                target.style.background = ctaVariant === 'B' ? 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8))';
                 target.style.transform = 'translateY(0) scale(1)';
                 target.style.boxShadow = '0 8px 25px rgba(255, 255, 255, 0.2)';
               }}
               onClick={(e) => {
-                console.log('Primary button clicked!');
+                trackCta('hero', 'primary');
               }}
             >
-              {t('home.ctaPrimary')}
+              {ctaVariant === 'B' ? t('home.ctaPrimaryAlt') : t('home.ctaPrimary')}
             </Link>
             <Link
               href="/discover"
@@ -306,11 +325,24 @@ export default function Home() {
                 target.style.transform = 'translateY(0) scale(1)';
               }}
               onClick={(e) => {
-                console.log('Secondary button clicked!');
+                trackCta('hero', 'secondary');
               }}
             >
               {t('home.ctaSecondary')}
             </Link>
+          </div>
+
+          {/* Explainer and social proof under the CTA */}
+          <div style={{ maxWidth: 760, margin: '0 auto 1rem', color: '#000', textShadow: '0 1px 2px rgba(255,255,255,0.85)' }}>
+            <div style={{ fontWeight: 700, marginBottom: 4 }}>{t('home.ctaExplainer1')}</div>
+            <div style={{ opacity: 0.9 }}>{t('home.ctaExplainer2')}</div>
+          </div>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+            background: 'rgba(34, 197, 94, 0.9)', padding: '0.4rem 0.9rem', borderRadius: '20px',
+            fontSize: '0.9rem', marginTop: '0.5rem', color: '#052e16'
+          }}>
+            <span style={{ fontWeight: 'bold' }}>✓</span> {t('home.trustedBy')}
           </div>
 
           <div style={{
@@ -584,6 +616,20 @@ export default function Home() {
               </div>
             ))}
           </div>
+          {/* Inline CTA under features */}
+          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+            <Link
+              href="/ai-plan"
+              onClick={() => trackCta('features', 'primary')}
+              style={{
+                display: 'inline-block', padding: '1rem 2rem', borderRadius: 30, fontWeight: 800,
+                textDecoration: 'none',
+                background: ctaVariant === 'B' ? 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)' : 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                color: '#fff', boxShadow: '0 10px 24px rgba(0,0,0,.25)'
+              }}
+            >{ctaVariant === 'B' ? t('home.ctaPrimaryAlt') : t('home.ctaPrimary')}</Link>
+            <div style={{ marginTop: 10, color: 'rgba(255,255,255,0.95)' }}>{t('home.ctaExplainer2')}</div>
+          </div>
         </div>
       </section>
 
@@ -676,6 +722,35 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Final CTA before footer */}
+      <section style={{ padding: '3rem 1rem', textAlign: 'center' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+          <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.75rem', textShadow: '0 3px 8px rgba(0,0,0,.5)' }}>
+            {t('home.experienceTitle')}
+          </h3>
+          <p style={{ color: 'rgba(255,255,255,.9)', marginBottom: '1.25rem' }}>{t('home.experienceSubtitle')}</p>
+          <Link
+            href="/ai-plan"
+            onClick={() => trackCta('footer', 'primary')}
+            style={{
+              display: 'inline-block', padding: '1rem 2rem', borderRadius: 30, fontWeight: 800,
+              textDecoration: 'none',
+              background: ctaVariant === 'B' ? 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)' : 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              color: '#fff', boxShadow: '0 10px 24px rgba(0,0,0,.25)'
+            }}
+          >{ctaVariant === 'B' ? t('home.ctaPrimaryAlt') : t('home.ctaPrimary')}</Link>
+          <div style={{ marginTop: 10, color: 'rgba(255,255,255,0.9)' }}>{t('home.ctaExplainer1')}</div>
+        </div>
+      </section>
+
+      {/* Bottom mobile CTA bar */}
+      <div className="mobile-cta-bar">
+        <Link href="/ai-plan" onClick={() => trackCta('bottom_bar', 'primary')} className="mobile-cta-link">
+          {t('home.ctaBottomBar')}
+        </Link>
+      </div>
+
 
       {/* Experience Japan Video Section */}
       <section style={{
