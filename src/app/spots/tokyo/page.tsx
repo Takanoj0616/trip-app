@@ -323,7 +323,15 @@ export default function TokyoSpots() {
           "デート": "デート",
           "フォーマル": "フォーマル",
           "Wi-Fi有": "Wi-Fi有",
-          "ファミリー向け": "ファミリー向け"
+          "ファミリー向け": "ファミリー向け",
+          // Google Places common types (English → Japanese)
+          "food": "飲食",
+          "restaurant": "レストラン",
+          "ramen": "ラーメン",
+          "sushi": "寿司",
+          "beef": "牛肉",
+          "point_of_interest": "観光スポット",
+          "establishment": "施設"
         },
         reviews: "件"
       }
@@ -432,7 +440,15 @@ export default function TokyoSpots() {
           "デート": "Date Night",
           "フォーマル": "Formal",
           "Wi-Fi有": "WiFi Available",
-          "ファミリー向け": "Family-oriented"
+          "ファミリー向け": "Family-oriented",
+          // Google Places common types
+          "food": "Food",
+          "restaurant": "Restaurant",
+          "ramen": "Ramen",
+          "sushi": "Sushi",
+          "beef": "Beef",
+          "point_of_interest": "Point of interest",
+          "establishment": "Establishment"
         },
         reviews: "reviews"
       }
@@ -541,7 +557,15 @@ export default function TokyoSpots() {
           "デート": "데이트",
           "フォーマル": "포멀",
           "Wi-Fi有": "와이파이 있음",
-          "ファミリー向け": "가족 지향"
+          "ファミリー向け": "가족 지향",
+          // Google Places common types
+          "food": "음식",
+          "restaurant": "레스토랑",
+          "ramen": "라멘",
+          "sushi": "스시",
+          "beef": "소고기",
+          "point_of_interest": "관광지",
+          "establishment": "시설"
         },
         reviews: "리뷰"
       }
@@ -650,7 +674,15 @@ export default function TokyoSpots() {
           "デート": "Rendez-vous",
           "フォーマル": "Formel",
           "Wi-Fi有": "WiFi disponible",
-          "ファミリー向け": "Adapté aux familles"
+          "ファミリー向け": "Adapté aux familles",
+          // Google Places common types
+          "food": "Restauration",
+          "restaurant": "Restaurant",
+          "ramen": "Ramen",
+          "sushi": "Sushi",
+          "beef": "Boeuf",
+          "point_of_interest": "Point d'intérêt",
+          "establishment": "Établissement"
         },
         reviews: "avis"
       }
@@ -660,14 +692,48 @@ export default function TokyoSpots() {
   // Get translations for current language
   const tr = translations[currentLanguage as keyof typeof translations] || translations.ja;
 
+  // Known localized names for Google Place IDs (or legacy IDs)
+  const nameOverrides: Record<string, { ja?: string; en?: string; ko?: string; fr?: string }> = {
+    // Restaurants (Google Places)
+    'ChIJu3eG8uiLGGAR14kVvD_YrHI': {
+      ja: '銀座 久兵衛 本店', en: 'Ginza Kyūbey Honten'
+    },
+    'ChIJba17TbqMGGARFtDV6hkZbcs': {
+      ja: 'AFURI 原宿', en: 'AFURI Harajuku'
+    },
+    'ChIJn2FoeFmLGGARnIog2ijRZXw': {
+      ja: '牛かつ もと村 渋谷', en: 'Gyukatsu Motomura Shibuya'
+    },
+    'ChIJh79i16mMGGARN1HObiQvcVA': {
+      ja: '魚がし日本一 渋谷道玄坂店', en: 'Uogashi Nihon‑Ichi Shibuya Dogenzaka'
+    },
+    'ChIJOWucdKiMGGARbppa4b4CKA8': {
+      ja: '一蘭', en: 'Ichiran'
+    },
+    'ChIJE6NVO9mLGGARUiKvcRmKzN4': {
+      ja: '寿司大', en: 'Sushi Dai'
+    },
+  };
+  const nameOverridesByText: Record<string, { ja?: string; en?: string; ko?: string; fr?: string }> = {
+    'ginza kyūbey honten': { ja: '銀座 久兵衛 本店', en: 'Ginza Kyūbey Honten' },
+    'ginza kyubey honten': { ja: '銀座 久兵衛 本店', en: 'Ginza Kyubey Honten' },
+    'afuri harajuku': { ja: 'AFURI 原宿', en: 'AFURI Harajuku' },
+    'gyukatsu motomura shibuya': { ja: '牛かつ もと村 渋谷', en: 'Gyukatsu Motomura Shibuya' },
+    'uogashi nihon-ichi shibuya dogenzaka': { ja: '魚がし日本一 渋谷道玄坂店', en: 'Uogashi Nihon‑Ichi Shibuya Dogenzaka' },
+    'ichiran': { ja: '一蘭', en: 'Ichiran' },
+    'sushi dai': { ja: '寿司大', en: 'Sushi Dai' },
+  };
+
   // Helper function to convert TouristSpot to Spot
   const touristSpotToSpot = useCallback((touristSpot: TouristSpot): Spot => {
     // Convert TouristSpot name (string) to SpotName format
+    const idKey = touristSpot.googlePlaceId || (typeof touristSpot.id === 'string' ? touristSpot.id : String(touristSpot.id));
+    const override = nameOverrides[idKey] || nameOverridesByText[(touristSpot.name || '').toLowerCase()];
     const spotName: SpotName = {
-      ja: touristSpot.name,
-      en: touristSpot.name,
-      ko: touristSpot.name,
-      fr: touristSpot.name
+      ja: override?.ja || touristSpot.name,
+      en: override?.en || touristSpot.name,
+      ko: override?.ko || touristSpot.name,
+      fr: override?.fr || touristSpot.name,
     };
 
     // Convert category
@@ -2133,14 +2199,25 @@ export default function TokyoSpots() {
 
   // Render spot info based on category
   const renderSpotInfo = useCallback((spot: Spot) => {
+    const formatOpenHours = (text?: string) => {
+      if (!text) return currentLanguage === 'en' ? 'Unknown' : currentLanguage === 'ko' ? '미정' : currentLanguage === 'fr' ? 'Inconnu' : '営業時間未定';
+      const lower = text.toLowerCase();
+      if (lower === 'open 24 hours') {
+        return currentLanguage === 'en' ? 'Open 24 hours' : currentLanguage === 'ko' ? '24시간 영업' : currentLanguage === 'fr' ? 'Ouvert 24h/24' : '24時間営業';
+      }
+      if (lower === 'closed') {
+        return currentLanguage === 'en' ? 'Closed' : currentLanguage === 'ko' ? '휴무' : currentLanguage === 'fr' ? 'Fermé' : '定休日';
+      }
+      return text;
+    };
     switch (spot.category) {
       case 'food':
         return (
           <>
             <div className="info-item">💰 {spot.info.price}</div>
-            <div className="info-item">🍽️ {tr.spots.cuisineTypes[spot.info.cuisine as keyof typeof tr.spots.cuisineTypes] || spot.info.cuisine}</div>
+            <div className="info-item">🍽️ {tr.spots.cuisineTypes[spot.info.cuisine as keyof typeof tr.spots.cuisineTypes] || tr.spots.tags[spot.info.cuisine as keyof typeof tr.spots.tags] || spot.info.cuisine}</div>
             <div className="info-item">📍 {spot.info.distance}</div>
-            <div className="info-item">🕐 {spot.info.openHours}</div>
+            <div className="info-item">🕐 {formatOpenHours(spot.info.openHours)}</div>
           </>
         );
       case 'sights':
@@ -2232,13 +2309,28 @@ export default function TokyoSpots() {
         <div className="spot-info">
           {renderSpotInfo(spot)}
         </div>
-        {((spot as any)[`description_${currentLanguage}`] || spot.description) && (
+        {(() => {
+          const localizedDesc = (spot as any)[`description_${currentLanguage}`];
+          const raw = spot.description;
+          const desc = localizedDesc || (raw && /^Imported from Google Places$/i.test(raw)
+            ? (currentLanguage === 'en' ? 'Imported from Google Places' : currentLanguage === 'ko' ? 'Google 플레이스에서 가져옴' : currentLanguage === 'fr' ? 'Importé de Google Places' : 'Googleプレイスからのインポート')
+            : raw);
+          return !!desc;
+        })() && (
           <div className="spot-description" style={{ marginBottom: '0.75rem' }}>
             <div className="desc-heading" style={{ fontWeight: 700, fontSize: '.95rem', color: '#111827', marginBottom: '.25rem' }}>
               {tr.labels?.details || '詳細説明'}
             </div>
             <p className="desc-text" style={{ color: '#4b5563', fontSize: '.9rem', lineHeight: 1.6 }}>
-              {(spot as any)[`description_${currentLanguage}`] || spot.description}
+              {(() => {
+                const localizedDesc = (spot as any)[`description_${currentLanguage}`];
+                const raw = spot.description;
+                if (localizedDesc) return localizedDesc;
+                if (raw && /^Imported from Google Places$/i.test(raw)) {
+                  return currentLanguage === 'en' ? 'Imported from Google Places' : currentLanguage === 'ko' ? 'Google 플레이스에서 가져옴' : currentLanguage === 'fr' ? 'Importé de Google Places' : 'Googleプレイスからのインポート';
+                }
+                return raw;
+              })()}
             </p>
           </div>
         )}

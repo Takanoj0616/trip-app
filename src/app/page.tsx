@@ -357,7 +357,8 @@ export default function Home() {
                 alignItems: 'center',
                 gap: '0.5rem',
                 fontSize: '1rem',
-                opacity: 0.9
+                opacity: 0.9,
+                color: '#000'
               }}>
                 <div style={{
                   width: '24px',
@@ -370,7 +371,7 @@ export default function Home() {
                   fontSize: '0.8rem',
                   fontWeight: 'bold'
                 }}>{feature.icon}</div>
-                <span>{feature.title}</span>
+                <span style={{ color: '#000' }}>{feature.title}</span>
               </div>
             ))}
           </div>
@@ -384,10 +385,9 @@ export default function Home() {
             padding: '0.5rem 0.9rem',
             borderRadius: '9999px',
             background: 'rgba(255,255,255,0.85)',
-            color: '#111',
             boxShadow: '0 6px 18px rgba(0,0,0,.08)'
           }}>
-            <span>🤖 {t('home.aiQuickPitch')}</span>
+            <span style={{ color: '#000' }}>🤖 {t('home.aiQuickPitch')}</span>
             <a href="#ai-plan-home" style={{
               background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
               color: 'white',
