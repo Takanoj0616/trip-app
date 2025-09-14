@@ -214,6 +214,36 @@ export default function MainContent({
       facilities: '設備・注意事項',
       faq: 'よくある質問',
       nearbyAttractions: '近隣の観光スポット',
+      fromLabel: 'から',
+      openInGoogleMaps: 'Googleマップで開く',
+      weatherVisibilityTitle: '本日の視界',
+      weatherVisibilityExcellent: 'とても良い',
+      weatherBestTimeTitle: 'ベストな時間帯',
+      weatherMorningRecommended: '午前がおすすめ',
+      highlightsSub: {
+        observatory: '360°の眺望',
+        night_view: '日没後がベスト',
+        mt_fuji_view: '晴れた朝',
+        landmark: '東京の象徴',
+        photo_spot: '映える写真',
+        shopping: 'フットタウンなど'
+      },
+      fromShinjuku: '新宿から',
+      fromShibuya: '渋谷から',
+      fromHaneda: '羽田から',
+      positivePointsTitle: '高評価ポイント',
+      improvementPointsTitle: '改善ポイント',
+      positiveBullets: [
+        '360°の絶景が楽しめる',
+        '夜景とイルミネーションが美しい',
+        'アクセスが良く移動がしやすい'
+      ],
+      improvementBullets: [
+        'ピーク時間は混雑しやすい',
+        '他の展望施設に比べ料金がやや高め'
+      ],
+      nearbyStations: '最寄り駅',
+      accessByCar: '車でのアクセス',
     },
     en: {
       gallery: 'Photo Gallery',
@@ -254,6 +284,36 @@ export default function MainContent({
       facilities: 'Facilities & Important Notes',
       faq: 'Frequently Asked Questions',
       nearbyAttractions: 'Nearby Attractions',
+      fromLabel: 'From',
+      openInGoogleMaps: 'Open in Google Maps',
+      weatherVisibilityTitle: "Today's Visibility",
+      weatherVisibilityExcellent: 'Excellent',
+      weatherBestTimeTitle: 'Best Time',
+      weatherMorningRecommended: 'Morning recommended',
+      highlightsSub: {
+        observatory: '360° city views',
+        night_view: 'Best after sunset',
+        mt_fuji_view: 'Clear mornings',
+        landmark: 'Tokyo symbol',
+        photo_spot: 'Instagram worthy',
+        shopping: 'FootTown mall'
+      },
+      fromShinjuku: 'From Shinjuku',
+      fromShibuya: 'From Shibuya',
+      fromHaneda: 'From Haneda',
+      positivePointsTitle: 'Top Positive Points',
+      improvementPointsTitle: 'Areas for Improvement',
+      positiveBullets: [
+        'Amazing panoramic views',
+        'Great night illumination and city lights',
+        'Convenient location and easy access'
+      ],
+      improvementBullets: [
+        'Can get very crowded during peak times',
+        'Higher prices compared to other observation decks'
+      ],
+      nearbyStations: 'Nearby Stations',
+      accessByCar: 'Access by Car',
     },
     ko: {
       gallery: '사진 갤러리',
@@ -294,6 +354,36 @@ export default function MainContent({
       facilities: '시설・주의사항',
       faq: '자주 묻는 질문',
       nearbyAttractions: '주변 관광 명소',
+      fromLabel: '부터',
+      openInGoogleMaps: 'Google 지도에서 열기',
+      weatherVisibilityTitle: '오늘의 가시성',
+      weatherVisibilityExcellent: '매우 좋음',
+      weatherBestTimeTitle: '최적 시간',
+      weatherMorningRecommended: '오전 추천',
+      highlightsSub: {
+        observatory: '360° 전망',
+        night_view: '해진 후가 베스트',
+        mt_fuji_view: '맑은 아침',
+        landmark: '도쿄의 상징',
+        photo_spot: '인생샷 명소',
+        shopping: '푸트타운 등'
+      },
+      fromShinjuku: '신주쿠에서',
+      fromShibuya: '시부야에서',
+      fromHaneda: '하네다에서',
+      positivePointsTitle: '장점',
+      improvementPointsTitle: '개선점',
+      positiveBullets: [
+        '탁 트인 파노라마 전망',
+        '야경과 조명이 아름다움',
+        '교통이 편리하고 접근성 좋음'
+      ],
+      improvementBullets: [
+        '피크 시간대에는 매우 혼잡',
+        '다른 전망대에 비해 요금이 다소 높음'
+      ],
+      nearbyStations: '가까운 역',
+      accessByCar: '자동차 이용',
     },
     fr: {
       gallery: 'Galerie Photo',
@@ -334,6 +424,36 @@ export default function MainContent({
       facilities: 'Installations et notes importantes',
       faq: 'Questions fréquemment posées',
       nearbyAttractions: 'Attractions à proximité',
+      fromLabel: 'À partir de',
+      openInGoogleMaps: 'Ouvrir dans Google Maps',
+      weatherVisibilityTitle: "Visibilité du jour",
+      weatherVisibilityExcellent: 'Excellente',
+      weatherBestTimeTitle: 'Meilleur moment',
+      weatherMorningRecommended: 'Matin recommandé',
+      highlightsSub: {
+        observatory: 'Vue panoramique 360°',
+        night_view: 'Idéal après le coucher du soleil',
+        mt_fuji_view: 'Matins dégagés',
+        landmark: 'Symbole de Tokyo',
+        photo_spot: 'Spot photo',
+        shopping: 'FootTown, etc.'
+      },
+      fromShinjuku: 'Depuis Shinjuku',
+      fromShibuya: 'Depuis Shibuya',
+      fromHaneda: 'Depuis Haneda',
+      positivePointsTitle: 'Points positifs',
+      improvementPointsTitle: 'Points à améliorer',
+      positiveBullets: [
+        'Vues panoramiques impressionnantes',
+        'Belles illuminations nocturnes',
+        'Situation pratique et accès facile'
+      ],
+      improvementBullets: [
+        "Peut être très fréquenté aux heures de pointe",
+        'Tarifs plus élevés que d’autres observatoires'
+      ],
+      nearbyStations: 'Gares proches',
+      accessByCar: 'Accès en voiture',
     },
   } as const;
   const i18n = (dicts as any)[lang] || dicts.en;
@@ -826,10 +946,13 @@ export default function MainContent({
   };
 
   const getReviewCountDisplay = () => {
-    if (typeof spotData?.reviewCount === 'number') return `(${spotData.reviewCount.toLocaleString()}件)`;
-    const anySpot: any = spotData as any;
-    if (anySpot?.reviews && Array.isArray(anySpot.reviews)) return `(${anySpot.reviews.length}件)`;
-    return '';
+    const count = typeof spotData?.reviewCount === 'number'
+      ? spotData.reviewCount
+      : ((spotData as any)?.reviews?.length as number | undefined);
+    if (!count && count !== 0) return '';
+    const n = (count as number).toLocaleString();
+    const suffix = lang === 'en' ? 'reviews' : lang === 'ko' ? '리뷰' : lang === 'fr' ? 'avis' : '件';
+    return `(${n} ${suffix})`;
   };
 
   // スポットタイプに応じたメイン写真の背景グラデーション
@@ -1087,9 +1210,7 @@ export default function MainContent({
                       <Star className="text-yellow-500" size={24} />
                       <span className="text-2xl font-bold">{spotData?.rating || 4.2}</span>
                     </div>
-                    <span className="text-sm text-gray-600 font-medium">
-                      {(spotData?.reviewCount || 15032).toLocaleString()} reviews
-                    </span>
+                    <span className="text-sm text-gray-600 font-medium">{getReviewCountDisplay()}</span>
                   </div>
 
                   <div className="text-center">
@@ -1097,12 +1218,7 @@ export default function MainContent({
                       <Clock className="text-blue-500" size={24} />
                       <span className="text-2xl font-bold">2–3h</span>
                     </div>
-                    <span className="text-sm text-gray-600 font-medium">
-                      {lang === 'en' ? 'Duration' :
-                        lang === 'ko' ? '소요시간' :
-                          lang === 'fr' ? 'Durée' :
-                            '所要時間'}
-                    </span>
+                    <span className="text-sm text-gray-600 font-medium">{i18n.stay}</span>
                   </div>
 
                   <div className="text-center">
@@ -1110,12 +1226,7 @@ export default function MainContent({
                       <DollarSign className="text-green-500" size={24} />
                       <span className="text-2xl font-bold">¥1,200+</span>
                     </div>
-                    <span className="text-sm text-gray-600 font-medium">
-                      {lang === 'en' ? 'From' :
-                        lang === 'ko' ? '부터' :
-                          lang === 'fr' ? 'À partir de' :
-                            'から'}
-                    </span>
+                    <span className="text-sm text-gray-600 font-medium">{i18n.fromLabel}</span>
                   </div>
 
                   <div className="text-center">
@@ -1191,7 +1302,7 @@ export default function MainContent({
             <div className="flex items-center gap-2">
               <a href="#tickets" className="px-4 py-2 rounded-lg bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold shadow hover:opacity-95">{i18n.bookTickets}</a>
               <button onClick={addToAITravelPlan} className="px-4 py-2 rounded-lg bg-white text-sky-700 border border-sky-200 font-semibold hover:bg-sky-50">
-                {lang === 'en' ? 'Add to AI Plan' : lang === 'ko' ? 'AI 플랜에 추가' : lang === 'fr' ? 'Ajouter au plan IA' : 'AI旅行プランに追加'}
+                {i18n.addToAIPlanBtn}
               </button>
             </div>
           </div>
@@ -1533,7 +1644,7 @@ export default function MainContent({
             <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
               <div className="flex items-center gap-3 mb-4">
                 <Train className="text-blue-600" size={24} />
-                <h3 className="font-semibold text-gray-800">From Shinjuku</h3>
+                <h3 className="font-semibold text-gray-800">{i18n.fromShinjuku}</h3>
               </div>
               <div className="space-y-2 text-sm text-gray-600">
                 <p><strong>25 min</strong> • 1 transfer</p>
@@ -1543,7 +1654,7 @@ export default function MainContent({
               <div className="flex gap-2 mt-4">
                 <button className="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-xs hover:bg-blue-200 transition-colors flex items-center justify-center gap-1">
                   <ExternalLink size={14} />
-                  Google Maps
+                  {lang === 'ja' ? 'Googleマップ' : lang === 'ko' ? 'Google 지도' : 'Google Maps'}
                 </button>
                 <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-xs hover:bg-gray-200 transition-colors">
                   Apple Maps
@@ -1555,7 +1666,7 @@ export default function MainContent({
             <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
               <div className="flex items-center gap-3 mb-4">
                 <Train className="text-green-600" size={24} />
-                <h3 className="font-semibold text-gray-800">From Shibuya</h3>
+                <h3 className="font-semibold text-gray-800">{i18n.fromShibuya}</h3>
               </div>
               <div className="space-y-2 text-sm text-gray-600">
                 <p><strong>20 min</strong> • 1 transfer</p>
@@ -1565,7 +1676,7 @@ export default function MainContent({
               <div className="flex gap-2 mt-4">
                 <button className="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-xs hover:bg-blue-200 transition-colors flex items-center justify-center gap-1">
                   <ExternalLink size={14} />
-                  Google Maps
+                  {lang === 'ja' ? 'Googleマップ' : lang === 'ko' ? 'Google 지도' : 'Google Maps'}
                 </button>
                 <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-xs hover:bg-gray-200 transition-colors">
                   Apple Maps
@@ -1577,7 +1688,7 @@ export default function MainContent({
             <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
               <div className="flex items-center gap-3 mb-4">
                 <Car className="text-cyan-600" size={24} />
-                <h3 className="font-semibold text-gray-800">From Haneda</h3>
+                <h3 className="font-semibold text-gray-800">{i18n.fromHaneda}</h3>
               </div>
               <div className="space-y-2 text-sm text-gray-600">
                 <p><strong>45 min</strong> • Direct</p>
@@ -1587,7 +1698,7 @@ export default function MainContent({
               <div className="flex gap-2 mt-4">
                 <button className="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-xs hover:bg-blue-200 transition-colors flex items-center justify-center gap-1">
                   <ExternalLink size={14} />
-                  Google Maps
+                  {lang === 'ja' ? 'Googleマップ' : lang === 'ko' ? 'Google 지도' : 'Google Maps'}
                 </button>
                 <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-xs hover:bg-gray-200 transition-colors">
                   Citymapper
@@ -1603,7 +1714,7 @@ export default function MainContent({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow hover:bg-blue-700"
             >
-              <ExternalLink size={16} /> Google Mapsで開く
+              <ExternalLink size={16} /> {i18n.openInGoogleMaps}
             </a>
           </div>
         </section>
@@ -1618,36 +1729,36 @@ export default function MainContent({
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow">
               <Eye className="mx-auto text-blue-600 mb-2" size={32} />
-              <h3 className="font-semibold text-gray-800 text-sm mb-1">Observatory</h3>
-              <p className="text-xs text-gray-600">360° city views</p>
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">{tagToLabel('observatory')}</h3>
+              <p className="text-xs text-gray-600">{i18n.highlightsSub.observatory}</p>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow">
               <div className="mx-auto text-purple-600 mb-2 text-2xl">🌃</div>
-              <h3 className="font-semibold text-gray-800 text-sm mb-1">Night View</h3>
-              <p className="text-xs text-gray-600">Best after sunset</p>
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">{tagToLabel('night_view')}</h3>
+              <p className="text-xs text-gray-600">{i18n.highlightsSub.night_view}</p>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow relative">
               <Mountain className="mx-auto text-green-600 mb-2" size={32} />
-              <h3 className="font-semibold text-gray-800 text-sm mb-1">Mt. Fuji View</h3>
-              <p className="text-xs text-gray-600">Clear mornings</p>
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">{tagToLabel('mt_fuji_view')}</h3>
+              <p className="text-xs text-gray-600">{i18n.highlightsSub.mt_fuji_view}</p>
               <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1 py-0.5 rounded-full">
                 AM
               </span>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow">
               <div className="mx-auto text-red-600 mb-2 text-2xl">🗼</div>
-              <h3 className="font-semibold text-gray-800 text-sm mb-1">Landmark</h3>
-              <p className="text-xs text-gray-600">Tokyo symbol</p>
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">{tagToLabel('landmark')}</h3>
+              <p className="text-xs text-gray-600">{i18n.highlightsSub.landmark}</p>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow">
               <Camera className="mx-auto text-orange-600 mb-2" size={32} />
-              <h3 className="font-semibold text-gray-800 text-sm mb-1">Photo Spot</h3>
-              <p className="text-xs text-gray-600">Instagram worthy</p>
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">{lang === 'fr' ? 'Spot photo' : lang === 'ko' ? '포토 스팟' : lang === 'en' ? 'Photo Spot' : '写真スポット'}</h3>
+              <p className="text-xs text-gray-600">{i18n.highlightsSub.photo_spot}</p>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow">
               <Store className="mx-auto text-pink-600 mb-2" size={32} />
-              <h3 className="font-semibold text-gray-800 text-sm mb-1">Shopping</h3>
-              <p className="text-xs text-gray-600">FootTown mall</p>
+              <h3 className="font-semibold text-gray-800 text-sm mb-1">{lang === 'fr' ? 'Shopping' : lang === 'ko' ? '쇼핑' : lang === 'en' ? 'Shopping' : 'ショッピング'}</h3>
+              <p className="text-xs text-gray-600">{i18n.highlightsSub.shopping}</p>
             </div>
           </div>
         </section>
@@ -1665,9 +1776,9 @@ export default function MainContent({
                   <Sun className="text-yellow-500" size={24} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-800">Today's Visibility</h3>
-                  <p className="text-gray-600">High chance of Mt. Fuji view</p>
-                  <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">Excellent</span>
+                  <h3 className="font-semibold text-gray-800">{i18n.weatherVisibilityTitle}</h3>
+                  <p className="text-gray-600">{lang === 'en' ? 'High chance of Mt. Fuji view' : lang === 'ko' ? '후지산 조망 확률 높음' : lang === 'fr' ? 'Forte chance de voir le mont Fuji' : '富士山が見える可能性高め'}</p>
+                  <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">{i18n.weatherVisibilityExcellent}</span>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -1675,9 +1786,9 @@ export default function MainContent({
                   <Sunrise className="text-orange-500" size={24} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-800">Best Time</h3>
-                  <p className="text-gray-600">Clear skies until 15:00</p>
-                  <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Morning recommended</span>
+                  <h3 className="font-semibold text-gray-800">{i18n.weatherBestTimeTitle}</h3>
+                  <p className="text-gray-600">{lang === 'en' ? 'Clear skies until 15:00' : lang === 'ko' ? '15시까지 맑음' : lang === 'fr' ? 'Ciel dégagé jusqu’à 15:00' : '15時頃まで快晴'}</p>
+                  <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">{i18n.weatherMorningRecommended}</span>
                 </div>
               </div>
             </div>
@@ -1809,7 +1920,7 @@ export default function MainContent({
                 >
                   <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
                 </svg>
-                最寄り駅
+                {i18n.nearbyStations}
               </h3>
               <ul className="space-y-3">
                 <li className="border-b border-border-light pb-3">
@@ -1843,7 +1954,7 @@ export default function MainContent({
                     clipRule="evenodd"
                   />
                 </svg>
-                車でのアクセス
+                {i18n.accessByCar}
               </h3>
               <p className="text-text-muted mb-3">
                 首都高速都心環状線「芝公園」出口より約10分
@@ -2008,21 +2119,15 @@ export default function MainContent({
             <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
               <h3 className="flex items-center gap-2 font-semibold text-blue-800 mb-4">
                 <CheckCircle className="text-blue-600" size={20} />
-                Top Positive Points
+                {i18n.positivePointsTitle}
               </h3>
               <ul className="space-y-2 text-sm text-blue-700">
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                  Amazing panoramic views (mentioned in 89% of reviews)
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                  Great night illumination and city lights
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                  Convenient location and easy access
-                </li>
+                {i18n.positiveBullets.map((txt: string, idx: number) => (
+                  <li key={`pb-${idx}`} className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    {txt}
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -2030,17 +2135,15 @@ export default function MainContent({
             <div className="bg-cyan-50 rounded-xl border border-cyan-200 p-6">
               <h3 className="flex items-center gap-2 font-semibold text-cyan-800 mb-4">
                 <AlertCircle className="text-cyan-600" size={20} />
-                Areas for Improvement
+                {i18n.improvementPointsTitle}
               </h3>
               <ul className="space-y-2 text-sm text-cyan-700">
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-cyan-500 rounded-full"></span>
-                  Can get very crowded during peak times
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-cyan-500 rounded-full"></span>
-                  Higher prices compared to other observation decks
-                </li>
+                {i18n.improvementBullets.map((txt: string, idx: number) => (
+                  <li key={`ib-${idx}`} className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-cyan-500 rounded-full"></span>
+                    {txt}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

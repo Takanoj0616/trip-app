@@ -233,6 +233,12 @@ export const tokyoSpotsDetailed: TokyoSpot[] = [
     rating: 4.6,
     reviewCount: 41774,
     image: "/images/spots/新宿御苑_20250714_121139.jpg",
+    images: [
+      // Public, representative photos (fallback-friendly external URLs)
+      "https://images.unsplash.com/photo-1544989164-31dc3c645987?w=1600&auto=format&fit=crop&q=70", // Shinjuku Gyoen lawn/trees
+      "https://images.unsplash.com/photo-1562765639-6c24b43e0f10?w=1600&auto=format&fit=crop&q=70", // Park pond/bridge
+      "https://images.unsplash.com/photo-1568667256531-7d5d4508b7c3?w=1600&auto=format&fit=crop&q=70"  // Cherry blossoms / garden path
+    ],
     badges: ["人気", "屋外", "営業中"],
     info: {
       duration: "90-120分",
