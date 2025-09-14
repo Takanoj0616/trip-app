@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { db, doc, getDoc } from '@/lib/firebase';
 import { TouristSpot } from '@/types';
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
+import { allRestaurantSpots } from '@/data/tokyo-restaurant-spots';
 import { tokyoSpotsDetailed, TokyoSpot } from '@/data/tokyo-spots-detailed';
 import Image from 'next/image';
 import {
@@ -398,6 +399,37 @@ export default function MainContent({
         return;
       }
 
+      // Then check local restaurant data
+      if (!localSpot) {
+        const restaurantSpot = allRestaurantSpots.find(spot =>
+          spot.id === spotId || spot.googlePlaceId === spotId
+        );
+        if (restaurantSpot) {
+          const convertedSpot: SpotData = {
+            name: restaurantSpot.name,
+            description: restaurantSpot.description || '人気のスポットです',
+            location: restaurantSpot.location,
+            price: (restaurantSpot as any).priceText || (restaurantSpot.priceRange === 'expensive' ? '¥3,000以上' :
+              restaurantSpot.priceRange === 'moderate' ? '¥1,000-3,000' : restaurantSpot.priceRange === 'luxury' ? '¥20,000以上' : '¥1,000以下'),
+            hours: restaurantSpot.openingHours ? (Object.values(restaurantSpot.openingHours)[0] as any) : '営業時間未定',
+            rating: restaurantSpot.rating || 4.0,
+            images: restaurantSpot.images || [],
+            contact: restaurantSpot.contact,
+            tags: restaurantSpot.tags || [],
+            googlePlaceId: restaurantSpot.googlePlaceId,
+            openingHours: restaurantSpot.openingHours,
+            priceRange: restaurantSpot.priceRange,
+            reviewCount: (restaurantSpot as any).reviewCount,
+            crowdLevel: (restaurantSpot as any).crowdLevel,
+            averageStayMinutes: (restaurantSpot as any).averageStayMinutes,
+            stayRange: (restaurantSpot as any).stayRange
+          };
+          setSpotData(convertedSpot);
+          setLoading(false);
+          return;
+        }
+      }
+
       if (!db) {
         // Firebaseが設定されていない場合はデフォルトデータを使用
         setSpotData({
@@ -479,6 +511,44 @@ export default function MainContent({
 
     fetchSpotData();
   }, [spotId, lang]);
+
+  // Contextual hero subtitle based on spot type/name/tags
+  const getHeroSubtitleText = () => {
+    const n = (spotData?.name || '').toLowerCase();
+    const tags = (spotData?.tags || []).map(t => t.toLowerCase());
+    const has = (k: string) => n.includes(k) || tags.includes(k);
+    // Restaurants
+    if (has('ramen') || /ラーメン/.test(spotData?.name || '')) {
+      return lang === 'en' ? 'Popular ramen with rich broth and handcrafted noodles' :
+        lang === 'ko' ? '진한 육수와 수제 면의 인기 라멘' :
+          lang === 'fr' ? 'Ramen populaire au bouillon riche et aux nouilles artisanales' :
+            '濃厚スープと自家製麺が人気のラーメン店';
+    }
+    if (has('sushi') || /寿司|鮨/.test(spotData?.name || '')) {
+      return lang === 'en' ? 'Top-rated sushi crafted with seasonal seafood' :
+        lang === 'ko' ? '제철 해산물로 빚는 인기 스시' :
+          lang === 'fr' ? 'Sushi réputé élaboré avec des produits de saison' :
+            '旬の海鮮で握る評判の寿司店';
+    }
+    if (has('beef') || /牛かつ|焼肉|牛肉/.test(spotData?.name || '')) {
+      return lang === 'en' ? 'Local favorite for premium beef dishes' :
+        lang === 'ko' ? '프리미엄 소고기 요리로 유명한 맛집' :
+          lang === 'fr' ? 'Adresse prisée pour ses plats de bœuf' :
+            '上質な牛肉料理で人気の名店';
+    }
+    // Sights defaults
+    if (/tower|タワー|スカイツリー/i.test(n) || /東京タワー|スカイツリー/.test(spotData?.name || '')) {
+      return lang === 'en' ? 'Iconic tower with breathtaking city views' :
+        lang === 'ko' ? '숨막히는 도시 전망을 자랑하는 상징적인 타워' :
+          lang === 'fr' ? 'Tour emblématique avec des vues imprenables' :
+            '息をのむ都市の景色が広がる象徴的なタワー';
+    }
+    // Generic fallback
+    return lang === 'en' ? 'Highlights, tips and access info at a glance' :
+      lang === 'ko' ? '볼거리, 팁, 교통 정보를 한눈에' :
+        lang === 'fr' ? 'Points forts, conseils et accès en un coup d’œil' :
+          '見どころ・コツ・アクセス情報をまとめてチェック';
+  };
 
   const openModal = (modalId: string) => {
     setActiveModal(modalId);
@@ -1006,10 +1076,7 @@ export default function MainContent({
                   {spotData?.name || 'Tokyo Tower'}
                 </h1>
                 <p className="text-xl md:text-2xl text-white/95 font-light tracking-wide drop-shadow-2xl">
-                  {lang === 'en' ? 'Iconic 333m tower with breathtaking city views' :
-                    lang === 'ko' ? '숨막히는 도시 전망을 자랑하는 상징적인 333m 타워' :
-                      lang === 'fr' ? 'Tour emblématique de 333m avec des vues imprenables sur la ville' :
-                        '息をのむような都市の景色を誇る象徴的な333mタワー'}
+                  {getHeroSubtitleText()}
                 </p>
               </div>
 

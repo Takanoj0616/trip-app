@@ -692,6 +692,84 @@ export default function TokyoSpots() {
   // Get translations for current language
   const tr = translations[currentLanguage as keyof typeof translations] || translations.ja;
 
+  // Helper: normalize common hours text per language
+  const formatHoursText = useCallback((text?: string) => {
+    if (!text) return '';
+    const lower = String(text).toLowerCase();
+    if (lower === 'open 24 hours') {
+      return currentLanguage === 'en' ? 'Open 24 hours' : currentLanguage === 'ko' ? '24시간 영업' : currentLanguage === 'fr' ? 'Ouvert 24h/24' : '24時間営業';
+    }
+    if (lower === 'closed') {
+      return currentLanguage === 'en' ? 'Closed' : currentLanguage === 'ko' ? '휴무' : currentLanguage === 'fr' ? 'Fermé' : '定休日';
+    }
+    // If looks like bare hour (e.g., '10' or '11'), append :00
+    if (/^\d{1,2}$/.test(lower)) return `${text}:00`;
+    return text;
+  }, [currentLanguage]);
+
+  // Helper: build a short, localized description for list cards
+  const buildCardDescription = useCallback((spot: Spot): string => {
+    const localized = (spot as any)[`description_${currentLanguage}`] as string | undefined;
+    const raw = spot.description as string | undefined;
+    const isImportedMsg = !!raw && /^Imported from Google Places$/i.test(raw);
+    if (localized && !isImportedMsg) return localized;
+    if (raw && !isImportedMsg) return raw;
+
+    const cuisine = spot.info?.cuisine ? (tr.spots.cuisineTypes[spot.info.cuisine as any] || tr.spots.tags[spot.info.cuisine as any] || spot.info.cuisine) : '';
+    const price = spot.info?.price || '';
+    const distance = spot.info?.distance || '';
+    const hours = formatHoursText(spot.info?.openHours || '');
+    const rating = (spot.rating || 0).toFixed(1).replace(/\.0$/, '');
+
+    const address = (spot as any).location?.address as string | undefined;
+    const getArea = () => {
+      const a = (address || '').toLowerCase();
+      const has = (kw: string) => a.includes(kw);
+      if (has('ginza')) return currentLanguage === 'en' ? 'Ginza' : currentLanguage === 'ko' ? '긴자' : currentLanguage === 'fr' ? 'Ginza' : '銀座';
+      if (has('harajuku')) return currentLanguage === 'en' ? 'Harajuku' : currentLanguage === 'ko' ? '하라주쿠' : currentLanguage === 'fr' ? 'Harajuku' : '原宿';
+      if (has('shibuya')) return currentLanguage === 'en' ? 'Shibuya' : currentLanguage === 'ko' ? '시부야' : currentLanguage === 'fr' ? 'Shibuya' : '渋谷';
+      if (has('toyosu') || has('koto')) return currentLanguage === 'en' ? 'Toyosu' : currentLanguage === 'ko' ? '도요스' : currentLanguage === 'fr' ? 'Toyosu' : '豊洲';
+      return '';
+    };
+    const area = getArea();
+
+    // Pick up to 2 meaningful tags (exclude generic technical ones)
+    const exclude = new Set(['food','restaurant','point_of_interest','establishment']);
+    const featureTags = (spot.tags || []).filter(t => !exclude.has(t)).slice(0, 2);
+    const features = featureTags
+      .map(t => tr.spots.tags[t as keyof typeof tr.spots.tags] || t)
+      .filter(Boolean)
+      .join(currentLanguage === 'fr' ? ' · ' : ' / ');
+
+    if (currentLanguage === 'en') {
+      const lead = `${area ? area + ' area — ' : ''}${cuisine ? `Popular ${cuisine}${/ramen|sushi/i.test(String(cuisine)) ? '' : ' restaurant'}` : 'Local favorite'}.`;
+      const meta = `${price ? ` Price: ${price}.` : ''}${hours ? ` Today: ${hours}.` : ''}${distance ? ` Distance: ${distance}.` : ''}`;
+      const review = spot.rating ? ` Reviews mention solid ${rating}/5 taste and friendly service.` : '';
+      const tip = features ? ` Highlights: ${features}.` : ' Tip: Go off-peak to avoid lines.';
+      return `${lead}${meta}${review}${tip}`.trim();
+    }
+    if (currentLanguage === 'ko') {
+      const lead = `${area ? area + ' 지역 — ' : ''}${cuisine ? `${cuisine} 맛집` : '지역 인기 레스토랑'}입니다.`;
+      const meta = `${price ? ` 가격대: ${price}.` : ''}${hours ? ` 오늘 영업: ${hours}.` : ''}${distance ? ` 거리: ${distance}.` : ''}`;
+      const review = spot.rating ? ` 리뷰에서는 맛과 서비스가 ${rating}/5로 호평.` : '';
+      const tip = features ? ` 특징: ${features}.` : ' 팁: 혼잡 시간은 대기 발생, 이른 시간 추천.';
+      return `${lead}${meta}${review}${tip}`.trim();
+    }
+    if (currentLanguage === 'fr') {
+      const lead = `${area ? 'Quartier ' + area + ' — ' : ''}${cuisine ? `${cuisine} réputé` : 'Adresse locale prisée'}.`;
+      const meta = `${price ? ` Tarif: ${price}.` : ''}${hours ? ` Aujourd’hui: ${hours}.` : ''}${distance ? ` Distance: ${distance}.` : ''}`;
+      const review = spot.rating ? ` Les avis soulignent une note de ${rating}/5 et un bon service.` : '';
+      const tip = features ? ` Atouts: ${features}.` : ' Conseil: éviter les heures de pointe.';
+      return `${lead}${meta}${review}${tip}`.trim();
+    }
+    // ja (default)
+    const lead = `${area ? area + 'エリアの' : ''}${cuisine ? `${cuisine}の人気店` : '人気レストラン'}。`;
+    const meta = `${price ? `価格帯: ${price}。` : ''}${hours ? `本日の営業時間: ${hours}。` : ''}${distance ? `距離: ${distance}。` : ''}`;
+    const review = spot.rating ? `口コミでは総合${rating}/5の評価。` : '';
+    const tip = features ? `特徴: ${features}。` : 'ピークは行列になりやすいため、早めの来店がおすすめ。';
+    return `${lead}${meta}${review}${tip}`.trim();
+  }, [currentLanguage, tr, formatHoursText]);
+
   // Known localized names for Google Place IDs (or legacy IDs)
   const nameOverrides: Record<string, { ja?: string; en?: string; ko?: string; fr?: string }> = {
     // Restaurants (Google Places)
@@ -767,6 +845,7 @@ export default function TokyoSpots() {
       image: touristSpot.images?.[0] || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
       badges: ['営業中', '人気'],
       info: spotInfo,
+      location: touristSpot.location ? { address: touristSpot.location.address || '' } : undefined,
       tags: touristSpot.tags || ['観光'],
       category: categoryMap[touristSpot.category] || 'sights',
       description: touristSpot.description,
@@ -2194,7 +2273,8 @@ export default function TokyoSpots() {
     const url = new URL(window.location.origin + `/spots/${spotId}`);
     // 現在の言語をクエリに付与
     url.searchParams.set('lang', currentLanguage);
-    window.open(url.toString(), '_blank');
+    // 同一タブで開き、詳細ページへスムーズに遷移
+    window.location.href = url.toString();
   }, []);
 
   // Render spot info based on category
@@ -2309,28 +2389,13 @@ export default function TokyoSpots() {
         <div className="spot-info">
           {renderSpotInfo(spot)}
         </div>
-        {(() => {
-          const localizedDesc = (spot as any)[`description_${currentLanguage}`];
-          const raw = spot.description;
-          const desc = localizedDesc || (raw && /^Imported from Google Places$/i.test(raw)
-            ? (currentLanguage === 'en' ? 'Imported from Google Places' : currentLanguage === 'ko' ? 'Google 플레이스에서 가져옴' : currentLanguage === 'fr' ? 'Importé de Google Places' : 'Googleプレイスからのインポート')
-            : raw);
-          return !!desc;
-        })() && (
+        {(() => !!buildCardDescription(spot))() && (
           <div className="spot-description" style={{ marginBottom: '0.75rem' }}>
             <div className="desc-heading" style={{ fontWeight: 700, fontSize: '.95rem', color: '#111827', marginBottom: '.25rem' }}>
               {tr.labels?.details || '詳細説明'}
             </div>
             <p className="desc-text" style={{ color: '#4b5563', fontSize: '.9rem', lineHeight: 1.6 }}>
-              {(() => {
-                const localizedDesc = (spot as any)[`description_${currentLanguage}`];
-                const raw = spot.description;
-                if (localizedDesc) return localizedDesc;
-                if (raw && /^Imported from Google Places$/i.test(raw)) {
-                  return currentLanguage === 'en' ? 'Imported from Google Places' : currentLanguage === 'ko' ? 'Google 플레이스에서 가져옴' : currentLanguage === 'fr' ? 'Importé de Google Places' : 'Googleプレイスからのインポート';
-                }
-                return raw;
-              })()}
+              {buildCardDescription(spot)}
             </p>
           </div>
         )}
