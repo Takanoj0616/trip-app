@@ -83,7 +83,7 @@ export default function TravelExperiencesContent() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8" style={{ paddingTop: '200px' }}>
       {/* ヘッダー */}
       <div className="text-center mb-12">
         <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">

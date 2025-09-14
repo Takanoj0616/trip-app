@@ -20,6 +20,13 @@
   --mouse-x: 20%;
   --mouse-y: 30%;
   --scroll: 0;
+
+  /* Page-specific theme variables */
+  --page-bg: transparent;
+  --page-bg-override: transparent;
+  --header-text-color: rgba(255, 255, 255, 0.8);
+  --header-bg-color: rgba(255, 255, 255, 0.05);
+  --header-border-color: rgba(255, 255, 255, 0.1);
 }
 
 * {
@@ -878,33 +885,38 @@ header {
 }
 
 /* Header dark-text mode (ensure readability on white backgrounds) */
+header.header--dark-text {
+  --header-text-color: #111;
+  --header-bg-color: rgba(0, 0, 0, 0.05);
+  --header-border-color: rgba(0, 0, 0, 0.15);
+}
 header.header--dark-text .header-content .logo {
-  color: #111 !important;
-  background: none !important;
-  -webkit-text-fill-color: initial !important;
+  color: var(--header-text-color);
+  background: none;
+  -webkit-text-fill-color: initial;
 }
 header.header--dark-text .header-content .nav-link,
 header.header--dark-text .header-content .btn-ghost,
 header.header--dark-text .header-content .lang-btn,
 header.header--dark-text .header-content .small-text {
-  color: #111 !important;
+  color: var(--header-text-color);
 }
 header.header--dark-text .header-content .nav-link:hover,
 header.header--dark-text .header-content .btn-ghost:hover,
 header.header--dark-text .header-content .lang-btn:hover {
-  color: #111 !important;
+  color: var(--header-text-color);
   background: rgba(0, 0, 0, 0.06);
   border-color: rgba(0, 0, 0, 0.1);
 }
 header.header--dark-text .header-content .hamburger-btn {
   border-color: rgba(0, 0, 0, 0.25);
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--header-bg-color);
 }
 header.header--dark-text .header-content .hamburger-btn span {
-  background: #111 !important;
+  background: var(--header-text-color);
 }
 header.header--dark-text .header-content .lang-selector {
-  border-color: rgba(0, 0, 0, 0.15);
+  border-color: var(--header-border-color);
   background: rgba(255, 255, 255, 0.75);
 }
 header.header--dark-text .header-content .user-pill {
@@ -912,7 +924,7 @@ header.header--dark-text .header-content .user-pill {
   border-color: rgba(0, 0, 0, 0.12);
 }
 header.header--dark-text .header-content .user-pill .small-text {
-  color: #111 !important;
+  color: var(--header-text-color);
 }
 
 .header-content {
@@ -1750,46 +1762,46 @@ footer {
   .posts-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
-/* Travel experiences styles from temp project */
+/* Unified glass-card component */
 .glass-card {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   border-radius: 14px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-lg);
   transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .glass-card:hover {
   background: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-xl);
 }
 
-.glass-card-dark {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+.glass-card--dark {
   background: rgba(0, 0, 0, 0.20);
-  border: 1px solid rgba(0, 0, 0, 0.30);
-  border-radius: 14px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  border-color: rgba(0, 0, 0, 0.30);
 }
 
+/* Unified btn-primary component */
 .btn-primary {
-  background-color: #ea7421;
+  background: var(--accent-gradient);
   color: white;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
+  gap: 0.5rem;
   border: none;
   cursor: pointer;
+  box-shadow: var(--shadow-lg);
 }
 
 .btn-primary:hover {
-  background-color: #db5a17;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
 }
 
 .btn-secondary {
@@ -1840,32 +1852,34 @@ footer {
   background: rgba(255, 255, 255, 0.40);
 }
 
-/* Route-specific override: remove global body background for travel-experiences page */
+/* Page-specific background management */
+body.page-travel-experiences {
+  --page-bg-override: transparent;
+}
+body.page-qna {
+  --page-bg-override: transparent;
+}
+body.page-realtime {
+  --page-bg-override: transparent;
+}
+
+/* Apply page background override */
+body[class*="page-"] {
+  background: var(--page-bg-override, var(--page-bg));
+}
+
+/* Hide global backgrounds when page-specific backgrounds are active */
+body[class*="page-"] .animated-bg,
+body[class*="page-"] .hero-bg,
+body[class*="page-"] .course-detail-bg,
+body[class*="page-"] .sakura-container {
+  display: none;
+}
+
+/* Travel experiences page */
 #travel-experiences-root {
   position: relative;
   z-index: 1;
-}
-
-/* Override body background when travel-experiences page is loaded */
-body:has(#travel-experiences-root) {
-  background: transparent !important;
-}
-
-/* Fallback for browsers that don't support :has() */
-body.travel-experiences-page {
-  background: transparent !important;
-}
-
-/* Hide all global background elements for travel experiences page */
-body:has(#travel-experiences-root) .animated-bg,
-body:has(#travel-experiences-root) .hero-bg,
-body:has(#travel-experiences-root) .course-detail-bg,
-body:has(#travel-experiences-root) .sakura-container,
-body.travel-experiences-page .animated-bg,
-body.travel-experiences-page .hero-bg,
-body.travel-experiences-page .course-detail-bg,
-body.travel-experiences-page .sakura-container {
-  display: none !important;
 }
 
 /* Ensure travel experiences page background displays properly */
@@ -1883,28 +1897,6 @@ body.travel-experiences-page .sakura-container {
   position: relative;
   z-index: 1;
   min-height: 100vh;
-}
-
-/* Override body background when QnA page is loaded */
-body:has(#qna-page-root) {
-  background: transparent !important;
-}
-
-/* Fallback for browsers that don't support :has() */
-body.qna-page {
-  background: transparent !important;
-}
-
-/* Hide all global background elements for QnA page */
-body:has(#qna-page-root) .animated-bg,
-body:has(#qna-page-root) .hero-bg,
-body:has(#qna-page-root) .course-detail-bg,
-body:has(#qna-page-root) .sakura-container,
-body.qna-page .animated-bg,
-body.qna-page .hero-bg,
-body.qna-page .course-detail-bg,
-body.qna-page .sakura-container {
-  display: none !important;
 }
 
 /* Sushi Experience themed background for QNA page */
@@ -1969,13 +1961,7 @@ body.qna-page .sakura-container {
   min-height: 100vh;
 }
 
-/* Use page-scoped background so we don't affect other routes */
-body:has(#realtime-root) {
-  background: transparent !important;
-}
-body.realtime-page { /* Fallback for browsers without :has */
-  background: transparent !important;
-}
+/* Realtime page specific styles */
 
 /* Base gradient:淡い紅梅〜空色 + subtle dark overlay for title contrast */
 /* Neutralize and scope the animated background (keep pseudo elements only) */
