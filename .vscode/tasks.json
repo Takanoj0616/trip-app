@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Claude: Ask",
+      "type": "shell",
+      "command": "claude ${input:prompt}",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude: Ask (from selection)",
+      "type": "shell",
+      "command": "claude",
+      "args": [],
+      "options": {
+        "shell": {
+          "executable": "zsh",
+          "args": ["-lc", "pbpaste | claude"]  
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": false
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "prompt",
+      "type": "promptString",
+      "description": "Claude へのプロンプト",
+      "default": "このコードをレビューして改善点を出して"
+    }
+  ]
+}

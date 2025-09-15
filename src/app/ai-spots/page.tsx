@@ -192,7 +192,7 @@ export default function AISpotRecommendationPage() {
         width: '100%',
         height: '100vh',
         zIndex: -2,
-        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%), url('/images/backgrounds/hokkaidou.jpg')`,
+        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.3) 100%), url('/images/backgrounds/hokkaidou.jpg')`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
