@@ -185,7 +185,19 @@ export default function AISpotRecommendationPage() {
   return (
     // Allow viewing without login; enforce quota at action level
     <AuthGuard requireAuth={false}>
-      <div className="animated-bg"></div>
+      <div className="hero-background" style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100vh',
+        zIndex: -2,
+        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%), url('/images/backgrounds/hokkaidou.jpg')`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}></div>
       <SakuraBackground />
       
       <section className="hero min-h-screen">
