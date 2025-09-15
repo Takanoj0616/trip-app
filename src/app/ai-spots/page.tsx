@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { MapPin, Star, Clock, Users, Search, Sparkles } from 'lucide-react';
 import SakuraBackground from '@/components/SakuraBackground';
 import AuthGuard from '@/components/AuthGuard';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/AuthModal';
 
 interface RecommendationForm {
   interests: string[];
@@ -36,6 +38,7 @@ interface RecommendedSpot extends TouristSpot {
 
 export default function AISpotRecommendationPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [formData, setFormData] = useState<RecommendationForm>({
     interests: [],
     budget: '',
@@ -48,6 +51,17 @@ export default function AISpotRecommendationPage() {
   const [currentThought, setCurrentThought] = useState('');
   const [aiReasoning, setAiReasoning] = useState('');
   const [totalTime, setTotalTime] = useState('');
+  const FREE_LIMIT = 5;
+  const [freeUses, setFreeUses] = useState(0);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Load free usage count from localStorage (for non-logged-in users)
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('ai-spots-free-uses');
+      setFreeUses(raw ? parseInt(raw, 10) || 0 : 0);
+    } catch {}
+  }, []);
 
   // Remove the problematic DOM manipulation
 
@@ -108,6 +122,14 @@ export default function AISpotRecommendationPage() {
       return;
     }
 
+    // Free quota gating: allow up to 5 searches without account
+    if (!user) {
+      if (freeUses >= FREE_LIMIT) {
+        setShowAuthModal(true);
+        return;
+      }
+    }
+
     setIsLoading(true);
     setRecommendedSpots([]);
     setAiReasoning('');
@@ -143,6 +165,13 @@ export default function AISpotRecommendationPage() {
       setAiReasoning(result.reasoning || '');
       setTotalTime(result.totalTime || '');
       setCurrentThought('完了！最適なプランをご提案します 🎉');
+
+      // Increment free usage if not logged in
+      if (!user) {
+        const next = freeUses + 1;
+        setFreeUses(next);
+        try { localStorage.setItem('ai-spots-free-uses', String(next)); } catch {}
+      }
     } catch (error) {
       console.error('Error fetching recommendations:', error);
       setCurrentThought('エラーが発生しました。再度お試しください。');
@@ -152,7 +181,8 @@ export default function AISpotRecommendationPage() {
   };
 
   return (
-    <AuthGuard>
+    // Allow viewing without login; enforce quota at action level
+    <AuthGuard requireAuth={false}>
       <div className="animated-bg"></div>
       <SakuraBackground />
       
@@ -169,6 +199,21 @@ export default function AISpotRecommendationPage() {
               <p className="section-subtitle" style={{ color: 'black', marginBottom: '60px' }}>
                 あなたの好みに合わせて、AIが最適な観光スポットをご提案します
               </p>
+              {!user && (
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  background: 'rgba(79, 172, 254, 0.12)',
+                  border: '1px solid rgba(79, 172, 254, 0.35)',
+                  padding: '10px 14px',
+                  borderRadius: '12px',
+                  color: '#0b3c5d',
+                  fontWeight: 600
+                }}>
+                  無料体験: 残り {Math.max(0, FREE_LIMIT - freeUses)} 回（会員登録で無制限）
+                </div>
+              )}
             </div>
 
             <div style={{
@@ -419,6 +464,11 @@ export default function AISpotRecommendationPage() {
                     </>
                   )}
                 </button>
+                {!user && freeUses >= FREE_LIMIT && (
+                  <p style={{ textAlign: 'center', marginTop: '12px', color: 'rgba(0,0,0,0.8)' }}>
+                    無料体験は終了しました。<a href="/register" style={{ color: '#2563eb', textDecoration: 'underline' }}>会員登録</a>で無制限にご利用いただけます。
+                  </p>
+                )}
               </div>
             </div>
 
@@ -687,6 +737,7 @@ export default function AISpotRecommendationPage() {
           </div>
         </div>
       </section>
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} initialMode="register" />
     </AuthGuard>
   );
 }

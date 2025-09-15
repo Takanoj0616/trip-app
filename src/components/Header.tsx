@@ -113,10 +113,11 @@ const Header: React.FC = () => {
             <i className="fas fa-route"></i>
             <span data-translate="nav.courses">{t('nav.courses')}</span>
           </Link>
-          <AuthRequiredLink href="/ai-spots" className="nav-link">
+          {/* ai-spots は5回まで無料体験を許可するため、認証必須リンクを解除 */}
+          <Link href="/ai-spots" className="nav-link">
             <i className="fas fa-brain"></i>
             <span data-translate="nav.ai-spots">{t('nav.ai-spots')}</span>
-          </AuthRequiredLink>
+          </Link>
           <AuthRequiredLink href="/coordinator" className="nav-link">
             <i className="fas fa-users"></i>
             <span data-translate="nav.coordinator">{t('nav.coordinator')}</span>
@@ -261,7 +262,8 @@ const Header: React.FC = () => {
               <nav className="mobile-drawer__nav">
                 <Link href="/areas" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.areas')}</Link>
                 <Link href="/courses" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.courses')}</Link>
-                <AuthRequiredLink href="/ai-spots" onClick={() => setMobileOpen(false)} className="mobile-link">AI</AuthRequiredLink>
+                {/* 5回まで無料体験のため、こちらも通常リンクに変更 */}
+                <Link href="/ai-spots" onClick={() => setMobileOpen(false)} className="mobile-link">AI</Link>
                 <AuthRequiredLink href="/coordinator" onClick={() => setMobileOpen(false)} className="mobile-link">Coordinator</AuthRequiredLink>
                 <Link href="/qna" onClick={() => setMobileOpen(false)} className="mobile-link">Q&A</Link>
                 <Link href="/realtime" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.realtime')}</Link>
