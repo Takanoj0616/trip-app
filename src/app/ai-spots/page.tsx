@@ -7,6 +7,7 @@ import SakuraBackground from '@/components/SakuraBackground';
 import AuthGuard from '@/components/AuthGuard';
 import { useAuth } from '@/contexts/AuthContext';
 import AuthModal from '@/components/AuthModal';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface RecommendationForm {
   interests: string[];
@@ -39,6 +40,7 @@ interface RecommendedSpot extends TouristSpot {
 export default function AISpotRecommendationPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<RecommendationForm>({
     interests: [],
     budget: '',
@@ -66,38 +68,38 @@ export default function AISpotRecommendationPage() {
   // Remove the problematic DOM manipulation
 
   const interests = [
-    { id: 'anime', label: 'アニメ・漫画', icon: '🎌', color: '#FF6B9D' },
-    { id: 'history', label: '歴史・文化', icon: '🏛️', color: '#C77DFF' },
-    { id: 'nature', label: '自然・風景', icon: '🌸', color: '#7BC950' },
-    { id: 'gourmet', label: 'グルメ', icon: '🍜', color: '#FF8C42' },
-    { id: 'shopping', label: 'ショッピング', icon: '🛍️', color: '#4ECDC4' },
-    { id: 'onsen', label: '温泉', icon: '♨️', color: '#45B7D1' },
-    { id: 'art', label: 'アート・美術館', icon: '🎨', color: '#96CEB4' }
+    { id: 'anime', labelKey: 'aiSpots.interests.anime', icon: '🎌', color: '#FF6B9D' },
+    { id: 'history', labelKey: 'aiSpots.interests.history', icon: '🏛️', color: '#C77DFF' },
+    { id: 'nature', labelKey: 'aiSpots.interests.nature', icon: '🌸', color: '#7BC950' },
+    { id: 'gourmet', labelKey: 'aiSpots.interests.gourmet', icon: '🍜', color: '#FF8C42' },
+    { id: 'shopping', labelKey: 'aiSpots.interests.shopping', icon: '🛍️', color: '#4ECDC4' },
+    { id: 'onsen', labelKey: 'aiSpots.interests.onsen', icon: '♨️', color: '#45B7D1' },
+    { id: 'art', labelKey: 'aiSpots.interests.art', icon: '🎨', color: '#96CEB4' }
   ];
 
   const budgetOptions = [
-    { id: 'budget', label: '節約 (1人あたり5,000円以下)', icon: '💰' },
-    { id: 'standard', label: '標準 (1人あたり10,000円)', icon: '💳' },
-    { id: 'luxury', label: 'プレミアム (1人あたり20,000円以上)', icon: '👑' }
+    { id: 'budget', labelKey: 'aiSpots.budget.budget', icon: '💰' },
+    { id: 'standard', labelKey: 'aiSpots.budget.standard', icon: '💳' },
+    { id: 'luxury', labelKey: 'aiSpots.budget.luxury', icon: '👑' }
   ];
 
   const durationOptions = [
-    { id: 'half-day', label: '半日 (3-4時間)', icon: '🕐' },
-    { id: 'full-day', label: '1日 (8-10時間)', icon: '🕘' },
-    { id: 'multi-day', label: '2-3日', icon: '📅' },
-    { id: 'week', label: '1週間以上', icon: '🗓️' }
+    { id: 'half-day', labelKey: 'aiSpots.duration.halfDay', icon: '🕐' },
+    { id: 'full-day', labelKey: 'aiSpots.duration.fullDay', icon: '🕘' },
+    { id: 'multi-day', labelKey: 'aiSpots.duration.multiDay', icon: '📅' },
+    { id: 'week', labelKey: 'aiSpots.duration.week', icon: '🗓️' }
   ];
 
   const areaOptions = [
-    { id: 'shibuya', label: '渋谷・原宿', description: '若者文化の中心地' },
-    { id: 'shinjuku', label: '新宿', description: 'ビジネス街とエンターテイメント' },
-    { id: 'ginza', label: '銀座・有楽町', description: '高級ショッピングエリア' },
-    { id: 'asakusa', label: '浅草・上野', description: '伝統的な下町文化' },
-    { id: 'akihabara', label: '秋葉原', description: 'アニメ・電気街' },
-    { id: 'roppongi', label: '六本木・赤坂', description: 'アートとナイトライフ' },
-    { id: 'odaiba', label: 'お台場', description: '近未来的な臨海エリア' },
-    { id: 'tsukiji', label: '築地・豊洲', description: 'グルメと市場' },
-    { id: 'yokohama', label: '横浜', description: '港町の魅力' }
+    { id: 'shibuya', labelKey: 'aiSpots.area.shibuya', descKey: 'aiSpots.area.shibuya.desc' },
+    { id: 'shinjuku', labelKey: 'aiSpots.area.shinjuku', descKey: 'aiSpots.area.shinjuku.desc' },
+    { id: 'ginza', labelKey: 'aiSpots.area.ginza', descKey: 'aiSpots.area.ginza.desc' },
+    { id: 'asakusa', labelKey: 'aiSpots.area.asakusa', descKey: 'aiSpots.area.asakusa.desc' },
+    { id: 'akihabara', labelKey: 'aiSpots.area.akihabara', descKey: 'aiSpots.area.akihabara.desc' },
+    { id: 'roppongi', labelKey: 'aiSpots.area.roppongi', descKey: 'aiSpots.area.roppongi.desc' },
+    { id: 'odaiba', labelKey: 'aiSpots.area.odaiba', descKey: 'aiSpots.area.odaiba.desc' },
+    { id: 'tsukiji', labelKey: 'aiSpots.area.tsukiji', descKey: 'aiSpots.area.tsukiji.desc' },
+    { id: 'yokohama', labelKey: 'aiSpots.area.yokohama', descKey: 'aiSpots.area.yokohama.desc' }
   ];
 
   const handleInterestToggle = (interestId: string) => {
@@ -194,10 +196,10 @@ export default function AISpotRecommendationPage() {
             <div className="text-center mb-12">
               <h1 className="section-title" style={{ color: 'black', marginBottom: '20px' }}>
                 <Sparkles className="inline mr-3" size={32} style={{ color: '#FF6B9D' }} />
-                AIおすすめスポット
+                {t('aiSpots.title')}
               </h1>
               <p className="section-subtitle" style={{ color: 'black', marginBottom: '60px' }}>
-                あなたの好みに合わせて、AIが最適な観光スポットをご提案します
+                {t('aiSpots.subtitle')}
               </p>
               {!user && (
                 <div style={{
@@ -211,7 +213,7 @@ export default function AISpotRecommendationPage() {
                   color: '#0b3c5d',
                   fontWeight: 600
                 }}>
-                  無料体験: 残り {Math.max(0, FREE_LIMIT - freeUses)} 回（会員登録で無制限）
+                  {t('aiSpots.freeTrial').replace('{count}', Math.max(0, FREE_LIMIT - freeUses).toString())}
                 </div>
               )}
             </div>
@@ -233,14 +235,14 @@ export default function AISpotRecommendationPage() {
                   fontWeight: '700',
                   marginBottom: '20px'
                 }}>
-                  どんなことに興味がありますか？
+                  {t('aiSpots.interestsTitle')}
                 </h2>
                 <p style={{
                   color: 'rgba(0, 0, 0, 0.7)',
                   fontSize: '14px',
                   marginBottom: '20px'
                 }}>
-                  例: アニメ、自然、歴史的建造物
+                  {t('aiSpots.interestsExample')}
                 </p>
                 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -270,7 +272,7 @@ export default function AISpotRecommendationPage() {
                       }}
                     >
                       <span style={{ fontSize: '24px' }}>{interest.icon}</span>
-                      {interest.label}
+                      {t(interest.labelKey)}
                     </button>
                   ))}
                 </div>
@@ -284,14 +286,14 @@ export default function AISpotRecommendationPage() {
                   fontWeight: '700',
                   marginBottom: '20px'
                 }}>
-                  予算
+                  {t('aiSpots.budgetTitle')}
                 </h2>
                 <p style={{
                   color: 'rgba(0, 0, 0, 0.7)',
                   fontSize: '14px',
                   marginBottom: '20px'
                 }}>
-                  例: 1人あたり5,000円
+                  {t('aiSpots.budgetExample')}
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -319,7 +321,7 @@ export default function AISpotRecommendationPage() {
                       <span style={{ fontSize: '24px', display: 'block', marginBottom: '8px' }}>
                         {budget.icon}
                       </span>
-                      {budget.label}
+                      {t(budget.labelKey)}
                     </button>
                   ))}
                 </div>
@@ -333,14 +335,14 @@ export default function AISpotRecommendationPage() {
                   fontWeight: '700',
                   marginBottom: '20px'
                 }}>
-                  滞在日数
+                  {t('aiSpots.durationTitle')}
                 </h2>
                 <p style={{
                   color: 'rgba(0, 0, 0, 0.7)',
                   fontSize: '14px',
                   marginBottom: '20px'
                 }}>
-                  例: 3日間
+                  {t('aiSpots.durationExample')}
                 </p>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -368,7 +370,7 @@ export default function AISpotRecommendationPage() {
                       <span style={{ fontSize: '20px', display: 'block', marginBottom: '8px' }}>
                         {duration.icon}
                       </span>
-                      {duration.label}
+                      {t(duration.labelKey)}
                     </button>
                   ))}
                 </div>
@@ -382,14 +384,14 @@ export default function AISpotRecommendationPage() {
                   fontWeight: '700',
                   marginBottom: '20px'
                 }}>
-                  どのエリアに行きたいですか？
+                  {t('aiSpots.areaTitle')}
                 </h2>
                 <p style={{
                   color: 'rgba(0, 0, 0, 0.7)',
                   fontSize: '14px',
                   marginBottom: '20px'
                 }}>
-                  例: 渋谷、新宿、秋葉原
+                  {t('aiSpots.areaExample')}
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -415,14 +417,14 @@ export default function AISpotRecommendationPage() {
                       }}
                     >
                       <div style={{ fontWeight: '700', marginBottom: '4px' }}>
-                        {area.label}
+                        {t(area.labelKey)}
                       </div>
                       <div style={{ 
                         fontSize: '12px', 
                         opacity: 0.7,
                         fontWeight: '400'
                       }}>
-                        {area.description}
+                        {t(area.descKey)}
                       </div>
                     </button>
                   ))}
@@ -455,18 +457,18 @@ export default function AISpotRecommendationPage() {
                   {isLoading ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      AI分析中...
+                      {t('aiSpots.searchingButton')}
                     </>
                   ) : (
                     <>
                       <Search size={20} />
-                      おすすめを検索
+                      {t('aiSpots.searchButton')}
                     </>
                   )}
                 </button>
                 {!user && freeUses >= FREE_LIMIT && (
                   <p style={{ textAlign: 'center', marginTop: '12px', color: 'rgba(0,0,0,0.8)' }}>
-                    無料体験は終了しました。<a href="/register" style={{ color: '#2563eb', textDecoration: 'underline' }}>会員登録</a>で無制限にご利用いただけます。
+                    <span dangerouslySetInnerHTML={{ __html: t('aiSpots.freeTrialEnded') }} />
                   </p>
                 )}
               </div>

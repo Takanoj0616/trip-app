@@ -1,11 +1,14 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface LanguageContextType {
   currentLanguage: string;
   setCurrentLanguage: (language: string) => void;
   t: (key: string) => string;
+  isRTL: boolean;
+  changeLanguage: (language: string) => void;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -208,6 +211,62 @@ const translations = {
     'lang.en': 'English',
     'lang.ko': '한국어',
     'lang.zh': '中文',
+
+    // AI Spots page
+    'aiSpots.title': 'توصيات الذكاء الاصطناعي',
+    'aiSpots.subtitle': 'يقترح الذكاء الاصطناعي أفضل الأماكن السياحية بناءً على تفضيلاتك',
+    'aiSpots.freeTrial': 'تجربة مجانية: متبقية {count} مرات (تسجيل عضوية للاستخدام غير المحدود)',
+    'aiSpots.freeTrialEnded': 'انتهت التجربة المجانية. <a href="/register" style="color: #2563eb; text-decoration: underline;">تسجيل العضوية</a> للاستخدام غير المحدود.',
+    'aiSpots.interestsTitle': 'ما الذي يثير اهتمامك؟',
+    'aiSpots.interestsExample': 'مثال: الأنمي، الطبيعة، المباني التاريخية',
+    'aiSpots.budgetTitle': 'الميزانية',
+    'aiSpots.budgetExample': 'مثال: 5000 ين لكل شخص',
+    'aiSpots.durationTitle': 'مدة الإقامة',
+    'aiSpots.durationExample': 'مثال: 3 أيام',
+    'aiSpots.areaTitle': 'أي منطقة تريد الذهاب إليها؟',
+    'aiSpots.areaExample': 'مثال: شيبويا، شينجوكو، أكيهابارا',
+    'aiSpots.searchButton': 'البحث عن التوصيات',
+    'aiSpots.searchingButton': 'تحليل الذكاء الاصطناعي...',
+
+    // Interest categories
+    'aiSpots.interests.anime': 'الأنمي والمانجا',
+    'aiSpots.interests.history': 'التاريخ والثقافة',
+    'aiSpots.interests.nature': 'الطبيعة والمناظر',
+    'aiSpots.interests.gourmet': 'الطعام',
+    'aiSpots.interests.shopping': 'التسوق',
+    'aiSpots.interests.onsen': 'الينابيع الساخنة',
+    'aiSpots.interests.art': 'الفن والمتاحف',
+
+    // Budget options
+    'aiSpots.budget.budget': 'توفير (أقل من 5000 ين للشخص)',
+    'aiSpots.budget.standard': 'عادي (10000 ين للشخص)',
+    'aiSpots.budget.luxury': 'فاخر (أكثر من 20000 ين للشخص)',
+
+    // Duration options
+    'aiSpots.duration.halfDay': 'نصف يوم (3-4 ساعات)',
+    'aiSpots.duration.fullDay': 'يوم كامل (8-10 ساعات)',
+    'aiSpots.duration.multiDay': '2-3 أيام',
+    'aiSpots.duration.week': 'أسبوع أو أكثر',
+
+    // Area options
+    'aiSpots.area.shibuya': 'شيبويا وهاراجوكو',
+    'aiSpots.area.shibuya.desc': 'مركز ثقافة الشباب',
+    'aiSpots.area.shinjuku': 'شينجوكو',
+    'aiSpots.area.shinjuku.desc': 'منطقة الأعمال والترفيه',
+    'aiSpots.area.ginza': 'جينزا ويوراكوتشو',
+    'aiSpots.area.ginza.desc': 'منطقة التسوق الفاخرة',
+    'aiSpots.area.asakusa': 'أساكوسا وأوينو',
+    'aiSpots.area.asakusa.desc': 'ثقافة الأحياء التقليدية',
+    'aiSpots.area.akihabara': 'أكيهابارا',
+    'aiSpots.area.akihabara.desc': 'منطقة الأنمي والإلكترونيات',
+    'aiSpots.area.roppongi': 'روبونجي وأكاساكا',
+    'aiSpots.area.roppongi.desc': 'الفن والحياة الليلية',
+    'aiSpots.area.odaiba': 'أودايبا',
+    'aiSpots.area.odaiba.desc': 'منطقة ساحلية مستقبلية',
+    'aiSpots.area.tsukiji': 'تسوكيجي وتويوسو',
+    'aiSpots.area.tsukiji.desc': 'الطعام والأسواق',
+    'aiSpots.area.yokohama': 'يوكوهاما',
+    'aiSpots.area.yokohama.desc': 'سحر مدينة الميناء',
   },
   en: {
     // Navigation
@@ -558,6 +617,62 @@ const translations = {
     'lang.en': 'English',
     'lang.ko': '한국어',
     'lang.zh': '中文',
+
+    // AI Spots page
+    'aiSpots.title': 'AI Spot Recommendations',
+    'aiSpots.subtitle': 'AI suggests the best tourist spots based on your preferences',
+    'aiSpots.freeTrial': 'Free trial: {count} remaining (unlimited with membership)',
+    'aiSpots.freeTrialEnded': 'Free trial ended. <a href="/register" style="color: #2563eb; text-decoration: underline;">Register</a> for unlimited use.',
+    'aiSpots.interestsTitle': 'What are you interested in?',
+    'aiSpots.interestsExample': 'e.g., Anime, Nature, Historical buildings',
+    'aiSpots.budgetTitle': 'Budget',
+    'aiSpots.budgetExample': 'e.g., 5,000 yen per person',
+    'aiSpots.durationTitle': 'Duration of stay',
+    'aiSpots.durationExample': 'e.g., 3 days',
+    'aiSpots.areaTitle': 'Which area would you like to visit?',
+    'aiSpots.areaExample': 'e.g., Shibuya, Shinjuku, Akihabara',
+    'aiSpots.searchButton': 'Search for recommendations',
+    'aiSpots.searchingButton': 'AI analyzing...',
+
+    // Interest categories
+    'aiSpots.interests.anime': 'Anime & Manga',
+    'aiSpots.interests.history': 'History & Culture',
+    'aiSpots.interests.nature': 'Nature & Scenery',
+    'aiSpots.interests.gourmet': 'Gourmet',
+    'aiSpots.interests.shopping': 'Shopping',
+    'aiSpots.interests.onsen': 'Hot Springs',
+    'aiSpots.interests.art': 'Art & Museums',
+
+    // Budget options
+    'aiSpots.budget.budget': 'Budget (under 5,000 yen per person)',
+    'aiSpots.budget.standard': 'Standard (10,000 yen per person)',
+    'aiSpots.budget.luxury': 'Premium (over 20,000 yen per person)',
+
+    // Duration options
+    'aiSpots.duration.halfDay': 'Half day (3-4 hours)',
+    'aiSpots.duration.fullDay': 'Full day (8-10 hours)',
+    'aiSpots.duration.multiDay': '2-3 days',
+    'aiSpots.duration.week': '1 week or more',
+
+    // Area options
+    'aiSpots.area.shibuya': 'Shibuya & Harajuku',
+    'aiSpots.area.shibuya.desc': 'Youth culture center',
+    'aiSpots.area.shinjuku': 'Shinjuku',
+    'aiSpots.area.shinjuku.desc': 'Business district and entertainment',
+    'aiSpots.area.ginza': 'Ginza & Yurakucho',
+    'aiSpots.area.ginza.desc': 'High-end shopping area',
+    'aiSpots.area.asakusa': 'Asakusa & Ueno',
+    'aiSpots.area.asakusa.desc': 'Traditional downtown culture',
+    'aiSpots.area.akihabara': 'Akihabara',
+    'aiSpots.area.akihabara.desc': 'Anime & electronics district',
+    'aiSpots.area.roppongi': 'Roppongi & Akasaka',
+    'aiSpots.area.roppongi.desc': 'Art and nightlife',
+    'aiSpots.area.odaiba': 'Odaiba',
+    'aiSpots.area.odaiba.desc': 'Futuristic waterfront area',
+    'aiSpots.area.tsukiji': 'Tsukiji & Toyosu',
+    'aiSpots.area.tsukiji.desc': 'Gourmet and markets',
+    'aiSpots.area.yokohama': 'Yokohama',
+    'aiSpots.area.yokohama.desc': 'Port city charm',
   },
   ja: {
     // Navigation
@@ -891,6 +1006,62 @@ const translations = {
     'lang.en': 'English',
     'lang.ko': '한국어',
     'lang.zh': '中文',
+
+    // AI Spots page
+    'aiSpots.title': 'AIおすすめスポット',
+    'aiSpots.subtitle': 'あなたの好みに合わせて、AIが最適な観光スポットをご提案します',
+    'aiSpots.freeTrial': '無料体験: 残り {count} 回（会員登録で無制限）',
+    'aiSpots.freeTrialEnded': '無料体験は終了しました。<a href="/register" style="color: #2563eb; text-decoration: underline;">会員登録</a>で無制限にご利用いただけます。',
+    'aiSpots.interestsTitle': 'どんなことに興味がありますか？',
+    'aiSpots.interestsExample': '例: アニメ、自然、歴史的建造物',
+    'aiSpots.budgetTitle': '予算',
+    'aiSpots.budgetExample': '例: 1人あたり5,000円',
+    'aiSpots.durationTitle': '滞在日数',
+    'aiSpots.durationExample': '例: 3日間',
+    'aiSpots.areaTitle': 'どのエリアに行きたいですか？',
+    'aiSpots.areaExample': '例: 渋谷、新宿、秋葉原',
+    'aiSpots.searchButton': 'おすすめを検索',
+    'aiSpots.searchingButton': 'AI分析中...',
+
+    // Interest categories
+    'aiSpots.interests.anime': 'アニメ・漫画',
+    'aiSpots.interests.history': '歴史・文化',
+    'aiSpots.interests.nature': '自然・風景',
+    'aiSpots.interests.gourmet': 'グルメ',
+    'aiSpots.interests.shopping': 'ショッピング',
+    'aiSpots.interests.onsen': '温泉',
+    'aiSpots.interests.art': 'アート・美術館',
+
+    // Budget options
+    'aiSpots.budget.budget': '節約 (1人あたり5,000円以下)',
+    'aiSpots.budget.standard': '標準 (1人あたり10,000円)',
+    'aiSpots.budget.luxury': 'プレミアム (1人あたり20,000円以上)',
+
+    // Duration options
+    'aiSpots.duration.halfDay': '半日 (3-4時間)',
+    'aiSpots.duration.fullDay': '1日 (8-10時間)',
+    'aiSpots.duration.multiDay': '2-3日',
+    'aiSpots.duration.week': '1週間以上',
+
+    // Area options
+    'aiSpots.area.shibuya': '渋谷・原宿',
+    'aiSpots.area.shibuya.desc': '若者文化の中心地',
+    'aiSpots.area.shinjuku': '新宿',
+    'aiSpots.area.shinjuku.desc': 'ビジネス街とエンターテイメント',
+    'aiSpots.area.ginza': '銀座・有楽町',
+    'aiSpots.area.ginza.desc': '高級ショッピングエリア',
+    'aiSpots.area.asakusa': '浅草・上野',
+    'aiSpots.area.asakusa.desc': '伝統的な下町文化',
+    'aiSpots.area.akihabara': '秋葉原',
+    'aiSpots.area.akihabara.desc': 'アニメ・電気街',
+    'aiSpots.area.roppongi': '六本木・赤坂',
+    'aiSpots.area.roppongi.desc': 'アートとナイトライフ',
+    'aiSpots.area.odaiba': 'お台場',
+    'aiSpots.area.odaiba.desc': '近未来的な臨海エリア',
+    'aiSpots.area.tsukiji': '築地・豊洲',
+    'aiSpots.area.tsukiji.desc': 'グルメと市場',
+    'aiSpots.area.yokohama': '横浜',
+    'aiSpots.area.yokohama.desc': '港町の魅力',
   },
   ko: {
     // Navigation
@@ -1188,6 +1359,62 @@ const translations = {
     'lang.en': 'English',
     'lang.ko': '한국어',
     'lang.zh': '中文',
+
+    // AI Spots page
+    'aiSpots.title': 'AI 추천 명소',
+    'aiSpots.subtitle': 'AI가 당신의 취향에 맞는 최적의 관광지를 추천합니다',
+    'aiSpots.freeTrial': '무료 체험: {count}회 남음 (회원가입시 무제한)',
+    'aiSpots.freeTrialEnded': '무료 체험이 종료되었습니다. <a href="/register" style="color: #2563eb; text-decoration: underline;">회원가입</a>으로 무제한 이용하세요.',
+    'aiSpots.interestsTitle': '어떤 것에 관심이 있으신가요?',
+    'aiSpots.interestsExample': '예: 애니메이션, 자연, 역사적 건물',
+    'aiSpots.budgetTitle': '예산',
+    'aiSpots.budgetExample': '예: 1인당 5,000엔',
+    'aiSpots.durationTitle': '체류 기간',
+    'aiSpots.durationExample': '예: 3일',
+    'aiSpots.areaTitle': '어느 지역에 가고 싶으신가요?',
+    'aiSpots.areaExample': '예: 시부야, 신주쿠, 아키하바라',
+    'aiSpots.searchButton': '추천 검색',
+    'aiSpots.searchingButton': 'AI 분석 중...',
+
+    // Interest categories
+    'aiSpots.interests.anime': '애니메이션·만화',
+    'aiSpots.interests.history': '역사·문화',
+    'aiSpots.interests.nature': '자연·풍경',
+    'aiSpots.interests.gourmet': '미식',
+    'aiSpots.interests.shopping': '쇼핑',
+    'aiSpots.interests.onsen': '온천',
+    'aiSpots.interests.art': '예술·미술관',
+
+    // Budget options
+    'aiSpots.budget.budget': '절약 (1인당 5,000엔 이하)',
+    'aiSpots.budget.standard': '표준 (1인당 10,000엔)',
+    'aiSpots.budget.luxury': '프리미엄 (1인당 20,000엔 이상)',
+
+    // Duration options
+    'aiSpots.duration.halfDay': '반나절 (3-4시간)',
+    'aiSpots.duration.fullDay': '하루 (8-10시간)',
+    'aiSpots.duration.multiDay': '2-3일',
+    'aiSpots.duration.week': '1주일 이상',
+
+    // Area options
+    'aiSpots.area.shibuya': '시부야·하라주쿠',
+    'aiSpots.area.shibuya.desc': '젊은이 문화의 중심지',
+    'aiSpots.area.shinjuku': '신주쿠',
+    'aiSpots.area.shinjuku.desc': '비즈니스 거리와 엔터테인먼트',
+    'aiSpots.area.ginza': '긴자·유라쿠초',
+    'aiSpots.area.ginza.desc': '고급 쇼핑 지역',
+    'aiSpots.area.asakusa': '아사쿠사·우에노',
+    'aiSpots.area.asakusa.desc': '전통적인 시민가 문화',
+    'aiSpots.area.akihabara': '아키하바라',
+    'aiSpots.area.akihabara.desc': '애니메이션·전자상가',
+    'aiSpots.area.roppongi': '롯폰기·아카사카',
+    'aiSpots.area.roppongi.desc': '예술과 나이트라이프',
+    'aiSpots.area.odaiba': '오다이바',
+    'aiSpots.area.odaiba.desc': '미래형 해안 지역',
+    'aiSpots.area.tsukiji': '츠키지·토요스',
+    'aiSpots.area.tsukiji.desc': '미식과 시장',
+    'aiSpots.area.yokohama': '요코하마',
+    'aiSpots.area.yokohama.desc': '항구 도시의 매력',
   },
   fr: {
     // Navigation
@@ -1521,6 +1748,62 @@ const translations = {
     'lang.en': 'English',
     'lang.ko': '한국어',
     'lang.zh': '中文',
+
+    // AI Spots page
+    'aiSpots.title': 'Recommandations IA',
+    'aiSpots.subtitle': 'L\'IA suggère les meilleurs sites touristiques basés sur vos préférences',
+    'aiSpots.freeTrial': 'Essai gratuit: {count} restant (illimité avec adhésion)',
+    'aiSpots.freeTrialEnded': 'Essai gratuit terminé. <a href="/register" style="color: #2563eb; text-decoration: underline;">S\'inscrire</a> pour utilisation illimitée.',
+    'aiSpots.interestsTitle': 'Qu\'est-ce qui vous intéresse?',
+    'aiSpots.interestsExample': 'ex: Anime, Nature, Bâtiments historiques',
+    'aiSpots.budgetTitle': 'Budget',
+    'aiSpots.budgetExample': 'ex: 5 000 yens par personne',
+    'aiSpots.durationTitle': 'Durée du séjour',
+    'aiSpots.durationExample': 'ex: 3 jours',
+    'aiSpots.areaTitle': 'Quelle zone voulez-vous visiter?',
+    'aiSpots.areaExample': 'ex: Shibuya, Shinjuku, Akihabara',
+    'aiSpots.searchButton': 'Rechercher des recommandations',
+    'aiSpots.searchingButton': 'Analyse IA...',
+
+    // Interest categories
+    'aiSpots.interests.anime': 'Anime & Manga',
+    'aiSpots.interests.history': 'Histoire & Culture',
+    'aiSpots.interests.nature': 'Nature & Paysages',
+    'aiSpots.interests.gourmet': 'Gastronomie',
+    'aiSpots.interests.shopping': 'Shopping',
+    'aiSpots.interests.onsen': 'Sources chaudes',
+    'aiSpots.interests.art': 'Art & Musées',
+
+    // Budget options
+    'aiSpots.budget.budget': 'Économique (moins de 5 000 yens par personne)',
+    'aiSpots.budget.standard': 'Standard (10 000 yens par personne)',
+    'aiSpots.budget.luxury': 'Premium (plus de 20 000 yens par personne)',
+
+    // Duration options
+    'aiSpots.duration.halfDay': 'Demi-journée (3-4 heures)',
+    'aiSpots.duration.fullDay': 'Journée complète (8-10 heures)',
+    'aiSpots.duration.multiDay': '2-3 jours',
+    'aiSpots.duration.week': '1 semaine ou plus',
+
+    // Area options
+    'aiSpots.area.shibuya': 'Shibuya & Harajuku',
+    'aiSpots.area.shibuya.desc': 'Centre de la culture jeune',
+    'aiSpots.area.shinjuku': 'Shinjuku',
+    'aiSpots.area.shinjuku.desc': 'Quartier d\'affaires et divertissement',
+    'aiSpots.area.ginza': 'Ginza & Yurakucho',
+    'aiSpots.area.ginza.desc': 'Zone de shopping haut de gamme',
+    'aiSpots.area.asakusa': 'Asakusa & Ueno',
+    'aiSpots.area.asakusa.desc': 'Culture traditionnelle de quartier',
+    'aiSpots.area.akihabara': 'Akihabara',
+    'aiSpots.area.akihabara.desc': 'Quartier anime & électronique',
+    'aiSpots.area.roppongi': 'Roppongi & Akasaka',
+    'aiSpots.area.roppongi.desc': 'Art et vie nocturne',
+    'aiSpots.area.odaiba': 'Odaiba',
+    'aiSpots.area.odaiba.desc': 'Zone côtière futuriste',
+    'aiSpots.area.tsukiji': 'Tsukiji & Toyosu',
+    'aiSpots.area.tsukiji.desc': 'Gastronomie et marchés',
+    'aiSpots.area.yokohama': 'Yokohama',
+    'aiSpots.area.yokohama.desc': 'Charme de la ville portuaire',
   }
 };
 
@@ -1529,17 +1812,47 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [currentLanguage, setCurrentLanguage] = useState('en');
+  const [currentLanguage, setCurrentLanguage] = useState('ja');
+
+  // Get language from URL path
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const pathname = window.location.pathname;
+      const pathSegments = pathname.split('/');
+      const langFromPath = pathSegments[1];
+
+      if (['en', 'fr', 'ko', 'ar'].includes(langFromPath)) {
+        setCurrentLanguage(langFromPath);
+      } else {
+        setCurrentLanguage('ja'); // Default to Japanese
+      }
+    }
+  }, []);
 
   const t = (key: string): string => {
     const translation = translations[currentLanguage as keyof typeof translations];
-    return translation?.[key as keyof typeof translation] || key;
+    const fallbackTranslation = translations['en'];
+    return translation?.[key as keyof typeof translation] ||
+           fallbackTranslation?.[key as keyof typeof fallbackTranslation] ||
+           key;
+  };
+
+  // RTL language support
+  const isRTL = currentLanguage === 'ar';
+
+  // Change language function with route handling
+  const changeLanguage = (language: string) => {
+    setCurrentLanguage(language);
+    // Note: In a real implementation, you might want to use Next.js router
+    // to navigate to the language-specific route
   };
 
   const value = {
     currentLanguage,
     setCurrentLanguage,
     t,
+    isRTL,
+    changeLanguage,
   };
 
   return (
