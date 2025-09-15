@@ -147,7 +147,9 @@ export default function TokyoSpots() {
       console.warn('Firebase is not initialized');
       if (!cachedSpots) {
         setFirestoreLoading(false);
-        setFirebaseSpots(allBookstoreSpots);
+        // Ensure production/dev without Firebase still shows restaurant spots
+        // so the UI matches the development view.
+        setFirebaseSpots([...allBookstoreSpots, ...allRestaurantSpots]);
       }
       return;
     }
@@ -198,7 +200,8 @@ export default function TokyoSpots() {
       } catch (error) {
         console.error('Error fetching spots:', error);
         if (!cachedSpots) {
-          setFirebaseSpots(allBookstoreSpots);
+          // Fallback to bundled JSON so restaurant cards still appear
+          setFirebaseSpots([...allBookstoreSpots, ...allRestaurantSpots]);
         }
         setFirestoreLoading(false);
       }
