@@ -1,3 +1,12 @@
 {
-    "kiroAgent.configureMCP": "Disabled"
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.profiles.osx": {
+    "zsh": {
+      "path": "/bin/zsh",
+      "args": ["-l"]           // ← ログインシェルで起動
+    }
+  },
+  "terminal.integrated.env.osx": {
+    "PATH": "/opt/homebrew/bin:/usr/local/bin:${env:PATH}"  // ← Homebrew を優先
+  }
 }

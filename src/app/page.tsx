@@ -388,7 +388,7 @@ export default function Home() {
             boxShadow: '0 6px 18px rgba(0,0,0,.08)'
           }}>
             <span style={{ color: '#000' }}>🤖 {t('home.aiQuickPitch')}</span>
-            <a href="#ai-plan-home" style={{
+            <a href="/ai-spots" style={{
               background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
               color: 'white',
               padding: '6px 12px',

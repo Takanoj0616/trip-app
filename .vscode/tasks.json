@@ -2,34 +2,24 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Claude: Ask",
+      "label": "Claude: Login",
       "type": "shell",
-      "command": "claude ${input:prompt}",
-      "group": "none",
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated",
-        "clear": false
-      },
-      "problemMatcher": []
+      "command": "zsh",
+      "args": ["-lc", "printf '/login' | /opt/homebrew/bin/claude --print"],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
     },
     {
-      "label": "Claude: Ask (from selection)",
+      "label": "Claude: Ask (prompt)",
       "type": "shell",
-      "command": "claude",
-      "args": [],
-      "options": {
-        "shell": {
-          "executable": "zsh",
-          "args": ["-lc", "pbpaste | claude"]  
-        }
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated",
-        "clear": false
-      },
-      "problemMatcher": []
+      "command": "/opt/homebrew/bin/claude --print \"${input:prompt}\"",
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Claude: Ask (clipboard)",
+      "type": "shell",
+      "command": "zsh",
+      "args": ["-lc", "pbpaste | /opt/homebrew/bin/claude --print"],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
     }
   ],
   "inputs": [
