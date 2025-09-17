@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import MainContent from '@/app/spots/[id]/MainContent';
+import SuspenseWrapper from '@/components/SuspenseWrapper';
 import { allRestaurantSpots } from '@/data/tokyo-restaurant-spots';
 import { hotelSpots } from '@/data/hotel-spots';
 import { kanngouSpots } from '@/data/kankou-spots';
@@ -49,7 +50,11 @@ export default async function SpotDetailPage({ params }: Props) {
     notFound();
   }
 
-  return <MainContent spot={spot} locale="fr" />;
+  return (
+    <SuspenseWrapper>
+      <MainContent spot={spot} locale="fr" />
+    </SuspenseWrapper>
+  );
 }
 
 export async function generateStaticParams() {

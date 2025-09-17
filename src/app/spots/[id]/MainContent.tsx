@@ -144,40 +144,15 @@ export default function MainContent({
     ({ addSpot, selectedSpots: selectedSpotsFromCtx } = useRoute() as any);
   } catch { }
 
-  // i18n labels（URLの ?lang が優先、なければ props → ja）
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-  const { currentLanguage: ctxLang, setCurrentLanguage } = useLanguage();
-  const langParam = searchParams?.get('lang');
-  const lang = (langParam || _language || (ctxLang as string) || 'ja') as 'ja' | 'en' | 'ko' | 'fr' | 'ar';
+  // i18n labels（propsのlocaleを優先、それでもなければデフォルト）
+  const [currentLang, setCurrentLang] = useState<string>(locale || _language || 'ja');
+  const lang = currentLang as 'ja' | 'en' | 'ko' | 'fr' | 'ar';
 
-  // Sync rule:
-  // - If URL has ?lang, treat it as source of truth and update context to it.
-  // - If URL doesn't have ?lang, reflect context to URL.
-  const didInitLangSync = useRef(false);
-  useEffect(() => {
-    const urlLang = searchParams?.get('lang');
-    // 1) 初回だけ: URLにlangがあればコンテキストへ反映
-    if (!didInitLangSync.current) {
-      didInitLangSync.current = true;
-      if (urlLang && urlLang !== ctxLang) {
-        setCurrentLanguage(urlLang);
-      } else if (!urlLang && ctxLang) {
-        // URLに無ければ現在の言語をURLへ反映
-        const sp = new URLSearchParams(searchParams?.toString());
-        sp.set('lang', ctxLang as string);
-        router.replace(`${pathname}?${sp.toString()}`, { scroll: false });
-      }
-      return;
-    }
-    // 2) 以降: ヘッダーの切替（ctxLang）が発生したらURLを更新
-    if (ctxLang && urlLang !== ctxLang) {
-      const sp = new URLSearchParams(searchParams?.toString());
-      sp.set('lang', ctxLang as string);
-      router.replace(`${pathname}?${sp.toString()}`, { scroll: false });
-    }
-  }, [ctxLang, langParam]);
+  const handleLanguageChange = (newLang: string) => {
+    setCurrentLang(newLang);
+  };
+
+  // 言語設定はpropsから取得（SSG対応）
   const dicts = {
     ja: {
       gallery: '写真ギャラリー',
