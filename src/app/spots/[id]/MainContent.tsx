@@ -148,6 +148,13 @@ export default function MainContent({
   const [currentLang, setCurrentLang] = useState<string>(locale || _language || 'ja');
   const lang = currentLang as 'ja' | 'en' | 'ko' | 'fr' | 'ar';
 
+  // localeプロパティが変更された時に言語状態を更新
+  useEffect(() => {
+    if (locale && locale !== currentLang) {
+      setCurrentLang(locale);
+    }
+  }, [locale, currentLang]);
+
   const handleLanguageChange = (newLang: string) => {
     setCurrentLang(newLang);
   };

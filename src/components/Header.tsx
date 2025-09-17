@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import AuthRequiredLink from './AuthRequiredLink';
@@ -17,9 +18,48 @@ const Header: React.FC = () => {
   const { user, loading, logout, signIn, signUp, signInWithGoogle } = useAuth();
   const { currentLanguage, setCurrentLanguage, t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   // フランス語ボタンを常に表示するため、isLocalhostの判定を削除
   const isLocalhost = true;
+
+  // パスベース言語切り替え関数
+  const handleLanguageChange = (newLang: string) => {
+    const currentLang = getCurrentLanguageFromPath(pathname);
+    let newPath = pathname;
+
+    if (currentLang === 'ja') {
+      // 日本語（デフォルト）から他の言語へ
+      if (newLang !== 'ja') {
+        newPath = `/${newLang}${pathname}`;
+      }
+    } else {
+      // 他の言語から
+      if (newLang === 'ja') {
+        // 日本語（デフォルト）へ - プレフィックスを削除
+        newPath = pathname.replace(`/${currentLang}`, '') || '/';
+      } else {
+        // 他の言語へ - プレフィックスを置換
+        newPath = pathname.replace(`/${currentLang}`, `/${newLang}`);
+      }
+    }
+
+    // ナビゲーションとコンテキスト更新
+    setCurrentLanguage(newLang);
+    router.push(newPath);
+  };
+
+  // パスから現在の言語を取得
+  const getCurrentLanguageFromPath = (path: string): string => {
+    const segments = path.split('/').filter(Boolean);
+    const locales = ['en', 'ko', 'fr', 'ar'];
+
+    if (segments.length > 0 && locales.includes(segments[0])) {
+      return segments[0];
+    }
+    return 'ja'; // デフォルト
+  };
 
   const resetAuthForm = () => {
     setEmail('');
@@ -201,32 +241,32 @@ const Header: React.FC = () => {
             )}
 
             <div className="lang-selector">
-              <button 
-                onClick={() => setCurrentLanguage('ja')}
+              <button
+                onClick={() => handleLanguageChange('ja')}
                 className={`lang-btn ${currentLanguage === 'ja' ? 'active' : ''}`}
                 data-lang="ja"
                 suppressHydrationWarning
               >
                 日本語
               </button>
-              <button 
-                onClick={() => setCurrentLanguage('en')}
+              <button
+                onClick={() => handleLanguageChange('en')}
                 className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
                 data-lang="en"
                 suppressHydrationWarning
               >
                 English
               </button>
-              <button 
-                onClick={() => setCurrentLanguage('ko')}
+              <button
+                onClick={() => handleLanguageChange('ko')}
                 className={`lang-btn ${currentLanguage === 'ko' ? 'active' : ''}`}
                 data-lang="ko"
                 suppressHydrationWarning
               >
                 한국어
               </button>
-              <button 
-                onClick={() => setCurrentLanguage('ar')}
+              <button
+                onClick={() => handleLanguageChange('ar')}
                 className={`lang-btn ${currentLanguage === 'ar' ? 'active' : ''}`}
                 data-lang="ar"
                 suppressHydrationWarning
@@ -234,8 +274,8 @@ const Header: React.FC = () => {
                 العربية
               </button>
               {isLocalhost && (
-                <button 
-                  onClick={() => setCurrentLanguage('fr')}
+                <button
+                  onClick={() => handleLanguageChange('fr')}
                   className={`lang-btn ${currentLanguage === 'fr' ? 'active' : ''}`}
                   data-lang="fr"
                   suppressHydrationWarning
@@ -272,12 +312,12 @@ const Header: React.FC = () => {
               </nav>
 
               <div className="mobile-drawer__languages">
-                <button onClick={() => { setCurrentLanguage('ja'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'ja' ? 'active' : ''}`}>日本語</button>
-                <button onClick={() => { setCurrentLanguage('en'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}>English</button>
-                <button onClick={() => { setCurrentLanguage('ko'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'ko' ? 'active' : ''}`}>한국어</button>
-                <button onClick={() => { setCurrentLanguage('ar'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'ar' ? 'active' : ''}`}>العربية</button>
+                <button onClick={() => { handleLanguageChange('ja'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'ja' ? 'active' : ''}`}>日本語</button>
+                <button onClick={() => { handleLanguageChange('en'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}>English</button>
+                <button onClick={() => { handleLanguageChange('ko'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'ko' ? 'active' : ''}`}>한국어</button>
+                <button onClick={() => { handleLanguageChange('ar'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'ar' ? 'active' : ''}`}>العربية</button>
                 {isLocalhost && (
-                  <button onClick={() => { setCurrentLanguage('fr'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'fr' ? 'active' : ''}`}>Français</button>
+                  <button onClick={() => { handleLanguageChange('fr'); setMobileOpen(false); }} className={`lang-btn ${currentLanguage === 'fr' ? 'active' : ''}`}>Français</button>
                 )}
               </div>
 

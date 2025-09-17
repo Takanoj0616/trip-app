@@ -1,4 +1,6 @@
+import { redirect } from 'next/navigation';
 import MainContent from './MainContent';
+import SuspenseWrapper from '@/components/SuspenseWrapper';
 
 interface SpotPageProps {
   params: Promise<{ id: string }>;
@@ -12,12 +14,20 @@ export default async function SpotPage({ params, searchParams }: SpotPageProps) 
   const currency = resolvedSearchParams.currency as string;
   const unit = resolvedSearchParams.unit as string;
 
+  // 言語が指定されている場合は適切なパスにリダイレクト
+  if (language && language !== 'ja') {
+    redirect(`/${language}/spots/${id}`);
+  }
+
   return (
-    <MainContent 
-      spotId={id}
-      language={language}
-      currency={currency}
-      unit={unit}
-    />
+    <SuspenseWrapper>
+      <MainContent
+        spotId={id}
+        locale={language || 'ja'}
+        language={language}
+        currency={currency}
+        unit={unit}
+      />
+    </SuspenseWrapper>
   );
 }

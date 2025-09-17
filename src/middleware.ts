@@ -1,9 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
+  const { pathname, searchParams } = request.nextUrl;
+  const locales = ['ja', 'en', 'fr', 'ko', 'ar'];
+
+  // langクエリパラメータがある場合の優先処理
+  const langParam = searchParams.get('lang');
+
+  if (langParam && locales.includes(langParam)) {
+    // /spots/[id]?lang=en を /en/spots/[id] にリダイレクト
+    if (pathname.startsWith('/spots/') && langParam !== 'ja') {
+      const newUrl = new URL(`/${langParam}${pathname}`, request.url);
+
+      // 他のクエリパラメータがあれば保持（langを除く）
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('lang');
+
+      if (newSearchParams.toString()) {
+        newUrl.search = newSearchParams.toString();
+      }
+
+      return NextResponse.redirect(newUrl);
+    }
+
+    // 他のパスでもlangパラメータがある場合の処理
+    if (langParam !== 'ja' && !pathname.startsWith(`/${langParam}`)) {
+      const newUrl = new URL(`/${langParam}${pathname}`, request.url);
+
+      // 他のクエリパラメータがあれば保持（langを除く）
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('lang');
+
+      if (newSearchParams.toString()) {
+        newUrl.search = newSearchParams.toString();
+      }
+
+      return NextResponse.redirect(newUrl);
+    }
+  }
+
   // Check if there is any supported locale in the pathname
-  const pathname = request.nextUrl.pathname;
-  const pathnameIsMissingLocale = ['ja', 'en', 'fr', 'ko', 'ar'].every(
+  const pathnameIsMissingLocale = locales.every(
     (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
   );
 
