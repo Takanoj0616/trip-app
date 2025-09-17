@@ -72,7 +72,9 @@ const MapComponent = dynamic(() => import('./MapComponent'), {
 });
 
 interface MainContentProps {
-  spotId: string;
+  spotId?: string;
+  spot?: TouristSpot;
+  locale?: string;
   language?: string;
   currency?: string;
   unit?: string;
@@ -106,6 +108,8 @@ interface SpotData {
 
 export default function MainContent({
   spotId,
+  spot,
+  locale,
   language: _language = 'ja',
   currency = 'jpy',
   unit: _unit = 'metric',
@@ -460,6 +464,32 @@ export default function MainContent({
 
   useEffect(() => {
     const fetchSpotData = async () => {
+      // If spot is directly provided, use it
+      if (spot) {
+        const convertedSpot: SpotData = {
+          name: spot.name,
+          description: spot.description || i18n.fallbackDescription,
+          location: spot.location,
+          price: spot.priceRange === 'expensive' ? '¥3,000以上' :
+            spot.priceRange === 'moderate' ? '¥1,000-3,000' : '¥1,000以下',
+          hours: spot.openingHours ? Object.values(spot.openingHours)[0] : '営業時間未定',
+          rating: spot.rating || 4.0,
+          images: spot.images || [],
+          contact: spot.contact,
+          tags: spot.tags || [],
+          googlePlaceId: spot.googlePlaceId,
+          openingHours: spot.openingHours,
+          priceRange: spot.priceRange,
+          reviewCount: spot.reviewCount,
+          crowdLevel: (spot as any).crowdLevel,
+          averageStayMinutes: spot.averageStayMinutes,
+          stayRange: spot.stayRange
+        };
+        setSpotData(convertedSpot);
+        setLoading(false);
+        return;
+      }
+
       // 0) Check local Tokyo detailed spots (sights list)
       const detailed = tokyoSpotsDetailed.find((s: TokyoSpot) => s.id === spotId);
       if (detailed) {
@@ -630,7 +660,7 @@ export default function MainContent({
     };
 
     fetchSpotData();
-  }, [spotId, lang]);
+  }, [spotId, spot, lang]);
 
   // Contextual hero subtitle based on spot type/name/tags
   const getHeroSubtitleText = () => {
