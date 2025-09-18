@@ -132,17 +132,34 @@ export default function AreasContent() {
 
       /* Area Image */
       .area-image {
-        height: 120px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        height: 140px;
+        background: #111;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 4rem;
+        font-size: 3.2rem;
         position: relative;
         border-radius: 16px;
         margin-bottom: 30px;
         overflow: hidden;
+      }
+
+      /* Area photo fills the header */
+      .area-image img.area-photo {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scale(1.04);
+        filter: brightness(0.9);
+        transition: transform .5s ease, filter .3s ease;
+      }
+
+      .area-card:hover .area-image img.area-photo {
+        transform: scale(1.08);
+        filter: brightness(0.95);
       }
 
       .area-image::before {
@@ -152,12 +169,13 @@ export default function AreasContent() {
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, transparent 50%, rgba(255, 255, 255, 0.1) 100%);
+        background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.05));
       }
 
       .area-emoji {
         position: relative;
         z-index: 2;
+        text-shadow: 0 2px 8px rgba(0,0,0,.4);
       }
 
       /* Area Content */
@@ -200,8 +218,8 @@ export default function AreasContent() {
         }
         
         .area-image {
-          font-size: 3rem;
-          height: 100px;
+          font-size: 2.4rem;
+          height: 110px;
         }
       }
     `;
@@ -279,6 +297,21 @@ export default function AreasContent() {
                 >
                   {/* Area Image with Emoji */}
                   <div className="area-image">
+                    {/* 背景写真 */}
+                    <img 
+                      className="area-photo" 
+                      src={area.image}
+                      alt={`${area.englishName} photo`}
+                      loading="lazy"
+                      onError={(e) => {
+                        const el = e.target as HTMLImageElement;
+                        const tried = el.getAttribute('data-fallback');
+                        if (!tried) {
+                          el.setAttribute('data-fallback', '1');
+                          el.src = 'https://images.unsplash.com/photo-1490761668535-35497054764d?w=800&auto=format&fit=crop&q=70';
+                        }
+                      }}
+                    />
                     {/* エリア絵文字 */}
                     <div className="area-emoji">
                       {area.id === 'tokyo' && '🏙️'}

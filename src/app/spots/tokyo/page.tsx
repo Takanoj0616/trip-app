@@ -2195,9 +2195,67 @@ export default function TokyoSpots() {
     // Compose current data. For food, show synced Firebase/JSON items first
     let currentData = sampleData[currentCategory] || [];
     if (currentCategory === 'food') {
+      // Combine Firebase/JSON spots with sample data (Firebase first)
       const combined = [...firebaseFoodSpots, ...currentData];
+
+      // Map cuisine → local photo fallbacks (all exist under public/images)
+      const cuisineFallbacks: Record<string, string[]> = {
+        '寿司': [
+          '/images/photos/ChIJE6NVO9mLGGARUiKvcRmKzN4/photo_1.jpg', // Sushi Dai
+          '/images/photos/ChIJh79i16mMGGARN1HObiQvcVA/photo_1.jpg'  // Uogashi Nihon‑Ichi
+        ],
+        'ラーメン': [
+          '/images/photos/ChIJOWucdKiMGGARbppa4b4CKA8/photo_1.jpg'   // Ichiran
+        ],
+        'ベーカリー': [
+          '/images/spots/ブラッスリー・ヴィロン_丸の内店_20250714_121211.jpg'
+        ],
+        'フレンチ': [
+          '/images/spots/ブラッスリー・ヴィロン_丸の内店_20250714_121211.jpg',
+          '/images/spots/Restaurant_Air_レストランエール_20250714_121220.jpg'
+        ],
+        '中華': [
+          '/images/spots/中国料理「後楽園飯店」（東京ドームホテル直営）_20250715_103157.jpg'
+        ],
+        '和食': [
+          '/images/spots/銀座の金沢_20250714_121149.jpg'
+        ],
+        'カフェ': [
+          '/images/spots/CALLAS_Cafe&BAR_20250714_121157.jpg',
+          '/images/spots/COVA_TOKYO(COVA_JAPAN株式会社）_20250714_121215.jpg'
+        ],
+        'そば・うどん': [
+          '/images/spots/山形田(銀座そばきりや山形田)_20250714_121216.jpg'
+        ],
+        '焼肉': [
+          '/images/photos/ChIJn2FoeFmLGGARnIog2ijRZXw/photo_1.jpg'  // Gyukatsu Motomura (beef)
+        ],
+        'ビュッフェ': [
+          '/images/spots/グランスタ東京_20250714_121201.jpg'
+        ],
+        'ファストフード': [
+          '/images/spots/AMERICAN_20250714_121216.jpg'
+        ],
+        'シーフード': [
+          '/images/spots/Fish_Bank_TOKYO_20250715_103218.jpg'
+        ]
+      };
+
+      const defaultFallback = '/images/spots/グランスタ東京_20250714_121201.jpg';
+      const isUnsplash = (u?: string) => !!u && /images\.unsplash\.com/.test(u);
+
+      // Hydrate any placeholder images with local photos
+      const hydrated = combined.map((s) => {
+        const currentImg = s.images?.[0] || s.image;
+        if (currentImg && !isUnsplash(currentImg)) return s; // already a real/local image
+        const cuisineKey = s.info?.cuisine || '';
+        const candidate = (cuisineFallbacks[cuisineKey] && cuisineFallbacks[cuisineKey][0]) || defaultFallback;
+        return { ...s, image: candidate, images: s.images && s.images.length > 0 ? s.images : [candidate] };
+      });
+
+      // Deduplicate by id while preserving order
       const seen = new Set<string | number>();
-      currentData = combined.filter((s) => {
+      currentData = hydrated.filter((s) => {
         const key = s.id;
         if (seen.has(key)) return false;
         seen.add(key);
