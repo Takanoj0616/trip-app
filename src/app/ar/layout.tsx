@@ -85,19 +85,5 @@ export default function ArabicLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="ar" data-scroll-behavior="smooth" dir="rtl" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning={true}
-      >
-        <ClientProviders>
-          <Header />
-          <main>
-            {children}
-          </main>
-        </ClientProviders>
-      </body>
-    </html>
-  );
+  return children;
 }

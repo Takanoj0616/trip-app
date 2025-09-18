@@ -85,19 +85,5 @@ export default function KoreanLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="ko" data-scroll-behavior="smooth" dir="ltr" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning={true}
-      >
-        <ClientProviders>
-          <Header />
-          <main>
-            {children}
-          </main>
-        </ClientProviders>
-      </body>
-    </html>
-  );
+  return children;
 }
