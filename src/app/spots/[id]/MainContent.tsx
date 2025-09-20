@@ -123,9 +123,21 @@ export default function MainContent({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [snsExpanded, setSnsExpanded] = useState(false);
-  const [activeTab, setActiveTab] = useState<'reviews' | 'details' | 'tickets' | 'sns' | 'faq' | 'nearby'>('reviews');
+  // Secondary tabs (legacy). We keep for internal sections but do not show in UI now.
+  const [activeTab, setActiveTab] = useState<'reviews' | 'details' | 'tickets' | 'sns' | 'faq' | 'nearby'>('details');
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [facilitiesOpen, setFacilitiesOpen] = useState(false);
+
+  // Main top-level tabs requested: 基本情報 / 見どころ / AIプラン / レビュー
+  const [mainTab, setMainTab] = useState<'basic' | 'highlights' | 'ai' | 'reviews'>('basic');
+
+  // Simple local poll + UGC
+  const [pollChoice, setPollChoice] = useState<'morning' | 'night' | null>(null);
+  const [pollStats, setPollStats] = useState<{ morning: number; night: number }>({ morning: 12, night: 18 });
+  const [visited, setVisited] = useState<boolean>(false);
+  const [visitedCount, setVisitedCount] = useState<number>(128);
+  const [commentText, setCommentText] = useState('');
+  const [comments, setComments] = useState<{ text: string; ts: number }[]>([]);
 
   // Currency conversion helper
   const convertPrice = (jpyPrice: number) => {
@@ -443,6 +455,27 @@ export default function MainContent({
     },
   } as const;
   const i18n = (dicts as any)[lang] || dicts.en;
+
+  // Restore simple local UGC state per spot
+  useEffect(() => {
+    const keyBase = spotId || (spotData?.googlePlaceId as string) || (spotData?.name || 'spot');
+    try {
+      const poll = localStorage.getItem(`poll-${keyBase}`);
+      if (poll) {
+        const { choice, stats } = JSON.parse(poll);
+        if (choice) setPollChoice(choice);
+        if (stats) setPollStats(stats);
+      }
+      const v = localStorage.getItem(`visited-${keyBase}`);
+      if (v) {
+        const { visited: vv, count } = JSON.parse(v);
+        if (typeof vv === 'boolean') setVisited(vv);
+        if (typeof count === 'number') setVisitedCount(count);
+      }
+      const c = localStorage.getItem(`comments-${keyBase}`);
+      if (c) setComments(JSON.parse(c));
+    } catch {}
+  }, [spotId, spotData?.googlePlaceId, spotData?.name]);
 
   useEffect(() => {
     const fetchSpotData = async () => {
@@ -1166,17 +1199,7 @@ export default function MainContent({
 
   return (
     <main className="min-h-screen pt-32 sm:pt-36 md:pt-40">
-      {/* 上部固定CTAバーはUX簡素化のため削除 */}
-
-      {/* 下部固定CTA（予約ボタン） */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
-        <div className="backdrop-blur-xl bg-white/80 border border-white/60 shadow-2xl rounded-full px-4 py-2 flex items-center gap-3">
-          <span className="hidden sm:inline text-sm text-gray-700">{spotData?.name || 'Attraction'}</span>
-          <a href="#tickets" className="px-4 py-2 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold shadow hover:opacity-95">
-            {i18n.bookTickets}
-          </a>
-        </div>
-      </div>
+      {/* 上部固定CTAバーはUX簡素化のため削除（右下フローティングに集約） */}
 
       {/* ヒーローセクション - より魅力的なデザイン */}
       <section className="relative min-h-[80vh] flex items-center justify-center text-white overflow-hidden pt-16 sm:pt-20 md:pt-24 lg:pt-28">
@@ -1320,28 +1343,27 @@ export default function MainContent({
           </div>
         </div>
 
-        {/* タブ切り替え（レビュー / 詳細 / チケット / SNS / FAQ / 近隣） */}
+        {/* メインタブ切替（基本情報 / 見どころ / AIプラン / レビュー） */}
         <div className="mb-8">
           <div className="inline-flex rounded-full border border-white/50 bg-white/70 backdrop-blur px-2 py-1 shadow-md">
             {([
+              { key: 'basic', label: lang === 'en' ? 'Basic' : lang === 'ko' ? '기본정보' : lang === 'fr' ? 'Infos' : '基本情報' },
+              { key: 'highlights', label: lang === 'en' ? 'Highlights' : lang === 'ko' ? '볼거리' : lang === 'fr' ? 'À voir' : '見どころ' },
+              { key: 'ai', label: 'AIプラン' },
               { key: 'reviews', label: lang === 'en' ? 'Reviews' : lang === 'ko' ? '리뷰' : lang === 'fr' ? 'Avis' : 'レビュー' },
-              { key: 'details', label: lang === 'en' ? 'Details' : lang === 'ko' ? '상세' : lang === 'fr' ? 'Détails' : '詳細' },
-              { key: 'tickets', label: lang === 'en' ? 'Tickets' : lang === 'ko' ? '티켓' : lang === 'fr' ? 'Billets' : 'チケット' },
-              { key: 'sns', label: 'SNS' },
-              { key: 'faq', label: 'FAQ' },
-              { key: 'nearby', label: lang === 'en' ? 'Nearby' : lang === 'ko' ? '근처' : lang === 'fr' ? 'À proximité' : '近隣' },
             ] as const).map(tab => (
               <button
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key as any)}
-                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${activeTab === tab.key ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white' : 'text-gray-700 hover:bg-white'}`}
+                onClick={() => setMainTab(tab.key as any)}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${mainTab === tab.key ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white' : 'text-gray-700 hover:bg-white'}`}
               >
                 {tab.label}
               </button>
             ))}
           </div>
         </div>
-        {/* 3秒要約 */}
+        {/* 3秒要約（基本情報タブのみ） */}
+        {mainTab === 'basic' && (
         <section className="relative -mt-32 z-10 large-spacing" style={{ marginBottom: '5rem !important' }}>
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
             <h2 className="flex items-center gap-3 text-xl font-bold text-gray-800 mb-4">
@@ -1356,8 +1378,10 @@ export default function MainContent({
             </p>
           </div>
         </section>
+        )}
 
-        {/* AI旅行プランCTA（白＋青トーンに統一） */}
+        {/* AI旅行プランCTA（AIタブのみ） */}
+        {mainTab === 'ai' && (
         <section
           id="ai-plan"
           className="bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 rounded-3xl p-12 text-center text-gray-900 relative overflow-hidden large-spacing"
@@ -1547,9 +1571,10 @@ export default function MainContent({
             )}
           </div>
         </section>
+        )}
 
-        {/* タブ: チケット情報 */}
-        {activeTab === 'tickets' && (
+        {/* チケット情報（基本情報タブ内） */}
+        {mainTab === 'basic' && (
         <section id="tickets" className="large-spacing" style={{ marginBottom: '5rem !important' }}>
           <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
             <Ticket className="text-blue-600" size={28} />
@@ -1644,8 +1669,8 @@ export default function MainContent({
         </section>
         )}
 
-        {/* 詳細タブ内: 地図・アクセス */}
-        {activeTab === 'details' && (
+        {/* 基本情報: 地図・アクセス（ルート例） */}
+        {mainTab === 'basic' && (
         <section id="access" className="mb-12">
           <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
             <Navigation className="text-blue-600" size={28} />
@@ -1732,7 +1757,8 @@ export default function MainContent({
         </section>
         )}
 
-        {/* ハイライト（アイコン化） */}
+        {/* ハイライト（アイコン化） - 基本情報タブ */}
+        {mainTab === 'basic' && (
         <section className="mb-12">
           <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
             <Star className="text-yellow-500" size={28} />
@@ -1774,6 +1800,7 @@ export default function MainContent({
             </div>
           </div>
         </section>
+        )}
 
         {/* 天気・視界インサイト */}
         <section className="mb-12">
@@ -1910,7 +1937,8 @@ export default function MainContent({
         </section>
         )}
 
-        {/* 地図・アクセス */}
+        {/* 詳細マップ - 基本情報タブ */}
+        {mainTab === 'basic' && (
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <MapPin className="text-primary" size={24} />
@@ -1980,8 +2008,10 @@ export default function MainContent({
             </div>
           </div>
         </section>
+        )}
 
-        {/* 写真ギャラリー */}
+        {/* 見どころ: 写真ギャラリー + 追加メディア */}
+        {mainTab === 'highlights' && (
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <h2 className="flex items-center gap-4 text-secondary border-b border-border-light pb-4 mb-8">
             <Images className="text-primary" size={24} />
@@ -2115,15 +2145,128 @@ export default function MainContent({
               </div>
             </>
           )}
-        </section>
+          {/* 追加メディア: カルーセル / 360 / 動画 */}
+          <div className="mt-10">
+            <h3 className="text-lg font-bold text-secondary mb-4">
+              {lang === 'en' ? `See ${spotData?.name || 'this spot'} in photos` : '写真で見る' + (spotData?.name || '')}
+            </h3>
+            <div className="relative">
+              <div id="photoCarousel" className="flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2">
+                {['/images/tokyo_toewr/tokyo_toewr1.jpeg','/images/tokyo_toewr/tokyo_toewr2.jpg','/images/tokyo_toewr/tokyo_toewr3.jpg','/images/spots/東京タワー_20250714_121123.jpg'].map((src, i) => (
+                  <div key={i} className="snap-start shrink-0 w-[260px] h-[170px] md:w-[360px] md:h-[220px] rounded-xl overflow-hidden">
+                    <Image src={src} alt={`carousel-${i}`} width={720} height={440} className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+              <div className="absolute -left-2 top-1/2 -translate-y-1/2 hidden md:block">
+                <button className="w-10 h-10 rounded-full bg-white/90 border shadow hover:bg-white" onClick={() => { const el = document.getElementById('photoCarousel'); if (el) el.scrollBy({ left: -380, behavior: 'smooth' }); }}>‹</button>
+              </div>
+              <div className="absolute -right-2 top-1/2 -translate-y-1/2 hidden md:block">
+                <button className="w-10 h-10 rounded-full bg-white/90 border shadow hover:bg-white" onClick={() => { const el = document.getElementById('photoCarousel'); if (el) el.scrollBy({ left: 380, behavior: 'smooth' }); }}>›</button>
+              </div>
+            </div>
+          </div>
 
-        {/* タブ: レビュー（要約 + 個別） */}
-        {activeTab === 'reviews' && (
+          <div className="mt-10">
+            <h3 className="text-lg font-bold text-secondary mb-3">360°ビュー</h3>
+            <div
+              id="pano360"
+              className="w-full h-64 md:h-80 rounded-2xl border bg-[#111]"
+              style={{ backgroundImage: 'url(/images/tokyo_toewr/tokyo_toewr2.jpg)', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: '50% 50%' }}
+              onMouseMove={(e) => { const el = e.currentTarget as HTMLDivElement; const rect = el.getBoundingClientRect(); const x = (e.clientX - rect.left) / rect.width; el.style.backgroundPosition = `${(x * 100).toFixed(1)}% 50%`; }}
+              onTouchMove={(e) => { const el = e.currentTarget as HTMLDivElement; const rect = el.getBoundingClientRect(); const t = e.touches[0]; const x = (t.clientX - rect.left) / rect.width; el.style.backgroundPosition = `${(x * 100).toFixed(1)}% 50%`; }}
+            />
+            <p className="text-xs text-gray-500 mt-2">ドラッグ / スワイプで視点を動かせます</p>
+          </div>
+
+          <div className="mt-10">
+            <h3 className="text-lg font-bold text-secondary mb-3">ショート動画</h3>
+            <video src="/douga.mp4" controls muted playsInline className="w-full rounded-2xl shadow" poster="/images/spots/東京タワー_20250714_121123.jpg" />
+          </div>
+
+        </section>
+        )}
+
+        {/* レビュー（専用タブ） */}
+        {mainTab === 'reviews' && (
         <section id="reviews" className="mb-12">
           <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
             <MessageSquare className="text-blue-600" size={28} />
             {i18n.reviewSummary}
           </h2>
+
+          {/* 参加型ミニウィジェット */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            {/* 投票 */}
+            <div className="bg-white rounded-xl border border-gray-200 p-5">
+              <div className="font-semibold mb-3">東京タワーに行くなら？</div>
+              <div className="flex gap-2 mb-3">
+                <button
+                  className={`flex-1 px-3 py-2 rounded-lg border ${pollChoice==='morning' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 hover:bg-gray-50'}`}
+                  onClick={() => {
+                    if (pollChoice) return; // 1回のみ
+                    const next = { morning: pollStats.morning + 1, night: pollStats.night };
+                    setPollChoice('morning'); setPollStats(next);
+                    try { localStorage.setItem(`poll-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ choice: 'morning', stats: next })); } catch {}
+                  }}
+                >朝派</button>
+                <button
+                  className={`flex-1 px-3 py-2 rounded-lg border ${pollChoice==='night' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 hover:bg-gray-50'}`}
+                  onClick={() => {
+                    if (pollChoice) return;
+                    const next = { morning: pollStats.morning, night: pollStats.night + 1 };
+                    setPollChoice('night'); setPollStats(next);
+                    try { localStorage.setItem(`poll-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ choice: 'night', stats: next })); } catch {}
+                  }}
+                >夜派</button>
+              </div>
+              <div className="text-sm text-gray-600">朝 {Math.round(100*pollStats.morning/(pollStats.morning+pollStats.night))}% ・ 夜 {Math.round(100*pollStats.night/(pollStats.morning+pollStats.night))}%</div>
+            </div>
+
+            {/* 行った！ */}
+            <div className="bg-white rounded-xl border border-gray-200 p-5">
+              <div className="font-semibold mb-3">行った！</div>
+              <div className="flex items-center gap-3">
+                <button
+                  className={`px-4 py-2 rounded-lg font-semibold ${visited ? 'bg-emerald-600 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
+                  onClick={() => {
+                    const nextVisited = !visited; setVisited(nextVisited);
+                    const nextCount = visitedCount + (nextVisited ? 1 : -1); setVisitedCount(Math.max(0, nextCount));
+                    try { localStorage.setItem(`visited-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ visited: nextVisited, count: Math.max(0, nextCount) })); } catch {}
+                  }}
+                >{visited ? '行った！済み' : '行った！'}</button>
+                <div className="text-sm text-gray-600">{visitedCount.toLocaleString()}人が行きました</div>
+              </div>
+            </div>
+
+            {/* コメント */}
+            <div className="bg-white rounded-xl border border-gray-200 p-5">
+              <div className="font-semibold mb-3">コメント</div>
+              <div className="flex gap-2">
+                <input value={commentText} onChange={(e)=>setCommentText(e.target.value)} placeholder="感想を一言..." className="flex-1 px-3 py-2 border rounded-lg" />
+                <button
+                  className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold disabled:opacity-50"
+                  disabled={!commentText.trim()}
+                  onClick={() => {
+                    const item = { text: commentText.trim(), ts: Date.now() };
+                    const next = [item, ...comments].slice(0, 10);
+                    setComments(next); setCommentText('');
+                    try { localStorage.setItem(`comments-${spotId || spotData?.name || 'spot'}`, JSON.stringify(next)); } catch {}
+                  }}
+                >投稿</button>
+              </div>
+              {comments.length > 0 && (
+                <ul className="mt-3 space-y-2 max-h-40 overflow-auto text-sm">
+                  {comments.map((c,i)=> (
+                    <li key={i} className="border rounded-lg p-2 bg-gray-50">
+                      <div className="text-gray-800">{c.text}</div>
+                      <div className="text-[11px] text-gray-500">{new Date(c.ts).toLocaleString()}</div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
 
           {/* 要約カード */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -2362,7 +2505,8 @@ export default function MainContent({
         
 
         {/* 口コミ・レビュー（重複セクションは削除: 上部タブのレビューに統合） */}
-        {/* チケット予約 CTA（ブランドカラーで統一） */}
+        {/* チケット予約 CTA（基本情報タブに表示） */}
+        {mainTab === 'basic' && (
         <section
           id="tickets"
           className="bg-gradient-to-br from-sky-500 to-cyan-500 rounded-3xl p-12 text-center text-white mb-12 relative overflow-hidden"
@@ -2408,8 +2552,10 @@ export default function MainContent({
             </div>
           </div>
         </section>
+        )}
 
-        {/* 設備・注意事項（折りたたみ） */}
+        {/* 設備・注意事項（基本情報タブ） */}
+        {mainTab === 'basic' && (
         <section className="bg-white rounded-3xl shadow-lg border border-border-light p-8 mb-12">
           <button
             onClick={() => setFacilitiesOpen(!facilitiesOpen)}
@@ -2545,6 +2691,7 @@ export default function MainContent({
           </ul>
           </>)}
         </section>
+        )}
 
         {/* タブ: FAQ */}
         {activeTab === 'faq' && (
@@ -2757,6 +2904,22 @@ export default function MainContent({
           </div>
         </section>
         )}
+      </div>
+
+      {/* フローティングCTA（右下固定） */}
+      <div className="fixed bottom-5 right-5 z-40 flex flex-col gap-2">
+        <button
+          onClick={addToAITravelPlan}
+          className="px-5 py-3 rounded-full shadow-lg bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-semibold hover:opacity-95"
+        >
+          {lang === 'en' ? 'Add to AI Plan' : 'AIプランに追加'}
+        </button>
+        <a
+          href="#tickets"
+          className="px-5 py-3 rounded-full shadow-lg bg-white text-sky-700 border border-sky-200 font-semibold hover:bg-sky-50 text-center"
+        >
+          {lang === 'en' ? 'Book Tickets' : 'チケット予約'}
+        </a>
       </div>
 
       {/* モーダル */}
