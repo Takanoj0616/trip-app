@@ -157,15 +157,18 @@ export default function MainContent({
   } catch { }
 
   // i18n labels（propsのlocaleを優先、それでもなければデフォルト）
-  const [currentLang, setCurrentLang] = useState<string>(locale || _language || 'ja');
+  const { currentLanguage: ctxLanguage } = useLanguage();
+  const [currentLang, setCurrentLang] = useState<string>(locale || ctxLanguage || _language || 'ja');
   const lang = currentLang as 'ja' | 'en' | 'ko' | 'fr' | 'ar';
 
   // localeプロパティが変更された時に言語状態を更新
   useEffect(() => {
     if (locale && locale !== currentLang) {
       setCurrentLang(locale);
+    } else if (!locale && ctxLanguage && ctxLanguage !== currentLang) {
+      setCurrentLang(ctxLanguage);
     }
-  }, [locale, currentLang]);
+  }, [locale, ctxLanguage, currentLang]);
 
   const handleLanguageChange = (newLang: string) => {
     setCurrentLang(newLang);
@@ -1238,40 +1241,139 @@ export default function MainContent({
                 </p>
               </div>
 
-              <div className="bg-gradient-to-r from-white/95 via-white/98 to-white/95 backdrop-blur-xl rounded-3xl px-10 py-8 shadow-2xl border border-white/20">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-gray-800">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <Star className="text-yellow-500" size={24} />
-                      <span className="text-2xl font-bold">{spotData?.rating || 4.2}</span>
-                    </div>
-                    <span className="text-sm text-gray-600 font-medium">{getReviewCountDisplay()}</span>
+              <div className="bg-white/95 text-gray-900 rounded-3xl px-6 md:px-10 py-7 shadow-2xl border border-white/20">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="font-bold">
+                    {lang === 'en' ? 'Your personalized 1‑day sample itinerary' :
+                     lang === 'ko' ? '당신만의 1일 모델 코스 (샘플)' :
+                     lang === 'fr' ? 'Aperçu de votre itinéraire 1 jour (exemple)' :
+                     lang === 'ar' ? 'نموذج مسار يومي مخصص لك' :
+                     'あなた専用の1日モデルコース（サンプル）'}
                   </div>
-
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <Clock className="text-blue-500" size={24} />
-                      <span className="text-2xl font-bold">2–3h</span>
-                    </div>
-                    <span className="text-sm text-gray-600 font-medium">{i18n.stay}</span>
+                  <div className="text-xs text-gray-700/70">
+                    {lang === 'en' ? 'Partial preview before login' :
+                     lang === 'ko' ? '로그인 전 일부 미리보기' :
+                     lang === 'fr' ? 'Aperçu partiel avant connexion' :
+                     lang === 'ar' ? 'معاينة جزئية قبل تسجيل الدخول' :
+                     'ログイン前の一部プレビュー'}
                   </div>
-
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <DollarSign className="text-green-500" size={24} />
-                      <span className="text-2xl font-bold">¥1,200+</span>
+                </div>
+                <ol className="space-y-3 text-left">
+                  <li className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-full bg-emerald-500 text-white grid place-items-center font-bold">1</div>
+                    <div>
+                      <div className="font-semibold">
+                        {lang === 'en' ? `Morning: Start at ${spotData?.name || 'this spot'}` :
+                         lang === 'ko' ? `아침: ${spotData?.name || '스팟'}에서 시작` :
+                         lang === 'fr' ? `Matin : Départ à ${spotData?.name || 'ce lieu'}` :
+                         lang === 'ar' ? `صباحاً: ابدأ في ${spotData?.name || 'هذا الموقع'}` :
+                         `朝: ${spotData?.name || 'スポット'} をスタート`}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {lang === 'en' ? '9:00–10:30 / Beat the crowds for a smooth visit' :
+                         lang === 'ko' ? '9:00–10:30 / 혼잡을 피해 쾌적하게 관람' :
+                         lang === 'fr' ? '9:00–10:30 / Évitez la foule pour une visite agréable' :
+                         lang === 'ar' ? '9:00–10:30 / تجنّب الازدحام لزيارة مريحة' :
+                         '9:00 - 10:30 / 混雑を避けて気持ちよく観光'}
+                      </div>
                     </div>
-                    <span className="text-sm text-gray-600 font-medium">{i18n.fromLabel}</span>
+                  </li>
+                  <li className="flex items-center gap-3 blur-sm select-none">
+                    <div className="w-7 h-7 rounded-full bg-emerald-500 text-white grid place-items-center font-bold">2</div>
+                    <div>
+                      <div className="font-semibold">
+                        {lang === 'en' ? 'Noon: Lunch & nearby walk' :
+                         lang === 'ko' ? '점심: 런치 & 주변 산책' :
+                         lang === 'fr' ? 'Midi : Déjeuner & balade à proximité' :
+                         lang === 'ar' ? 'الظهيرة: غداء وجولة قريبة' :
+                         '昼: ランチ & 周辺散策'}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {lang === 'en' ? '11:30–13:30 / Local lunch suggestions' :
+                         lang === 'ko' ? '11:30–13:30 / 현지 런치 추천' :
+                         lang === 'fr' ? '11:30–13:30 / Suggestions de déjeuner local' :
+                         lang === 'ar' ? '11:30–13:30 / اقتراحات غداء محلي' :
+                         '11:30 - 13:30 / ご当地グルメを提案'}
+                      </div>
+                    </div>
+                  </li>
+                  <li className="flex items-center gap-3 blur-sm select-none">
+                    <div className="w-7 h-7 rounded-full bg-emerald-500 text-white grid place-items-center font-bold">3</div>
+                    <div>
+                      <div className="font-semibold">
+                        {lang === 'en' ? 'Evening: Move to a viewpoint' :
+                         lang === 'ko' ? '저녁: 절경 스팟으로 이동' :
+                         lang === 'fr' ? 'Soir : Rejoindre un point de vue' :
+                         lang === 'ar' ? 'مساءً: الانتقال إلى نقطة المشاهدة' :
+                         '夕方: 絶景スポットへ移動'}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {lang === 'en' ? '16:30–18:00 / Best for sunset' :
+                         lang === 'ko' ? '16:30–18:00 / 노을 명소' :
+                         lang === 'fr' ? '16:30–18:00 / Idéal pour le coucher du soleil' :
+                         lang === 'ar' ? '16:30–18:00 / مثالي لغروب الشمس' :
+                         '16:30 - 18:00 / サンセットの名所'}
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+
+                <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <button
+                    onClick={() => signInWithGoogle().catch(() => {})}
+                    className="w-full sm:w-auto px-6 py-4 bg-gradient-to-r from-sky-500 to-cyan-500 text-white rounded-xl font-extrabold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                  >
+                    {lang === 'en' ? 'Try a free plan in 60s' :
+                     lang === 'ko' ? '60초 만에 무료 플랜 체험' :
+                     lang === 'fr' ? 'Essayer un plan gratuit en 60 s' :
+                     lang === 'ar' ? 'جرّب خطة مجانية خلال 60 ثانية' :
+                     '60秒で無料プランを体験'}
+                  </button>
+                  <a href="/ai-plan" className="text-sky-700 font-semibold underline">
+                    {lang === 'en' ? 'How it works' : lang === 'ko' ? '사용 방법' : lang === 'fr' ? 'Voir le guide' : lang === 'ar' ? 'طريقة العمل' : '説明ページへ'}
+                  </a>
+                </div>
+                <div className="mt-1 text-sm text-gray-700">
+                  {lang === 'en' ? 'No email required — free preview' :
+                   lang === 'ko' ? '이메일 없이 — 무료 미리보기' :
+                   lang === 'fr' ? 'Aucun e‑mail requis — aperçu gratuit' :
+                   lang === 'ar' ? 'بدون بريد إلكتروني — معاينة مجانية' :
+                   'メール登録不要 — 無料プレビュー'}
+                </div>
+
+                <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3 text-left">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 grid place-items-center font-bold">A</div>
+                    <div className="text-sm text-gray-800">
+                      <div className="flex items-center gap-1 text-yellow-500 mb-1">{'★★★★★'}</div>
+                      {lang === 'en' ? 'Perfect day plan in seconds!' :
+                       lang === 'ko' ? '몇 초 만에 완벽한 일정!' :
+                       lang === 'fr' ? 'Itinéraire parfait en quelques secondes !' :
+                       lang === 'ar' ? 'خطة يوم مثالية خلال ثوانٍ!' :
+                       '数秒で理想の1日プランができました！'}
+                    </div>
                   </div>
-
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <span className="text-2xl">🕘</span>
-                      <span className="text-lg font-bold text-green-700">Open</span>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-sky-100 text-sky-700 grid place-items-center font-bold">S</div>
+                    <div className="text-sm text-gray-800">
+                      <div className="flex items-center gap-1 text-yellow-500 mb-1">{'★★★★★'}</div>
+                      {lang === 'en' ? 'Loved the local lunch picks.' :
+                       lang === 'ko' ? '현지 런치 추천이 좋았어요.' :
+                       lang === 'fr' ? 'Super sélections pour le déjeuner.' :
+                       lang === 'ar' ? 'اقتراحات الغداء كانت رائعة.' :
+                       'ランチのローカル提案が最高でした。'}
                     </div>
-                    <span className="text-sm bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium">
-                      9:00–22:30
-                    </span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-700 grid place-items-center font-bold">M</div>
+                    <div className="text-sm text-gray-800">
+                      <div className="flex items-center gap-1 text-yellow-500 mb-1">{'★★★★☆'}</div>
+                      {lang === 'en' ? 'Easy and fast. Highly recommend.' :
+                       lang === 'ko' ? '쉽고 빠릅니다. 추천합니다.' :
+                       lang === 'fr' ? 'Simple et rapide. Je recommande.' :
+                       lang === 'ar' ? 'سهل وسريع. أنصح به.' :
+                       '簡単・高速。とてもおすすめです。'}
+                    </div>
                   </div>
                 </div>
               </div>
