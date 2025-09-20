@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 import Home from '@/app/page';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 export const metadata: Metadata = {
-  title: 'Guide de Voyage au Japon | Découvrez le Japon',
-  description: 'Découvrez les meilleurs endroits à visiter au Japon avec notre guide complet. Planification IA, recommandations personnalisées et expériences authentiques.',
-  keywords: 'guide voyage Japon,tourisme Japon,recommandations voyage,planificateur IA,culture japonaise',
+  title: 'Guide de voyage au Japon | Découvrez le Japon',
+  description: "Découvrez les meilleurs endroits à visiter au Japon avec notre guide complet. Planification IA, recommandations personnalisées et expériences authentiques.",
+  keywords: 'guide voyage japon,tourisme japon,planificateur IA,itineraires,Tokyo',
   robots: 'index, follow',
   alternates: {
     canonical: `${baseUrl}/fr`,
@@ -19,18 +19,19 @@ export const metadata: Metadata = {
     }
   },
   openGraph: {
-    title: 'Guide de Voyage au Japon | Découvrez le Japon',
-    description: 'Découvrez les meilleurs endroits à visiter au Japon avec notre guide complet. Planification IA, recommandations personnalisées et expériences authentiques.',
+    title: 'Guide de voyage au Japon | Découvrez le Japon',
+    description: "Découvrez les meilleurs endroits à visiter au Japon avec notre guide complet. Planification IA, recommandations personnalisées et expériences authentiques.",
     url: `${baseUrl}/fr`,
     siteName: 'Trip App',
-    locale: 'fr',
+    locale: 'fr_FR',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Guide de Voyage au Japon | Découvrez le Japon',
-    description: 'Découvrez les meilleurs endroits à visiter au Japon avec notre guide complet. Planification IA, recommandations personnalisées et expériences authentiques.',
+    title: 'Guide de voyage au Japon | Découvrez le Japon',
+    description: "Découvrez les meilleurs endroits à visiter au Japon avec notre guide complet.",
   }
 };
 
 export default Home;
+

@@ -1814,17 +1814,31 @@ interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState('ja');
 
-  // Get language from URL path
+  // Get language from URL path; fallback to browser language
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const pathname = window.location.pathname;
       const pathSegments = pathname.split('/');
       const langFromPath = pathSegments[1];
 
-      if (['en', 'fr', 'ko', 'ar'].includes(langFromPath)) {
+      const supported = ['ja', 'en', 'fr', 'ko', 'ar'] as const;
+      if (supported.includes(langFromPath as any)) {
         setCurrentLanguage(langFromPath);
-      } else {
-        setCurrentLanguage('ja'); // Default to Japanese
+        return;
+      }
+
+      // Fallback by browser language (approximate access country)
+      try {
+        const navLangs = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language])
+          .map(l => (l || '').toLowerCase());
+        const pick =
+          navLangs.find(l => l.startsWith('ja')) ? 'ja' :
+          navLangs.find(l => l.startsWith('fr')) ? 'fr' :
+          navLangs.find(l => l.startsWith('en')) ? 'en' :
+          navLangs.find(l => l.startsWith('ko')) ? 'ko' : 'ja';
+        setCurrentLanguage(pick);
+      } catch {
+        setCurrentLanguage('ja');
       }
     }
   }, []);

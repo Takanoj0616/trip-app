@@ -245,29 +245,28 @@ export default function Home() {
             display: 'flex',
             gap: '1rem',
             justifyContent: 'center',
-            marginBottom: '3rem',
+            marginBottom: '2rem',
             flexWrap: 'wrap',
             position: 'relative',
             zIndex: 20
           }}>
             <Link
-              href="/areas"
+              href="/ai-plan"
               style={{
                 display: 'inline-block',
                 padding: '1rem 2rem',
                 fontSize: '1.1rem',
                 borderRadius: '30px',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
+                fontWeight: 800,
+                letterSpacing: '0.3px',
                 textDecoration: 'none',
                 transition: 'all 0.3s',
                 border: 'none',
                 cursor: 'pointer',
-                background: ctaVariant === 'B' ? 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8))',
-                color: ctaVariant === 'B' ? '#ffffff' : '#2563eb',
+                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                color: '#ffffff',
                 backdropFilter: 'blur(15px)',
-                boxShadow: '0 8px 25px rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 10px 28px rgba(79,172,254,0.45)',
                 userSelect: 'none',
                 WebkitTapHighlightColor: 'transparent',
                 position: 'relative',
@@ -276,59 +275,17 @@ export default function Home() {
               }}
               onMouseEnter={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
-                target.style.background = ctaVariant === 'B' ? 'linear-gradient(135deg, #f43f5e 0%, #fb923c 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.7))';
-                target.style.transform = 'translateY(-3px) scale(1.05)';
-                target.style.boxShadow = '0 12px 35px rgba(255, 255, 255, 0.3)';
+                target.style.transform = 'translateY(-3px) scale(1.04)';
+                target.style.boxShadow = '0 14px 34px rgba(79,172,254,0.55)';
               }}
               onMouseLeave={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
-                target.style.background = ctaVariant === 'B' ? 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)' : 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8))';
                 target.style.transform = 'translateY(0) scale(1)';
-                target.style.boxShadow = '0 8px 25px rgba(255, 255, 255, 0.2)';
+                target.style.boxShadow = '0 10px 28px rgba(79,172,254,0.45)';
               }}
-              onClick={(e) => {
-                trackCta('hero', 'primary');
-              }}
+              onClick={() => trackCta('hero', 'primary')}
             >
-              {ctaVariant === 'B' ? t('home.ctaPrimaryAlt') : t('home.ctaPrimary')}
-            </Link>
-            <Link
-              href="/discover"
-              style={{
-                padding: '1rem 2rem',
-                fontSize: '1.1rem',
-                borderRadius: '30px',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                textDecoration: 'none',
-                transition: 'all 0.3s',
-                cursor: 'pointer',
-                background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3))',
-                color: 'white',
-                border: '2px solid rgba(255, 255, 255, 0.5)',
-                backdropFilter: 'blur(15px)',
-                position: 'relative',
-                zIndex: 30,
-                pointerEvents: 'auto'
-              }}
-              onMouseEnter={(e) => {
-                const target = e.currentTarget as HTMLAnchorElement;
-                target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))';
-                target.style.borderColor = 'rgba(255, 255, 255, 0.8)';
-                target.style.transform = 'translateY(-3px) scale(1.05)';
-              }}
-              onMouseLeave={(e) => {
-                const target = e.currentTarget as HTMLAnchorElement;
-                target.style.background = 'linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3))';
-                target.style.borderColor = 'rgba(255, 255, 255, 0.5)';
-                target.style.transform = 'translateY(0) scale(1)';
-              }}
-              onClick={(e) => {
-                trackCta('hero', 'secondary');
-              }}
-            >
-              {t('home.ctaSecondary')}
+              {t('home.tryFree')}
             </Link>
           </div>
 
@@ -343,6 +300,13 @@ export default function Home() {
             fontSize: '0.9rem', marginTop: '0.5rem', color: '#052e16'
           }}>
             <span style={{ fontWeight: 'bold' }}>✓</span> {t('home.trustedBy')}
+          </div>
+
+          {/* Guide link moved below in hero */}
+          <div style={{ marginTop: '0.75rem' }}>
+            <Link href="/ai-plan" style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: 600 }}>
+              {t('home.ctaSecondary')}
+            </Link>
           </div>
 
           <div style={{
@@ -398,6 +362,65 @@ export default function Home() {
             }}>{t('home.tryFree')}</a>
           </div>
         </div>
+        {/* Visual sample overlay (2-day itinerary mock) */}
+        <div style={{
+          position: 'absolute',
+          right: '4%',
+          top: '18%',
+          display: 'none',
+          gap: '16px',
+          zIndex: 9,
+          pointerEvents: 'none'
+        }} className="hero-samples">
+          <div style={{
+            display: 'grid', gap: 8,
+            background: 'rgba(255,255,255,0.95)',
+            border: '1px solid rgba(0,0,0,0.06)',
+            borderRadius: 16,
+            boxShadow: '0 12px 30px rgba(0,0,0,.18)',
+            padding: 14,
+            transform: 'rotate(-2deg)'
+          }}>
+            <div style={{ fontWeight: 800, color: '#0f172a' }}>
+              {currentLanguage === 'en' ? 'Day 1 — Asakusa & Skytree' :
+               currentLanguage === 'ko' ? '1일차 — 아사쿠사 & 스카이트리' :
+               currentLanguage === 'fr' ? 'Jour 1 — Asakusa & Skytree' :
+               currentLanguage === 'ar' ? 'اليوم 1 — أساكوسا وسكاي تري' : '1日目 — 浅草 & スカイツリー'}
+            </div>
+            <div style={{ display: 'grid', gap: 6, fontSize: 13, color: '#334155' }}>
+              <div>09:00 浅草寺 — 仲見世通り</div>
+              <div>11:30 東京スカイツリー — 展望台</div>
+              <div style={{ filter: 'blur(2px)' }}>19:00 渋谷スクランブル交差点</div>
+            </div>
+          </div>
+          <div style={{
+            display: 'grid', gap: 8,
+            background: 'rgba(255,255,255,0.95)',
+            border: '1px solid rgba(0,0,0,0.06)',
+            borderRadius: 16,
+            boxShadow: '0 12px 30px rgba(0,0,0,.18)',
+            padding: 14,
+            transform: 'rotate(3deg)'
+          }}>
+            <div style={{ fontWeight: 800, color: '#0f172a' }}>
+              {currentLanguage === 'en' ? 'Day 2 — Ueno & Akihabara' :
+               currentLanguage === 'ko' ? '2일차 — 우에노 & 아키하바라' :
+               currentLanguage === 'fr' ? 'Jour 2 — Ueno & Akihabara' :
+               currentLanguage === 'ar' ? 'اليوم 2 — أوينو وأكيهابارا' : '2日目 — 上野 & 秋葉原'}
+            </div>
+            <div style={{ display: 'grid', gap: 6, fontSize: 13, color: '#334155' }}>
+              <div>10:00 上野公園 — 美術館</div>
+              <div style={{ filter: 'blur(2px)' }}>13:00 アメ横 — 食べ歩き</div>
+              <div style={{ filter: 'blur(2px)' }}>16:00 秋葉原 — 電気街散策</div>
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @media (min-width: 1024px) {
+            .hero-samples { display: flex !important; }
+          }
+        `}</style>
       </main>
 
       {/* AI Plan Promo Section (home) */}

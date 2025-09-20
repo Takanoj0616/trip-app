@@ -15,22 +15,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://example.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "Guide de Voyage au Japon | Tourisme Tokyo | Meilleur Planificateur de Voyage Japon 2025",
-  description: "Découvrez le Japon avec une planification de voyage alimentée par l'IA. Guide complet du tourisme à Tokyo, Yokohama, Saitama et Chiba. Hôtels, restaurants, attractions et itinéraires personnalisés.",
+  title: "Guide de voyage au Japon | Tourisme Tokyo | Meilleur planificateur 2025",
+  description: "Découvrez le Japon avec une planification alimentée par l'IA. Guide complet de Tokyo, Yokohama, Saitama & Chiba. Hôtels, restaurants, attractions & itinéraires personnalisés.",
   keywords: [
-    "voyage Japon", "tourisme Japon", "guide voyage Tokyo", "planificateur voyage Japon",
-    "attractions Tokyo", "hôtels Japon", "restaurants Japon", "voyage Yokohama",
-    "tourisme Saitama", "voyage Chiba", "itinéraire Japon", "visite Tokyo",
-    "voyage IA Japon", "hôtels Tokyo", "attractions Yokohama", "vacances Japon",
-    "tour visite Tokyo", "conseils voyage Japon", "guide gastronomique Tokyo"
+    "voyage japon", "tourisme japon", "guide tokyo", "planificateur voyage japon",
+    "attractions tokyo", "hotels japon", "restaurants japon", "voyage yokohama",
+    "tourisme saitama", "voyage chiba", "itinéraire japon", "visite tokyo",
+    "IA voyage japon", "vacances japon"
   ],
-  authors: [{ name: "Guide Touristique Japon" }],
-  creator: "Guide Touristique Japon",
-  publisher: "Guide Touristique Japon",
   robots: {
     index: true,
     follow: true,
@@ -58,24 +54,22 @@ export const metadata: Metadata = {
     locale: 'fr_FR',
     alternateLocale: ['ja_JP', 'en_US', 'ko_KR', 'ar_SA'],
     url: `${baseUrl}/fr`,
-    title: "Guide de Voyage au Japon | Tourisme Tokyo | Meilleur Planificateur de Voyage Japon 2025",
-    description: "Découvrez le Japon avec une planification de voyage alimentée par l'IA. Guide complet du tourisme à Tokyo, Yokohama, Saitama et Chiba.",
-    siteName: "Guide de Voyage au Japon",
+    title: "Guide de voyage au Japon | Tourisme Tokyo | Meilleur planificateur 2025",
+    description: "Découvrez le Japon avec une planification alimentée par l'IA. Guide complet et itinéraires personnalisés.",
+    siteName: "Guide Voyage Japon",
     images: [
       {
         url: `${baseUrl}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "Guide de Voyage au Japon - Planificateur de Voyage Japon avec IA",
+        alt: "Guide de voyage au Japon - Planificateur IA",
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@japantravelguide',
-    creator: '@japantravelguide',
-    title: "Guide de Voyage au Japon | Tourisme Tokyo | Meilleur Planificateur de Voyage Japon 2025",
-    description: "Découvrez le Japon avec une planification de voyage alimentée par l'IA. Guide complet du tourisme à Tokyo, Yokohama, Saitama et Chiba.",
+    title: "Guide de voyage au Japon | Tourisme Tokyo | Meilleur planificateur 2025",
+    description: "Découvrez le Japon avec une planification alimentée par l'IA.",
     images: [`${baseUrl}/twitter-image`],
   },
 };
@@ -87,3 +81,4 @@ export default function FrenchLayout({
 }) {
   return children;
 }
+
