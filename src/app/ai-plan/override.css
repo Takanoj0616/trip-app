@@ -108,10 +108,16 @@
 
 /* Areas scroller under hero */
 .areasWrap { max-width: 1100px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px); }
-.areas { display: grid; grid-auto-flow: column; grid-auto-columns: 220px; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px 4px; }
+.areas { display: grid; grid-auto-flow: column; grid-auto-columns: 240px; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px 4px; }
 .areas::-webkit-scrollbar{ height: 8px; }
 .areas::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.35); border-radius: 9999px; }
-.areaCard { scroll-snap-align: start; background: rgba(255,255,255,0.95); color: #0f172a; border: 1px solid rgba(0,0,0,.06); border-radius: 16px; padding: 14px; box-shadow: 0 10px 24px rgba(0,0,0,.15); text-decoration: none; }
-.areaTitle { font-weight: 800; color: #0f172a; margin-top: 6px; }
-.areaDesc { color: #334155; font-size: 0.9rem; line-height: 1.4; margin-top: 4px; }
-@media (min-width: 900px){ .areas{ grid-auto-flow: initial; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; } }
+.areaCard { scroll-snap-align: start; background: rgba(255,255,255,0.98); color: #0f172a; border: 1px solid rgba(0,0,0,.06); border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,.15); text-decoration: none; display: grid; grid-template-rows: 120px auto; min-height: 280px; }
+.areaCardThumb { position: relative; overflow: hidden; border-top-left-radius: 16px; border-top-right-radius: 16px; background-size: cover; background-position: center; }
+.areaCardBody { padding: 14px; display: grid; gap: 6px; align-content: start; }
+.areaTitle { font-weight: 800; color: #0f172a; margin-top: 2px; font-size: 1.05rem; }
+.areaDesc { color: #334155; font-size: 0.9rem; line-height: 1.4; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.areaStats { color: #475569; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+.areaCTA { margin-top: 6px; display: inline-block; padding: 10px 14px; border-radius: 9999px; background: #1E88E5; color: #fff; font-weight: 700; text-decoration: none; box-shadow: 0 8px 20px rgba(30,136,229,.35); }
+.areaCTA:hover { background: #1565C0; }
+@media (min-width: 900px){ .areas{ grid-auto-flow: initial; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; } }
+@media (min-width: 1200px){ .areas{ grid-template-columns: repeat(4, minmax(0, 1fr)); } }

@@ -33,7 +33,7 @@ export default function AIPlanPage() {
     try {
       const flag = sessionStorage.getItem('ai-plan-added');
       if (flag) {
-        setToastMsg('スポットを追加しました！ここからAI旅行プランを作成できます。');
+        setToastMsg(t('aiPlan.toast.added'));
         sessionStorage.removeItem('ai-plan-added');
         setTimeout(() => setToastMsg(null), 4000);
       }
@@ -43,7 +43,7 @@ export default function AIPlanPage() {
   const generate = async () => {
     setError(null);
     if (!selectedSpots || selectedSpots.length < 2) {
-      setError('少なくとも2つ以上のスポットを追加してください。');
+      setError(t('aiPlan.errors.needTwo'));
       return;
     }
     setLoading(true);
@@ -62,9 +62,9 @@ export default function AIPlanPage() {
           }
         })
       });
-      if (!resp.ok) throw new Error('ルート生成に失敗しました');
+      if (!resp.ok) throw new Error(t('aiPlan.errors.routeFailed'));
       const json = await resp.json();
-      if (!json?.route) throw new Error('不正なレスポンス');
+      if (!json?.route) throw new Error(t('aiPlan.errors.invalidResponse'));
       // Avoid extremely long URLs that can trigger 431/414.
       // Store the route client-side and navigate with a small id param.
       try {
@@ -81,7 +81,7 @@ export default function AIPlanPage() {
         router.push(`/route/result`);
       }
     } catch (e: unknown) {
-      setError((e as Error)?.message || 'エラーが発生しました');
+      setError((e as Error)?.message || t('aiPlan.errors.generic'));
     } finally {
       setLoading(false);
     }
@@ -127,25 +127,45 @@ export default function AIPlanPage() {
       {/* Areas scroller/cards under hero */}
       <section id="areas" className="areasWrap mt-6 mb-10">
         <div className="areas" aria-label="areas list">
-          <Link href="/spots/tokyo" className="areaCard">
-            <div>🗼</div>
-            <div className="areaTitle">{t('areas.tokyo.title')}</div>
-            <div className="areaDesc">{t('areas.tokyo.description')}</div>
+          {/* Tokyo */}
+          <Link href="/spots/tokyo" className="areaCard" aria-label={t('areas.tokyo.title')}>
+            <div className="areaCardThumb" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=1200&q=70')" }} />
+            <div className="areaCardBody">
+              <div className="areaTitle">{t('areas.tokyo.title')}</div>
+              <div className="areaStats">{'★★★★★'}<span>4.8</span><span>·</span><span>185 {t('area.spots') || 'spots'}</span></div>
+              <div className="areaDesc">{t('areas.tokyo.description')}</div>
+              <span className="areaCTA">{t('common.viewDetails')}</span>
+            </div>
           </Link>
-          <Link href="/areas" className="areaCard">
-            <div>🌊</div>
-            <div className="areaTitle">{t('areas.yokohama.title')}</div>
-            <div className="areaDesc">{t('areas.yokohama.description')}</div>
+          {/* Yokohama */}
+          <Link href="/areas" className="areaCard" aria-label={t('areas.yokohama.title')}>
+            <div className="areaCardThumb" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1557579113-5f0a738bb863?auto=format&fit=crop&w=1200&q=70')" }} />
+            <div className="areaCardBody">
+              <div className="areaTitle">{t('areas.yokohama.title')}</div>
+              <div className="areaStats">{'★★★★☆'}<span>4.5</span><span>·</span><span>124 {t('area.spots') || 'spots'}</span></div>
+              <div className="areaDesc">{t('areas.yokohama.description')}</div>
+              <span className="areaCTA">{t('common.viewDetails')}</span>
+            </div>
           </Link>
-          <Link href="/areas" className="areaCard">
-            <div>⛩️</div>
-            <div className="areaTitle">{t('areas.kyoto.title')}</div>
-            <div className="areaDesc">{t('areas.kyoto.description')}</div>
+          {/* Saitama */}
+          <Link href="/areas" className="areaCard" aria-label={t('areas.saitama.title')}>
+            <div className="areaCardThumb" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=70')" }} />
+            <div className="areaCardBody">
+              <div className="areaTitle">{t('areas.saitama.title')}</div>
+              <div className="areaStats">{'★★★★☆'}<span>4.3</span><span>·</span><span>98 {t('area.spots') || 'spots'}</span></div>
+              <div className="areaDesc">{t('areas.saitama.description')}</div>
+              <span className="areaCTA">{t('common.viewDetails')}</span>
+            </div>
           </Link>
-          <Link href="/areas" className="areaCard">
-            <div>🍜</div>
-            <div className="areaTitle">{t('areas.osaka.title')}</div>
-            <div className="areaDesc">{t('areas.osaka.description')}</div>
+          {/* Chiba */}
+          <Link href="/areas" className="areaCard" aria-label={t('areas.chiba.title')}>
+            <div className="areaCardThumb" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=1200&q=70')" }} />
+            <div className="areaCardBody">
+              <div className="areaTitle">{t('areas.chiba.title')}</div>
+              <div className="areaStats">{'★★★★☆'}<span>4.4</span><span>·</span><span>112 {t('area.spots') || 'spots'}</span></div>
+              <div className="areaDesc">{t('areas.chiba.description')}</div>
+              <span className="areaCTA">{t('common.viewDetails')}</span>
+            </div>
           </Link>
         </div>
       </section>
@@ -177,16 +197,12 @@ export default function AIPlanPage() {
               <div className="relative z-10">
                 <div className="inline-flex items-center gap-3 bg-sky-50 text-sky-700 border border-sky-200 px-5 py-2.5 rounded-full mb-6">
                   <Bot size={20} />
-                  <span className="font-semibold">AI Travel Planner</span>
+                  <span className="font-semibold">{t('home.aiPlan.label')}</span>
                 </div>
 
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-800">
-                  最適な旅程を生成しますか？
-                </h2>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-800">{t('aiPlan.generate.title')}</h2>
 
-                <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
-                  選択されたスポットを基に、移動時間・料金・営業時間を全て考慮した完璧な1日プランを作成します
-                </p>
+                <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">{t('aiPlan.generate.subtitle')}</p>
 
                 <button
                   onClick={generate}
@@ -196,17 +212,17 @@ export default function AIPlanPage() {
                   {loading ? (
                     <>
                       <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      AI旅行プランを生成中...
+                      {t('aiPlan.generate.loading')}
                     </>
                   ) : (selectedSpots?.length || 0) < 2 ? (
                     <>
                       <Plus size={24} />
-                      2つ以上のスポットを追加してください
+                      {t('aiPlan.generate.needTwo')}
                     </>
                   ) : (
                     <>
                       <Sparkles size={24} />
-                      AI旅行プランを生成
+                      {t('aiPlan.generate.button')}
                     </>
                   )}
                 </button>
@@ -217,8 +233,8 @@ export default function AIPlanPage() {
                       href="/spots/tokyo?category=sights"
                       className="text-blue-600 hover:text-blue-700 underline underline-offset-4 font-medium"
                     >
-                      → おすすめスポットを探す
-                    </Link>
+                      → {t('aiPlan.findSpots')}
+                </Link>
                   </div>
                 )}
               </div>
@@ -233,8 +249,8 @@ export default function AIPlanPage() {
                   <Bot className="text-white" size={24} />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-800">選択中のスポット</h2>
-                  <p className="text-slate-600">現在 {selectedSpots?.length || 0} 箇所が選択されています</p>
+                  <h2 className="text-2xl font-bold text-slate-800">{t('aiPlan.selected.title')}</h2>
+                  <p className="text-slate-600">{t('aiPlan.selected.count').replace('{count}', String(selectedSpots?.length || 0))}</p>
                 </div>
               </div>
 
@@ -256,8 +272,8 @@ export default function AIPlanPage() {
                         <div className="relative h-52">
                           <Image src={img} alt={spot.name} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 33vw" />
                           <div className="absolute top-3 left-3 flex gap-2">
-                            <span className="px-2 py-1 text-xs rounded-full bg-orange-500 text-white">人気</span>
-                            <span className="px-2 py-1 text-xs rounded-full bg-emerald-600 text-white">Open Now</span>
+                            <span className="px-2 py-1 text-xs rounded-full bg-orange-500 text-white">{t('common.popular')}</span>
+                            <span className="px-2 py-1 text-xs rounded-full bg-emerald-600 text-white">{t('common.openNow')}</span>
                           </div>
                           <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-slate-700 flex items-center justify-center">♡</div>
                           <div className="absolute -bottom-4 left-6 w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center font-bold">{index + 1}</div>
@@ -266,7 +282,7 @@ export default function AIPlanPage() {
                           <h3 className="font-semibold text-lg mb-1">{spot.name}</h3>
                           <div className="flex items-center gap-2 text-slate-500 text-sm mb-2">
                             <MapPin size={14} />
-                            <span>{spot.location?.address || spot.area || '東京'}</span>
+                            <span>{spot.location?.address || spot.area || t('areas.tokyo.title')}</span>
                           </div>
                           <div className="flex items-center gap-2 mb-3">
                             <Star className="text-yellow-400" size={16} fill="currentColor" />
@@ -282,8 +298,8 @@ export default function AIPlanPage() {
                             </div>
                           )}
                           <div className="mt-4">
-                            <a href={`/spots/${spot.id}?lang=ja`} className="block w-full text-center px-4 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors">
-                              View Details
+                            <a href={`/spots/${spot.id}`} className="block w-full text-center px-4 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors">
+                              {t('common.viewDetails')}
                             </a>
                           </div>
                         </div>
@@ -295,9 +311,9 @@ export default function AIPlanPage() {
                 <div className="text-center py-16">
                   {/* Main Message */}
                   <div className="mb-12">
-                    <h3 className="text-4xl font-extrabold text-white mb-6 drop-shadow-lg">まずはエリアを選んでね！</h3>
+                    <h3 className="text-4xl font-extrabold text-white mb-6 drop-shadow-lg">{t('aiPlan.empty.pickAreaTitle')}</h3>
                     <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-6 max-w-2xl mx-auto border border-white/20">
-                      <p className="text-white text-lg drop-shadow">行きたいエリアを選ぶと、そのエリアの人気スポットが表示されます</p>
+                      <p className="text-white text-lg drop-shadow">{t('aiPlan.empty.pickAreaLead')}</p>
                     </div>
                   </div>
 
@@ -312,7 +328,7 @@ export default function AIPlanPage() {
                         </div>
 
                         {/* タイトル */}
-                        <h4 className="text-2xl font-bold text-slate-800 mb-4">東京</h4>
+                        <h4 className="text-2xl font-bold text-slate-800 mb-4">{t('areas.tokyo.title')}</h4>
 
                         {/* 評価 */}
                         <div className="flex items-center justify-center gap-1 mb-4">
@@ -327,13 +343,13 @@ export default function AIPlanPage() {
                         </div>
 
                         {/* 説明 */}
-                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">伝統とネオンが交じる場所—日本の首都を巡ろう。</p>
+                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">{t('areas.tokyo.description')}</p>
 
                         {/* スポット数 */}
-                        <div className="text-blue-600 font-bold text-lg mb-6">185 観光スポット</div>
+                        <div className="text-blue-600 font-bold text-lg mb-6">185 {t('area.spots')}</div>
 
                         {/* CTA */}
-                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">詳細を見る</div>
+                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">{t('common.viewDetails')}</div>
                       </div>
                     </Link>
 
@@ -343,7 +359,7 @@ export default function AIPlanPage() {
                         <div className="flex justify-center mb-6">
                           <div className="w-16 h-16 text-6xl flex items-center justify-center">🏰</div>
                         </div>
-                        <h4 className="text-2xl font-bold text-slate-800 mb-4">大阪</h4>
+                        <h4 className="text-2xl font-bold text-slate-800 mb-4">{t('areas.osaka.title')}</h4>
                         <div className="flex items-center justify-center gap-1 mb-4">
                           <div className="flex text-yellow-400">
                             <Star size={16} fill="currentColor" />
@@ -354,9 +370,9 @@ export default function AIPlanPage() {
                           </div>
                           <span className="text-yellow-600 text-sm font-semibold ml-1">4.6</span>
                         </div>
-                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">食いだおれの街でお城と美食を楽しむ旅。</p>
-                        <div className="text-blue-600 font-bold text-lg mb-6">142 観光スポット</div>
-                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">詳細を見る</div>
+                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">{t('areas.osaka.description')}</p>
+                        <div className="text-blue-600 font-bold text-lg mb-6">142 {t('area.spots')}</div>
+                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">{t('common.viewDetails')}</div>
                       </div>
                     </Link>
 
@@ -366,7 +382,7 @@ export default function AIPlanPage() {
                         <div className="flex justify-center mb-6">
                           <div className="w-16 h-16 text-6xl flex items-center justify-center">⛩️</div>
                         </div>
-                        <h4 className="text-2xl font-bold text-slate-800 mb-4">京都</h4>
+                        <h4 className="text-2xl font-bold text-slate-800 mb-4">{t('areas.kyoto.title')}</h4>
                         <div className="flex items-center justify-center gap-1 mb-4">
                           <div className="flex text-yellow-400">
                             <Star size={16} fill="currentColor" />
@@ -377,9 +393,9 @@ export default function AIPlanPage() {
                           </div>
                           <span className="text-yellow-600 text-sm font-semibold ml-1">4.9</span>
                         </div>
-                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">古都の美しさを紅葉と寺院で感じる旅。</p>
-                        <div className="text-blue-600 font-bold text-lg mb-6">98 観光スポット</div>
-                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">詳細を見る</div>
+                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">{t('areas.kyoto.description')}</p>
+                        <div className="text-blue-600 font-bold text-lg mb-6">98 {t('area.spots')}</div>
+                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">{t('common.viewDetails')}</div>
                       </div>
                     </Link>
 
@@ -389,7 +405,7 @@ export default function AIPlanPage() {
                         <div className="flex justify-center mb-6">
                           <div className="w-16 h-16 text-6xl flex items-center justify-center">🌆</div>
                         </div>
-                        <h4 className="text-2xl font-bold text-slate-800 mb-4">横浜</h4>
+                        <h4 className="text-2xl font-bold text-slate-800 mb-4">{t('areas.yokohama.title')}</h4>
                         <div className="flex items-center justify-center gap-1 mb-4">
                           <div className="flex text-yellow-400">
                             <Star size={16} fill="currentColor" />
@@ -400,9 +416,9 @@ export default function AIPlanPage() {
                           </div>
                           <span className="text-yellow-600 text-sm font-semibold ml-1">4.5</span>
                         </div>
-                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">ミナトみらいと中華街の彩り豊かな港街。</p>
-                        <div className="text-blue-600 font-bold text-lg mb-6">76 観光スポット</div>
-                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">詳細を見る</div>
+                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">{t('areas.yokohama.description')}</p>
+                        <div className="text-blue-600 font-bold text-lg mb-6">76 {t('area.spots')}</div>
+                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">{t('common.viewDetails')}</div>
                       </div>
                     </Link>
 
@@ -412,7 +428,7 @@ export default function AIPlanPage() {
                         <div className="flex justify-center mb-6">
                           <div className="w-16 h-16 text-6xl flex items-center justify-center">🦌</div>
                         </div>
-                        <h4 className="text-2xl font-bold text-slate-800 mb-4">奈良</h4>
+                        <h4 className="text-2xl font-bold text-slate-800 mb-4">{t('areas.kyoto.title')}</h4>
                         <div className="flex items-center justify-center gap-1 mb-4">
                           <div className="flex text-yellow-400">
                             <Star size={16} fill="currentColor" />
@@ -423,9 +439,9 @@ export default function AIPlanPage() {
                           </div>
                           <span className="text-yellow-600 text-sm font-semibold ml-1">4.7</span>
                         </div>
-                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">鹿たちと遊び、大仏と寺院を巡る古都。</p>
-                        <div className="text-blue-600 font-bold text-lg mb-6">54 観光スポット</div>
-                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">詳細を見る</div>
+                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">{t('areas.kyoto.description')}</p>
+                        <div className="text-blue-600 font-bold text-lg mb-6">54 {t('area.spots')}</div>
+                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">{t('common.viewDetails')}</div>
                       </div>
                     </Link>
 
@@ -435,7 +451,7 @@ export default function AIPlanPage() {
                         <div className="flex justify-center mb-6">
                           <div className="w-16 h-16 text-6xl flex items-center justify-center">⛵</div>
                         </div>
-                        <h4 className="text-2xl font-bold text-slate-800 mb-4">神戸</h4>
+                        <h4 className="text-2xl font-bold text-slate-800 mb-4">{t('areas.osaka.title')}</h4>
                         <div className="flex items-center justify-center gap-1 mb-4">
                           <div className="flex text-yellow-400">
                             <Star size={16} fill="currentColor" />
@@ -446,9 +462,9 @@ export default function AIPlanPage() {
                           </div>
                           <span className="text-yellow-600 text-sm font-semibold ml-1">4.4</span>
                         </div>
-                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">神戸牛と夢の大橋が語る美しい港街。</p>
-                        <div className="text-blue-600 font-bold text-lg mb-6">62 観光スポット</div>
-                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">詳細を見る</div>
+                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">{t('areas.osaka.description')}</p>
+                        <div className="text-blue-600 font-bold text-lg mb-6">62 {t('area.spots')}</div>
+                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">{t('common.viewDetails')}</div>
                       </div>
                     </Link>
                   </div>
@@ -456,35 +472,35 @@ export default function AIPlanPage() {
                   {/* AI Features - コンパクトに配置 */}
                   <div className="mt-16">
                     <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-6 max-w-4xl mx-auto border border-white/20">
-                      <h4 className="text-white text-lg font-bold mb-6 text-center">🤖 エリアを選んだ後はAIが自動で最適化</h4>
+                      <h4 className="text-white text-lg font-bold mb-6 text-center">🤖 {t('aiPlan.features.optimize')}</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <div className="text-center">
                           <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center mb-3 mx-auto">
                             <Zap className="text-white" size={20} />
                           </div>
-                          <div className="font-bold text-white text-sm mb-1">最適ルート</div>
-                          <div className="text-white/80 text-xs">移動時間を最小化</div>
+                          <div className="font-bold text-white text-sm mb-1">{t('aiPlan.features.route')}</div>
+                          <div className="text-white/80 text-xs">{t('aiPlan.features.routeLead')}</div>
                         </div>
                         <div className="text-center">
                           <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mb-3 mx-auto">
                             <Clock className="text-white" size={20} />
                           </div>
-                          <div className="font-bold text-white text-sm mb-1">時間配分</div>
-                          <div className="text-white/80 text-xs">混雑に応じて調整</div>
+                          <div className="font-bold text-white text-sm mb-1">{t('aiPlan.features.time')}</div>
+                          <div className="text-white/80 text-xs">{t('aiPlan.features.timeLead')}</div>
                         </div>
                         <div className="text-center">
                           <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl flex items-center justify-center mb-3 mx-auto">
                             <Cherry className="text-white" size={20} />
                           </div>
-                          <div className="font-bold text-white text-sm mb-1">季節考慮</div>
-                          <div className="text-white/80 text-xs">桜・紅葉も反映</div>
+                          <div className="font-bold text-white text-sm mb-1">{t('aiPlan.features.season')}</div>
+                          <div className="text-white/80 text-xs">{t('aiPlan.features.seasonLead')}</div>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Help text */}
-                  <p className="text-white/70 mt-12 text-sm bg-black/10 backdrop-blur-sm rounded-full px-6 py-3 inline-block">💡 各エリアを選んで、お気に入りスポットをAIプランに追加してください</p>
+                  <p className="text-white/70 mt-12 text-sm bg-black/10 backdrop-blur-sm rounded-full px-6 py-3 inline-block">💡 {t('aiPlan.help.pickArea')}</p>
                 </div>
               )}
             </div>
@@ -498,24 +514,24 @@ export default function AIPlanPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center mb-4">
                   <Zap className="text-white" size={24} />
                 </div>
-                <h3 className="font-bold text-slate-800 mb-2">最適ルート生成</h3>
-                <p className="text-slate-600 text-sm">移動時間・交通手段を考慮して効率的なルートを自動生成</p>
+                <h3 className="font-bold text-slate-800 mb-2">{t('aiPlan.features.route')}</h3>
+                <p className="text-slate-600 text-sm">{t('aiPlan.features.routeLead')}</p>
               </div>
 
               <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mb-4">
                   <Clock className="text-white" size={24} />
                 </div>
-                <h3 className="font-bold text-slate-800 mb-2">時間配分最適化</h3>
-                <p className="text-slate-600 text-sm">各スポットでの滞在時間を混雑状況に応じて調整</p>
+                <h3 className="font-bold text-slate-800 mb-2">{t('aiPlan.features.time')}</h3>
+                <p className="text-slate-600 text-sm">{t('aiPlan.features.timeLead')}</p>
               </div>
 
               <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl flex items-center justify-center mb-4">
                   <Cherry className="text-white" size={24} />
                 </div>
-              <h3 className="font-bold text-slate-800 mb-2">季節を考慮</h3>
-              <p className="text-slate-600 text-sm">桜の開花時期や紅葉シーズンなど季節要素を反映</p>
+              <h3 className="font-bold text-slate-800 mb-2">{t('aiPlan.features.season')}</h3>
+              <p className="text-slate-600 text-sm">{t('aiPlan.features.seasonLead')}</p>
               </div>
             </div>
           </section>
