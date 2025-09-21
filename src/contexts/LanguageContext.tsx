@@ -49,8 +49,8 @@ const translations = {
 
     // Homepage
     'home.trustedBy': 'موثوق من أكثر من 10,000 مسافر حول العالم',
-    'home.heroTitle': 'اكتشف اليابان بطريقتك — خطط سفر شخصية بالذكاء الاصطناعي خلال ثوانٍ',
-    'home.heroSubtitle': 'احصل على مسارات مخصصة، جواهر مخفية وتجارب أصيلة تناسبك. ابدأ التخطيط في أقل من 60 ثانية.',
+    'home.heroTitle': 'من حيث تريد أن تذهب، إلى حيث يجب أن تذهب.',
+    'home.heroSubtitle': 'الذكاء الاصطناعي يقترح سحر اليابان الذي لم تعرفه في 60 ثانية',
     'home.ctaPrimary': 'أنشئ خطة بالذكاء الاصطناعي الآن',
     'home.ctaSecondary': 'عرض الدليل',
     'home.ctaPrimaryAlt': 'أنشئ رحلتك في 60 ثانية',
@@ -443,8 +443,8 @@ const translations = {
     
     // Homepage
     'home.trustedBy': 'Trusted by 10,000+ travelers worldwide',
-    'home.heroTitle': 'Discover Japan, Your Way — Personalized AI Travel Plans in Seconds',
-    'home.heroSubtitle': 'Get personalized itineraries, hidden gems, and authentic experiences tailored just for you. Start planning in under 60 seconds!',
+    'home.heroTitle': 'From where you want to go, to where you should go.',
+    'home.heroSubtitle': 'AI suggests the charms of Japan you didn\'t know in 60 seconds',
     'home.ctaPrimary': 'FREE AI ITINERARY NOW',
     'home.ctaSecondary': 'SEE HOW IT WORKS',
     'home.ctaPrimaryAlt': 'Create your trip in 60s',
@@ -876,8 +876,8 @@ const translations = {
     
     // Homepage
     'home.trustedBy': '世界中の10,000人以上の旅行者に信頼されています',
-    'home.heroTitle': 'あなたのスタイルで日本を発見 — AIが数秒でパーソナライズ旅行プラン',
-    'home.heroSubtitle': 'あなただけのパーソナライズされた旅程、隠れた名所、本格的な体験を60秒以内でプランニング。今すぐ始めましょう！',
+    'home.heroTitle': '行きたい場所から、行くべき場所へ。',
+    'home.heroSubtitle': 'AI があなたの知らない日本の魅力を60秒で提案',
     'home.ctaPrimary': '無料AI旅行プラン作成',
     'home.ctaSecondary': '説明ページへ',
     'home.ctaPrimaryAlt': '60秒で旅を作成',
@@ -1273,8 +1273,8 @@ const translations = {
     
     // Homepage
     'home.trustedBy': '전 세계 10,000명 이상의 여행자들이 신뢰합니다',
-    'home.heroTitle': '당신만의 방식으로 일본을 발견 — AI 맞춤 여행 플랜을 몇 초 만에',
-    'home.heroSubtitle': '당신만을 위한 맞춤형 여행 일정, 숨겨진 명소, 그리고 진정한 경험을 60초 안에 계획하세요. 지금 시작하세요!',
+    'home.heroTitle': '가고 싶은 곳에서, 가야 할 곳으로.',
+    'home.heroSubtitle': 'AI가 당신이 몰랐던 일본의 매력을 60초 만에 제안',
     'home.ctaPrimary': '무료 AI 여행 일정',
     'home.ctaSecondary': '가이드 보기',
     'home.ctaPrimaryAlt': '60초 만에 여행 만들기',
@@ -1672,8 +1672,8 @@ const translations = {
     
     // Homepage
     'home.trustedBy': 'Fait confiance par plus de 10 000 voyageurs dans le monde',
-    'home.heroTitle': 'Découvrez le Japon, à votre façon — Itinéraires de voyage personnalisés par IA en quelques secondes',
-    'home.heroSubtitle': 'Obtenez des itinéraires personnalisés, des joyaux cachés et des expériences authentiques adaptées juste pour vous. Commencez à planifier en moins de 60 secondes !',
+    'home.heroTitle': 'De là où vous voulez aller, à là où vous devriez aller.',
+    'home.heroSubtitle': 'L\'IA suggère les charmes du Japon que vous ne connaissiez pas en 60 secondes',
     'home.ctaPrimary': 'ITINÉRAIRE IA GRATUIT MAINTENANT',
     'home.ctaSecondary': 'VOIR LE GUIDE',
     'home.ctaPrimaryAlt': 'Créez votre voyage en 60 s',
