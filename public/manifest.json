@@ -1,19 +1,21 @@
 {
-  "name": "Japan Travel Guide - AI-Powered Tourism Planner",
-  "short_name": "Japan Travel",
-  "description": "Discover Japan with AI-powered travel planning. Complete guide to Tokyo, Yokohama, Saitama & Chiba tourism with personalized itineraries.",
+  "name": "日本旅行ガイド - AI搭載観光プランナー",
+  "short_name": "日本旅行",
+  "description": "AI搭載の旅行プランニングで日本を発見しよう。東京・横浜・埼玉・千葉の完全観光ガイド。ホテル・レストラン・観光スポット・オーダーメイド旅行プラン。",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#667eea",
   "orientation": "portrait-primary",
   "scope": "/",
-  "lang": "en",
-  "categories": ["travel", "tourism", "lifestyle", "navigation"],
+  "lang": "ja",
+  "dir": "ltr",
+  "categories": ["travel", "tourism", "lifestyle", "navigation", "productivity"],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
     {
       "src": "/favicon.png",
-      "sizes": "32x32",
+      "sizes": "16x16 32x32",
       "type": "image/png"
     },
     {
@@ -41,40 +43,51 @@
       "sizes": "1280x720",
       "type": "image/jpeg",
       "form_factor": "wide",
-      "label": "Japan Travel Guide Desktop Experience"
+      "label": "日本旅行ガイド デスクトップ体験"
     },
     {
       "src": "/images/screenshot-narrow.jpg",
       "sizes": "375x812",
       "type": "image/jpeg",
       "form_factor": "narrow",
-      "label": "Japan Travel Guide Mobile Experience"
+      "label": "日本旅行ガイド モバイル体験"
     }
   ],
   "shortcuts": [
     {
-      "name": "Explore Areas",
-      "short_name": "Areas",
-      "description": "Browse Japan travel destinations",
+      "name": "エリア探索",
+      "short_name": "エリア",
+      "description": "日本の旅行先を探索",
       "url": "/areas",
       "icons": [{ "src": "/images/shortcut-areas.png", "sizes": "96x96" }]
     },
     {
-      "name": "AI Trip Planner",
-      "short_name": "AI Plan",
-      "description": "Create AI-powered travel itinerary",
+      "name": "AI旅行プランナー",
+      "short_name": "AIプラン",
+      "description": "AI搭載旅行プラン作成",
       "url": "/ai-spots",
       "icons": [{ "src": "/images/shortcut-ai.png", "sizes": "96x96" }]
     },
     {
-      "name": "Tokyo Guide",
-      "short_name": "Tokyo",
-      "description": "Explore Tokyo attractions",
+      "name": "東京ガイド",
+      "short_name": "東京",
+      "description": "東京の観光スポット探索",
       "url": "/areas/tokyo",
       "icons": [{ "src": "/images/shortcut-tokyo.png", "sizes": "96x96" }]
     }
   ],
-  "related_applications": [],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.japantravel.guide",
+      "id": "com.japantravel.guide"
+    },
+    {
+      "platform": "itunes",
+      "url": "https://apps.apple.com/app/japan-travel-guide/id123456789",
+      "id": "123456789"
+    }
+  ],
   "prefer_related_applications": false,
   "share_target": {
     "action": "/share-target",
@@ -85,5 +98,21 @@
       "text": "text",
       "url": "url"
     }
-  }
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+japantravel",
+      "url": "/handle-protocol?type=%s"
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "auto"
+  },
+  "handle_links": "preferred",
+  "scope_extensions": [
+    {"origin": "https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app"}
+  ]
 }

@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Metadata } from "next";
+import { headers } from "next/headers";
 import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
 import Header from "@/components/Header";
@@ -19,18 +20,21 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-taka
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "Japan Travel Guide | Tokyo Tourism | Best Japan Trip Planner 2025",
-  description: "Discover Japan with AI-powered travel planning. Complete guide to Tokyo, Yokohama, Saitama & Chiba tourism. Hotels, restaurants, attractions & personalized itineraries for your perfect Japan trip.",
+  title: "日本旅行ガイド | 東京観光 | AI旅行プランナー 2025年版",
+  description: "AI搭載の旅行プランニングで日本を発見しよう。東京・横浜・埼玉・千葉の完全観光ガイド。ホテル・レストラン・観光スポット・オーダーメイド旅行プランで完璧な日本旅行を。",
   keywords: [
-    "Japan travel", "Japan tourism", "Tokyo travel guide", "Japan trip planner", 
-    "Tokyo attractions", "Japan hotels", "Japan restaurants", "Yokohama travel", 
-    "Saitama tourism", "Chiba travel", "Japan itinerary", "Tokyo sightseeing",
-    "Japan AI travel", "Tokyo hotels", "Yokohama attractions", "Japan vacation",
-    "Tokyo sightseeing tour", "Japan travel tips", "Tokyo food guide"
+    "日本旅行", "日本観光", "東京旅行ガイド", "日本旅行プランナー",
+    "東京観光スポット", "日本ホテル", "日本レストラン", "横浜旅行",
+    "埼玉観光", "千葉旅行", "日本旅行プラン", "東京観光",
+    "AI旅行プランニング", "東京ホテル", "横浜観光スポット", "日本旅行",
+    "東京観光ツアー", "日本旅行のコツ", "東京グルメガイド", "温泉旅行",
+    "桜の名所", "紅葉スポット", "神社仏閣", "日本文化体験",
+    "東京ディズニーランド", "富士山ツアー", "スキー場", "日本の祭り",
+    "着物レンタル", "寿司体験", "日本料理", "旅館予約"
   ],
-  authors: [{ name: "Japan Tourism Guide" }],
-  creator: "Japan Tourism Guide",
-  publisher: "Japan Tourism Guide",
+  authors: [{ name: "日本旅行ガイド" }],
+  creator: "日本旅行ガイド",
+  publisher: "日本旅行ガイド",
   robots: {
     index: true,
     follow: true,
@@ -43,47 +47,47 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    // Do not set a global canonical here to avoid overriding per-page canonicals
+    canonical: baseUrl,
     languages: {
       'x-default': `${baseUrl}`,
-      'en-US': `${baseUrl}?lang=en`,
-      'en-GB': `${baseUrl}?lang=en`,
-      'fr-FR': `${baseUrl}?lang=fr`,
-      'ja-JP': `${baseUrl}?lang=ja`,
-      'ko-KR': `${baseUrl}?lang=ko`,
-      'ar-SA': `${baseUrl}?lang=ar`,
+      'ja-JP': `${baseUrl}/`,
+      'en-GB': `${baseUrl}/en`,
+      'en-US': `${baseUrl}/en`,
+      'fr-FR': `${baseUrl}/fr`,
+      'ko-KR': `${baseUrl}/ko`,
+      'ar-SA': `${baseUrl}/ar`,
     },
   },
   openGraph: {
     type: 'website',
-    locale: 'en_US',
-    alternateLocale: ['en_GB', 'fr_FR'],
+    locale: 'ja_JP',
+    alternateLocale: ['en_GB', 'en_US', 'fr_FR', 'ko_KR', 'ar_SA'],
     url: baseUrl,
-    title: "Japan Travel Guide | Tokyo Tourism | Best Japan Trip Planner 2025",
-    description: "Discover Japan with AI-powered travel planning. Complete guide to Tokyo, Yokohama, Saitama & Chiba tourism. Hotels, restaurants, attractions & personalized itineraries.",
-    siteName: "Japan Travel Guide",
+    title: "日本旅行ガイド | 東京観光 | AI旅行プランナー 2025年版",
+    description: "AI搭載の旅行プランニングで日本を発見しよう。東京・横浜・埼玉・千葉の完全観光ガイド。ホテル・レストラン・観光スポット・オーダーメイド旅行プランで完璧な日本旅行を。",
+    siteName: "日本旅行ガイド",
     images: [
       {
         url: `${baseUrl}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "Japan Travel Guide - AI-Powered Japan Trip Planner",
+        alt: "日本旅行ガイド - AI搭載日本旅行プランナー",
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@japantravelguide',
-    creator: '@japantravelguide',
-    title: "Japan Travel Guide | Tokyo Tourism | Best Japan Trip Planner 2025",
-    description: "Discover Japan with AI-powered travel planning. Complete guide to Tokyo, Yokohama, Saitama & Chiba tourism.",
+    site: '@japan_travel_jp',
+    creator: '@japan_travel_jp',
+    title: "日本旅行ガイド | 東京観光 | AI旅行プランナー 2025年版",
+    description: "AI搭載の旅行プランニングで日本を発見しよう。東京・横浜・埼玉・千葉の完全観光ガイド。",
     images: [`${baseUrl}/twitter-image`],
   },
   verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
+    google: 'your-google-verification-code-jp',
+    yahoo: 'your-yahoo-verification-code-jp',
     other: {
-      'msvalidate.01': 'your-bing-verification-code',
+      'msvalidate.01': 'your-bing-verification-code-jp',
     },
   },
   icons: {
@@ -100,32 +104,33 @@ export const metadata: Metadata = {
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
-  "name": "Japan Travel Guide",
-  "alternateName": "Japan Tourism Guide",
-  "description": "AI-powered Japan travel planning and tourism guide. Discover Tokyo, Yokohama, Saitama & Chiba with personalized itineraries, hotel recommendations, and restaurant guides.",
+  "name": "日本旅行ガイド",
+  "alternateName": ["Japan Travel Guide", "日本観光ガイド"],
+  "description": "AI搭載の日本旅行プランニングと観光ガイド。東京・横浜・埼玉・千葉のオーダーメイド旅行プラン、ホテル推薦、レストランガイドで日本を発見しよう。",
   "url": baseUrl,
   "logo": `${baseUrl}/icon`,
   "image": `${baseUrl}/opengraph-image`,
+  "inLanguage": "ja",
   "sameAs": [
-    "https://twitter.com/japantravelguide",
+    "https://twitter.com/japan_travel_jp",
     "https://www.facebook.com/japantravelguide",
     "https://www.instagram.com/japantravelguide"
   ],
   "contactPoint": {
     "@type": "ContactPoint",
-    "contactType": "customer service",
-    "availableLanguage": ["English", "Japanese", "Korean", "Arabic"]
+    "contactType": "カスタマーサービス",
+    "availableLanguage": ["日本語", "English", "Français", "한국어", "العربية"]
   },
   "areaServed": [
-    { "@type": "Country", "name": "Japan" },
-    { "@type": "Country", "name": "United States" },
-    { "@type": "Country", "name": "United Kingdom" },
-    { "@type": "Country", "name": "France" },
-    { "@type": "Country", "name": "South Korea" },
-    { "@type": "Country", "name": "Australia" }
+    { "@type": "Country", "name": "日本" },
+    { "@type": "Country", "name": "アメリカ" },
+    { "@type": "Country", "name": "イギリス" },
+    { "@type": "Country", "name": "フランス" },
+    { "@type": "Country", "name": "韓国" },
+    { "@type": "Country", "name": "オーストラリア" }
   ],
-  "serviceType": "Travel Planning",
-  "priceRange": "Free",
+  "serviceType": "旅行プランニング",
+  "priceRange": "無料",
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.8",
@@ -133,38 +138,38 @@ const structuredData = {
   },
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
-    "name": "Japan Travel Services",
+    "name": "日本旅行サービス",
     "itemListElement": [
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "AI Travel Planning",
-          "description": "Personalized Japan itinerary creation with AI technology"
-        }
-      },
-      {
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service", 
-          "name": "Tokyo Tourism Guide",
-          "description": "Complete Tokyo travel information and recommendations"
+          "name": "AI旅行プランニング",
+          "description": "AI技術を活用したオーダーメイド日本旅行プラン作成"
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Hotel Recommendations",
-          "description": "Curated hotel selections for Japan travel"
+          "name": "東京観光ガイド",
+          "description": "東京の完全旅行情報と推薦スポット"
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Restaurant Guide",
-          "description": "Best restaurants and dining recommendations in Japan"
+          "name": "ホテル推薦",
+          "description": "日本旅行に最適な厳選ホテル情報"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "レストランガイド",
+          "description": "日本の最高のレストランとグルメ推薦"
         }
       }
     ]
@@ -176,8 +181,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Read locale/dir set by middleware for correct SSR attributes
+  const h = headers();
+  const ssrDir = h.get('x-dir') || 'ltr';
+  const ssrLang = h.get('x-locale') || 'ja-JP';
+
   return (
-    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang={ssrLang} dir={ssrDir} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning={true}

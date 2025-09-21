@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Home from '@/app/page';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
 
 export const metadata: Metadata = {
   title: 'Japan Travel Guide | Discover Japan',
@@ -11,11 +11,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${baseUrl}/en`,
     languages: {
-      'ja': `${baseUrl}/`,
-      'en': `${baseUrl}/en`,
-      'fr': `${baseUrl}/fr`,
-      'ko': `${baseUrl}/ko`,
-      'ar': `${baseUrl}/ar`,
+      'x-default': `${baseUrl}`,
+      'ja-JP': `${baseUrl}/`,
+      'en-GB': `${baseUrl}/en`,
+      'en-US': `${baseUrl}/en`,
+      'fr-FR': `${baseUrl}/fr`,
+      'ko-KR': `${baseUrl}/ko`,
+      'ar-SA': `${baseUrl}/ar`,
     }
   },
   openGraph: {

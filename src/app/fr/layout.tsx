@@ -15,18 +15,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://example.com';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "Guide de voyage au Japon | Tourisme Tokyo | Meilleur planificateur 2025",
-  description: "Découvrez le Japon avec une planification alimentée par l'IA. Guide complet de Tokyo, Yokohama, Saitama & Chiba. Hôtels, restaurants, attractions & itinéraires personnalisés.",
+  title: "Guide Voyage Japon | Tourisme Tokyo & Vacances | Planificateur Japon France 2025",
+  description: "Découvrez le Japon avec la planification IA depuis la France. Guide complet de Tokyo, Yokohama, Saitama & Chiba. Hôtels, restaurants, attractions et itinéraires personnalisés pour vos vacances parfaites au Japon depuis la France.",
   keywords: [
-    "voyage japon", "tourisme japon", "guide tokyo", "planificateur voyage japon",
-    "attractions tokyo", "hotels japon", "restaurants japon", "voyage yokohama",
-    "tourisme saitama", "voyage chiba", "itinéraire japon", "visite tokyo",
-    "IA voyage japon", "vacances japon"
+    "voyage japon france", "vacances japon", "guide tokyo france", "planificateur voyage japon",
+    "attractions tokyo france", "hôtels japon français", "restaurants japon france", "voyage yokohama",
+    "tourisme saitama france", "voyage chiba", "itinéraire japon france", "visite tokyo",
+    "IA voyage japon", "vacances japon france", "séjour tokyo", "voyage organisé japon",
+    "culture japonaise france", "cerisiers en fleurs japon", "tokyo disney france", "mont fuji tours",
+    "onsen japonais", "shopping tokyo", "gastronomie japonaise", "ryokan japon",
+    "JR Pass france", "visa japon france", "voyage de noces japon", "circuit japon",
+    "temples japonais", "manga culture japon", "sushi authentique tokyo"
   ],
+  authors: [{ name: "Guide Voyage Japon France" }],
+  creator: "Guide Voyage Japon France",
+  publisher: "Guide Voyage Japon France",
   robots: {
     index: true,
     follow: true,
@@ -42,36 +49,120 @@ export const metadata: Metadata = {
     canonical: `${baseUrl}/fr`,
     languages: {
       'x-default': `${baseUrl}`,
-      'ja': `${baseUrl}/`,
-      'en': `${baseUrl}/en`,
-      'fr': `${baseUrl}/fr`,
-      'ko': `${baseUrl}/ko`,
-      'ar': `${baseUrl}/ar`,
+      'ja-JP': `${baseUrl}/`,
+      'en-GB': `${baseUrl}/en`,
+      'en-US': `${baseUrl}/en`,
+      'fr-FR': `${baseUrl}/fr`,
+      'ko-KR': `${baseUrl}/ko`,
+      'ar-SA': `${baseUrl}/ar`,
     },
   },
   openGraph: {
     type: 'website',
     locale: 'fr_FR',
-    alternateLocale: ['ja_JP', 'en_US', 'ko_KR', 'ar_SA'],
+    alternateLocale: ['ja_JP', 'en_GB', 'en_US', 'ko_KR', 'ar_SA'],
     url: `${baseUrl}/fr`,
-    title: "Guide de voyage au Japon | Tourisme Tokyo | Meilleur planificateur 2025",
-    description: "Découvrez le Japon avec une planification alimentée par l'IA. Guide complet et itinéraires personnalisés.",
-    siteName: "Guide Voyage Japon",
+    title: "Guide Voyage Japon | Tourisme Tokyo & Vacances | Planificateur Japon France 2025",
+    description: "Découvrez le Japon avec la planification IA depuis la France. Guide complet de Tokyo, Yokohama, Saitama & Chiba. Hôtels, restaurants, attractions et itinéraires personnalisés pour vos vacances parfaites au Japon.",
+    siteName: "Guide Voyage Japon France",
     images: [
       {
         url: `${baseUrl}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "Guide de voyage au Japon - Planificateur IA",
+        alt: "Guide Voyage Japon France - Planificateur IA pour les vacances au Japon",
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Guide de voyage au Japon | Tourisme Tokyo | Meilleur planificateur 2025",
-    description: "Découvrez le Japon avec une planification alimentée par l'IA.",
+    site: '@voyagejapon_fr',
+    creator: '@voyagejapon_fr',
+    title: "Guide Voyage Japon | Tourisme Tokyo & Vacances | Planificateur Japon France 2025",
+    description: "Découvrez le Japon avec la planification IA depuis la France. Guide complet de Tokyo, Yokohama, Saitama & Chiba.",
     images: [`${baseUrl}/twitter-image`],
   },
+  verification: {
+    google: 'your-google-verification-code-fr',
+    other: {
+      'msvalidate.01': 'your-bing-verification-code-fr',
+    },
+  },
+  category: 'voyage',
+};
+
+const structuredDataFR = {
+  "@context": "https://schema.org",
+  "@type": "TravelAgency",
+  "name": "Guide Voyage Japon France",
+  "alternateName": ["Guide Tourisme Japon", "Voyage Japon France"],
+  "description": "Planification de voyage au Japon alimentée par l'IA pour les voyageurs français. Découvrez Tokyo, Yokohama, Saitama et Chiba avec des itinéraires personnalisés, recommandations d'hôtels et guides de restaurants.",
+  "url": `${baseUrl}/fr`,
+  "logo": `${baseUrl}/icon`,
+  "image": `${baseUrl}/opengraph-image`,
+  "inLanguage": "fr-FR",
+  "sameAs": [
+    "https://twitter.com/voyagejapon_fr",
+    "https://www.facebook.com/guidevoyagejapon",
+    "https://www.instagram.com/voyagejapon_france"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "service client",
+    "availableLanguage": ["Français", "Japonais", "Anglais", "Coréen", "Arabe"]
+  },
+  "areaServed": [
+    { "@type": "Country", "name": "France" },
+    { "@type": "Country", "name": "Japon" },
+    { "@type": "Country", "name": "Belgique" },
+    { "@type": "Country", "name": "Suisse" },
+    { "@type": "Country", "name": "Canada" }
+  ],
+  "serviceType": "Planification de voyage",
+  "priceRange": "Gratuit",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.7",
+    "reviewCount": "650"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Services Voyage Japon pour la France",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Planification IA de voyage",
+          "description": "Planification personnalisée de vacances au Japon avec technologie IA pour les voyageurs français"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Guide Tourisme Tokyo",
+          "description": "Informations complètes de voyage à Tokyo et recommandations pour les vacanciers français"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Recommandations d'hôtels",
+          "description": "Sélections d'hôtels curées pour les vacances au Japon depuis la France"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Guide restaurants",
+          "description": "Meilleurs restaurants et recommandations culinaires au Japon pour les visiteurs français"
+        }
+      }
+    ]
+  }
 };
 
 export default function FrenchLayout({
@@ -79,6 +170,16 @@ export default function FrenchLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <Script
+        id="structured-data-fr"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredDataFR),
+        }}
+      />
+      {children}
+    </>
+  );
 }
-

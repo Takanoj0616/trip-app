@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import TokyoSpotsPage from '@/app/spots/tokyo/page';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
 
 export const metadata: Metadata = {
   title: 'Tokyo Spots | Travel Guide - Attractions, Restaurants and Hotels',
@@ -11,11 +11,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${baseUrl}/en/spots/tokyo`,
     languages: {
-      'ja': `${baseUrl}/spots/tokyo`,
-      'en': `${baseUrl}/en/spots/tokyo`,
-      'fr': `${baseUrl}/fr/spots/tokyo`,
-      'ko': `${baseUrl}/ko/spots/tokyo`,
-      'ar': `${baseUrl}/ar/spots/tokyo`,
+      'x-default': `${baseUrl}/spots/tokyo`,
+      'ja-JP': `${baseUrl}/spots/tokyo`,
+      'en-GB': `${baseUrl}/en/spots/tokyo`,
+      'en-US': `${baseUrl}/en/spots/tokyo`,
+      'fr-FR': `${baseUrl}/fr/spots/tokyo`,
+      'ko-KR': `${baseUrl}/ko/spots/tokyo`,
+      'ar-SA': `${baseUrl}/ar/spots/tokyo`,
     }
   },
   openGraph: {
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
     description: 'Discover the best Tokyo spots: tourist attractions, authentic restaurants, luxury hotels and unique experiences. Complete guide with ratings.',
     url: `${baseUrl}/en/spots/tokyo`,
     siteName: 'Japan Travel Guide',
-    locale: 'en',
+    locale: 'en_GB',
     type: 'website',
     images: [{
       url: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=630',

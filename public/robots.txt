@@ -1,13 +1,36 @@
 User-agent: *
 Allow: /
 
-# Important pages for SEO
+# Important pages for international SEO
 Allow: /areas/
 Allow: /spots/
 Allow: /courses/
 Allow: /plan/
 Allow: /coordinator/
 Allow: /ai-spots/
+Allow: /ai-plan/
+
+# Multi-language pages for international markets
+Allow: /en/
+Allow: /fr/
+Allow: /ko/
+Allow: /ar/
+Allow: /en/areas/
+Allow: /en/spots/
+Allow: /en/ai-spots/
+Allow: /en/ai-plan/
+Allow: /fr/areas/
+Allow: /fr/spots/
+Allow: /fr/ai-spots/
+Allow: /fr/ai-plan/
+Allow: /ko/areas/
+Allow: /ko/spots/
+Allow: /ko/ai-spots/
+Allow: /ko/ai-plan/
+Allow: /ar/areas/
+Allow: /ar/spots/
+Allow: /ar/ai-spots/
+Allow: /ar/ai-plan/
 
 # Block private or dynamic content
 Disallow: /api/
@@ -25,18 +48,69 @@ Sitemap: https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app/sitemap.xml
 # Crawl delay for polite crawling
 Crawl-delay: 1
 
-# Additional SEO directives
-# Allow Google to index images
+# International search engines optimization
+# Google (Global)
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Google UK
+User-agent: Googlebot
+Allow: /en/
+Crawl-delay: 1
+
+# Google France
+User-agent: Googlebot
+Allow: /fr/
+Crawl-delay: 1
+
+# Google Japan
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Bing (Microsoft)
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Bing UK
+User-agent: Bingbot
+Allow: /en/
+Crawl-delay: 1
+
+# Yahoo (Verizon Media)
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# Yandex (Russia)
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 2
+
+# Baidu (China)
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 2
+
+# Naver (Korea)
+User-agent: Yeti
+Allow: /ko/
+Crawl-delay: 1
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+# Image indexing optimization
 User-agent: Googlebot-Image
 Allow: /images/
 Allow: /public/images/
+Allow: /_next/static/media/
 
-# Allow specific search engines
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Slurp
-Allow: /
+# Video indexing optimization
+User-agent: Googlebot-Video
+Allow: /videos/
+Allow: /public/videos/

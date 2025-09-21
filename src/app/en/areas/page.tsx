@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import AreasPage from '@/app/areas/page';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
 
 export const metadata: Metadata = {
   title: 'Japan Regions | Travel Guide - Tokyo, Yokohama, Saitama, Chiba',
@@ -11,11 +11,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${baseUrl}/en/areas`,
     languages: {
-      'ja': `${baseUrl}/areas`,
-      'en': `${baseUrl}/en/areas`,
-      'fr': `${baseUrl}/fr/areas`,
-      'ko': `${baseUrl}/ko/areas`,
-      'ar': `${baseUrl}/ar/areas`,
+      'x-default': `${baseUrl}/areas`,
+      'ja-JP': `${baseUrl}/areas`,
+      'en-GB': `${baseUrl}/en/areas`,
+      'en-US': `${baseUrl}/en/areas`,
+      'fr-FR': `${baseUrl}/fr/areas`,
+      'ko-KR': `${baseUrl}/ko/areas`,
+      'ar-SA': `${baseUrl}/ar/areas`,
     }
   },
   openGraph: {
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
     description: 'Discover the best regions of Japan: Metropolitan Tokyo, Yokohama, Saitama, and Chiba. Detailed guides, ratings, and travel recommendations.',
     url: `${baseUrl}/en/areas`,
     siteName: 'Japan Travel Guide',
-    locale: 'en',
+    locale: 'en_GB',
     type: 'website',
     images: [{
       url: 'https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=630',

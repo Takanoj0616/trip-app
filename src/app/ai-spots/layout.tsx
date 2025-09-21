@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
 
 export const metadata: Metadata = {
   title: 'AIおすすめスポット | あなたにぴったりの観光プランを作成',
@@ -10,11 +10,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${baseUrl}/ai-spots`,
     languages: {
-      'ja': `${baseUrl}/ai-spots`,
-      'en': `${baseUrl}/en/ai-spots`,
-      'fr': `${baseUrl}/fr/ai-spots`,
-      'ko': `${baseUrl}/ko/ai-spots`,
-      'ar': `${baseUrl}/ar/ai-spots`,
+      'x-default': `${baseUrl}/ai-spots`,
+      'ja-JP': `${baseUrl}/ai-spots`,
+      'en-GB': `${baseUrl}/en/ai-spots`,
+      'en-US': `${baseUrl}/en/ai-spots`,
+      'fr-FR': `${baseUrl}/fr/ai-spots`,
+      'ko-KR': `${baseUrl}/ko/ai-spots`,
+      'ar-SA': `${baseUrl}/ar/ai-spots`,
     }
   },
   openGraph: {
@@ -22,7 +24,7 @@ export const metadata: Metadata = {
     description: 'AIがあなたの好みに合わせて最適な観光スポットをご提案。予算、興味、滞在期間に基づいた個人向けプランで、忘れられない日本旅行を。',
     url: `${baseUrl}/ai-spots`,
     siteName: 'Trip App',
-    locale: 'ja',
+    locale: 'ja_JP',
     type: 'website',
   },
   twitter: {

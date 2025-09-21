@@ -107,6 +107,9 @@ export function middleware(request: NextRequest) {
     // Special handling for default locale (ja) - no prefix needed
     if (locale === 'ja') {
       const res = NextResponse.next();
+      // Propagate locale and direction for SSR html attributes
+      res.headers.set('x-locale', 'ja-JP');
+      res.headers.set('x-dir', 'ltr');
       return ensureAbCookieOn(res, request);
     }
 
@@ -120,11 +123,21 @@ export function middleware(request: NextRequest) {
   const locale = pathname.split('/')[1];
   const response = NextResponse.next();
 
+  // Map to full BCP 47/SEO-friendly language tags
+  const localeTag =
+    locale === 'ja' ? 'ja-JP' :
+    locale === 'en' ? 'en-GB' :
+    locale === 'fr' ? 'fr-FR' :
+    locale === 'ko' ? 'ko-KR' :
+    locale === 'ar' ? 'ar-SA' : locale;
+
+  // Propagate direction and locale for SSR html attributes
   if (locale === 'ar') {
     response.headers.set('x-dir', 'rtl');
   } else {
     response.headers.set('x-dir', 'ltr');
   }
+  response.headers.set('x-locale', localeTag);
 
   // Ensure A/B cookie exists for TOP page requests with explicit locale prefix
   return ensureAbCookieOn(response, request);

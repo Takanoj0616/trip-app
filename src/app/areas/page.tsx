@@ -173,6 +173,7 @@ export default function AreasPage() {
     "name": pageTitle,
     "description": pageDescription,
     "url": `${baseUrl}/areas`,
+    "inLanguage": "ja-JP",
     "image": "https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
     "geo": {
       "@type": "GeoCoordinates",
@@ -206,6 +207,7 @@ export default function AreasPage() {
         <meta property="og:description" content={pageDescription + " - Discover Tokyo, Yokohama, Saitama, and Chiba."} />
         <meta property="og:url" content={`${baseUrl}/areas`} />
         <meta property="og:type" content="website" />
+        <meta property="og:locale" content="ja_JP" />
         <meta property="og:image" content="https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=630" />
         
         {/* Twitter */}
@@ -215,13 +217,27 @@ export default function AreasPage() {
         <meta name="twitter:image" content="https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=630" />
         
         {/* Language alternates */}
-        <link rel="alternate" hrefLang="ja" href={`${baseUrl}/areas?lang=ja`} />
-        <link rel="alternate" hrefLang="en" href={`${baseUrl}/areas?lang=en`} />
-        <link rel="alternate" hrefLang="ko" href={`${baseUrl}/areas?lang=ko`} />
+        <link rel="alternate" hrefLang="x-default" href={`${baseUrl}/areas`} />
+        <link rel="alternate" hrefLang="ja-JP" href={`${baseUrl}/areas`} />
+        <link rel="alternate" hrefLang="en-GB" href={`${baseUrl}/en/areas`} />
+        <link rel="alternate" hrefLang="en-US" href={`${baseUrl}/en/areas`} />
+        <link rel="alternate" hrefLang="fr-FR" href={`${baseUrl}/fr/areas`} />
+        <link rel="alternate" hrefLang="ko-KR" href={`${baseUrl}/ko/areas`} />
+        <link rel="alternate" hrefLang="ar-SA" href={`${baseUrl}/ar/areas`} />
         
         {/* Structured data */}
         <script type="application/ld+json">
           {JSON.stringify(jsonLdData)}
+        </script>
+        <script type="application/ld+json" id="schema-breadcrumb-areas">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
+              { "@type": "ListItem", "position": 2, "name": t('areas.features.title'), "item": `${baseUrl}/areas` }
+            ]
+          })}
         </script>
       </Head>
       
