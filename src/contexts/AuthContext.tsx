@@ -96,6 +96,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         displayName: name
       });
     }
+    try {
+      const match = typeof document !== 'undefined' ? document.cookie.match(/(?:^|; )ab_top_bg=([^;]+)/) : null;
+      const abv = match ? decodeURIComponent(match[1]) : undefined;
+      const w: any = typeof window !== 'undefined' ? (window as any) : undefined;
+      if (w && w.gtag) {
+        w.gtag('event', 'sign_up', { method: 'email', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+      } else {
+        console.log('GA4 Event: sign_up', { method: 'email', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+      }
+    } catch {}
   };
 
   const signInWithGoogle = async () => {
@@ -103,7 +113,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error('Firebase auth is not available');
     }
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    const result = await signInWithPopup(auth, provider);
+    try {
+      // Fire sign_up only if this looks like the first sign-in (new account)
+      const u = result?.user as any;
+      const isNew = u?.metadata?.creationTime && u?.metadata?.lastSignInTime && (u.metadata.creationTime === u.metadata.lastSignInTime);
+      if (isNew) {
+        const match = typeof document !== 'undefined' ? document.cookie.match(/(?:^|; )ab_top_bg=([^;]+)/) : null;
+        const abv = match ? decodeURIComponent(match[1]) : undefined;
+        const w: any = typeof window !== 'undefined' ? (window as any) : undefined;
+        if (w && w.gtag) {
+          w.gtag('event', 'sign_up', { method: 'google', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+        } else {
+          console.log('GA4 Event: sign_up', { method: 'google', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+        }
+      }
+    } catch {}
   };
 
   const signInWithApple = async () => {
@@ -112,7 +137,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     try {
       const provider = new OAuthProvider('apple.com');
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      try {
+        const u = result?.user as any;
+        const isNew = u?.metadata?.creationTime && u?.metadata?.lastSignInTime && (u.metadata.creationTime === u.metadata.lastSignInTime);
+        if (isNew) {
+          const match = typeof document !== 'undefined' ? document.cookie.match(/(?:^|; )ab_top_bg=([^;]+)/) : null;
+          const abv = match ? decodeURIComponent(match[1]) : undefined;
+          const w: any = typeof window !== 'undefined' ? (window as any) : undefined;
+          if (w && w.gtag) {
+            w.gtag('event', 'sign_up', { method: 'apple', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+          } else {
+            console.log('GA4 Event: sign_up', { method: 'apple', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+          }
+        }
+      } catch {}
     } catch (e: any) {
       const msg = e?.message || 'Apple sign-in is not configured';
       throw new Error(msg);

@@ -1,8 +1,62 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// A/B test settings for TOP page background
+const AB_COOKIE = 'ab_top_bg';
+const AB_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
+
+function isTopPage(pathname: string) {
+  const locales = ['ja', 'en', 'fr', 'ko', 'ar'];
+  if (pathname === '/' || pathname === '') return true;
+  // Handle "/en" and "/en/" style roots
+  return locales.some((loc) => pathname === `/${loc}` || pathname === `/${loc}/`);
+}
+
+function ensureAbCookieOn(response: NextResponse, request: NextRequest, targetPathname?: string) {
+  try {
+    const pathToCheck = targetPathname ?? request.nextUrl.pathname;
+    if (!isTopPage(pathToCheck)) return response;
+
+    const existing = request.cookies.get(AB_COOKIE)?.value;
+    if (existing === 'A' || existing === 'B') return response;
+
+    // 50/50 split — use crypto when available in Edge runtime
+    let variant: 'A' | 'B' = 'A';
+    try {
+      const x = new Uint32Array(1);
+      crypto.getRandomValues(x);
+      variant = (x[0] % 2 === 0) ? 'A' : 'B';
+    } catch {
+      variant = Math.random() < 0.5 ? 'A' : 'B';
+    }
+
+    response.cookies.set(AB_COOKIE, variant, {
+      path: '/',
+      maxAge: AB_MAX_AGE,
+      sameSite: 'lax',
+    });
+  } catch {}
+  return response;
+}
+
 export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const locales = ['ja', 'en', 'fr', 'ko', 'ar'];
+
+  // Dev-only override: allow ?ab=A|B to force variant on TOP page
+  if (process.env.NODE_ENV === 'development') {
+    const abParam = searchParams.get('ab');
+    if ((abParam === 'A' || abParam === 'B') && isTopPage(pathname)) {
+      const newUrl = new URL(request.url);
+      newUrl.searchParams.delete('ab');
+      const res = NextResponse.redirect(newUrl);
+      res.cookies.set(AB_COOKIE, abParam, {
+        path: '/',
+        maxAge: AB_MAX_AGE,
+        sameSite: 'lax',
+      });
+      return res;
+    }
+  }
 
   // langクエリパラメータがある場合の優先処理
   const langParam = searchParams.get('lang');
@@ -20,7 +74,8 @@ export function middleware(request: NextRequest) {
         newUrl.search = newSearchParams.toString();
       }
 
-      return NextResponse.redirect(newUrl);
+      const res = NextResponse.redirect(newUrl);
+      return ensureAbCookieOn(res, request, newUrl.pathname);
     }
 
     // 他のパスでもlangパラメータがある場合の処理
@@ -35,7 +90,8 @@ export function middleware(request: NextRequest) {
         newUrl.search = newSearchParams.toString();
       }
 
-      return NextResponse.redirect(newUrl);
+      const res = NextResponse.redirect(newUrl);
+      return ensureAbCookieOn(res, request, newUrl.pathname);
     }
   }
 
@@ -50,13 +106,14 @@ export function middleware(request: NextRequest) {
 
     // Special handling for default locale (ja) - no prefix needed
     if (locale === 'ja') {
-      return NextResponse.next();
+      const res = NextResponse.next();
+      return ensureAbCookieOn(res, request);
     }
 
     // Redirect to locale-prefixed URL for other languages
-    return NextResponse.redirect(
-      new URL(`/${locale}${pathname}`, request.url)
-    );
+    const newUrl = new URL(`/${locale}${pathname}`, request.url);
+    const res = NextResponse.redirect(newUrl);
+    return ensureAbCookieOn(res, request, newUrl.pathname);
   }
 
   // Add dir attribute for RTL languages
@@ -69,7 +126,8 @@ export function middleware(request: NextRequest) {
     response.headers.set('x-dir', 'ltr');
   }
 
-  return response;
+  // Ensure A/B cookie exists for TOP page requests with explicit locale prefix
+  return ensureAbCookieOn(response, request);
 }
 
 function getLocale(request: NextRequest) {

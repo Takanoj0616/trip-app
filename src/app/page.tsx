@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
@@ -14,6 +15,8 @@ export default function Home() {
 
   // Simple A/B variant for CTA (persisted in localStorage)
   const [ctaVariant, setCtaVariant] = useState<'A' | 'B'>('A');
+  // A/B variant for TOP background (assigned via middleware cookie)
+  const [bgVariant, setBgVariant] = useState<'A' | 'B'>('A');
   useEffect(() => {
     try {
       const stored = typeof window !== 'undefined' ? localStorage.getItem('homeCtaVariant') : null;
@@ -25,8 +28,51 @@ export default function Home() {
     }
   }, []);
 
+  // Read variant from cookie set by middleware
+  useEffect(() => {
+    try {
+      if (typeof document === 'undefined') return;
+      const match = document.cookie.match(/(?:^|; )ab_top_bg=([^;]+)/);
+      const v = match ? decodeURIComponent(match[1]) : null;
+      if (v === 'A' || v === 'B') setBgVariant(v);
+    } catch {}
+  }, []);
+
+  // Step 1: Fire exposure event once on first render when variant is known
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return;
+      const w: any = window as any;
+      if (!w.__ab_top_bg_exposure_sent && (bgVariant === 'A' || bgVariant === 'B')) {
+        if (w.gtag) {
+          w.gtag('event', 'ab_top_bg_exposure', { ab_variant: bgVariant });
+        } else {
+          console.log('GA4 Event: ab_top_bg_exposure', { ab_variant: bgVariant });
+        }
+        w.__ab_top_bg_exposure_sent = true;
+      }
+    } catch {}
+  }, [bgVariant]);
+
+  const pageBackground = useMemo(() => {
+    if (bgVariant === 'B') {
+      // Fuji-oriented cool gradient to complement hero image
+      return 'linear-gradient(135deg, #0ea5e9 0%, #60a5fa 35%, #1e293b 100%)';
+    }
+    return 'linear-gradient(135deg, #1e3a8a 0%, #312e81 25%, #1e1b4b 50%, #0f172a 75%, #020617 100%)';
+  }, [bgVariant]);
+
+  const heroBackground = useMemo(() => {
+    if (bgVariant === 'B') {
+      // Emphasize Mt. Fuji in the hero background (foreground prominent)
+      return 'linear-gradient(rgba(255,255,255,0.08), rgba(14,165,233,0.18)), url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80"), url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")';
+    }
+    return 'linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 182, 193, 0.2)), url("https://images.unsplash.com/photo-1522383225653-ed111181a951?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80"), url("https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")';
+  }, [bgVariant]);
+
   const trackCta = (location: 'hero' | 'features' | 'footer' | 'bottom_bar', label: 'primary' | 'secondary') => {
-    const params = { location, label, variant: ctaVariant } as const;
+    // Step 2: Include ab_variant label from TOP background test
+    const params = { location, label, variant: ctaVariant, ab_variant: bgVariant } as const;
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'cta_click', params);
     } else {
@@ -135,14 +181,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen" dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'} style={{
-      background: "linear-gradient(135deg, #1e3a8a 0%, #312e81 25%, #1e1b4b 50%, #0f172a 75%, #020617 100%)",
+      background: pageBackground,
       minHeight: "100vh"
     }}>
 
       {/* Hero Section */}
       <main style={{
         height: '100vh',
-        background: 'linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 182, 193, 0.2)), url("https://images.unsplash.com/photo-1522383225653-ed111181a951?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80"), url("https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")',
+        background: heroBackground,
         backgroundSize: 'cover, cover',
         backgroundPosition: 'center, center',
         backgroundAttachment: 'fixed, fixed',
