@@ -64,10 +64,10 @@ export default function Home() {
 
   const heroBackground = useMemo(() => {
     if (bgVariant === 'B') {
-      // Emphasize Mt. Fuji in the hero background (foreground prominent)
-      return 'linear-gradient(rgba(255,255,255,0.08), rgba(14,165,233,0.18)), url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80"), url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")';
+      // Emphasize Mt. Fuji with provided local image
+      return 'linear-gradient(rgba(255,255,255,0.08), rgba(14,165,233,0.18)), url("/images/fuzi.png"), url("/images/fuzi.png")';
     }
-    return 'linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 182, 193, 0.2)), url("https://images.unsplash.com/photo-1522383225653-ed111181a951?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80"), url("https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")';
+    return 'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 182, 193, 0.1)), url("https://images.unsplash.com/photo-1522383225653-ed111181a951?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80"), url("https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")';
   }, [bgVariant]);
 
   const trackCta = (location: 'hero' | 'features' | 'footer' | 'bottom_bar', label: 'primary' | 'secondary') => {
@@ -188,12 +188,12 @@ export default function Home() {
       {/* Hero Section */}
       <main style={{
         height: '100vh',
-        background: heroBackground,
+        backgroundImage: heroBackground,
         backgroundSize: 'cover, cover',
         backgroundPosition: 'center, center',
         backgroundAttachment: 'fixed, fixed',
         backgroundBlendMode: 'overlay',
-        animation: 'sakuraFloat 20s ease-in-out infinite',
+        animation: bgVariant === 'B' ? 'none' : 'sakuraFloat 20s ease-in-out infinite',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -211,10 +211,10 @@ export default function Home() {
           right: 0,
           bottom: 0,
           background: `
-            radial-gradient(circle at 20% 20%, rgba(255, 182, 193, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 80% 40%, rgba(255, 218, 185, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 40% 80%, rgba(255, 240, 245, 0.3) 0%, transparent 50%),
-            linear-gradient(45deg, rgba(255, 228, 225, 0.2) 0%, rgba(255, 245, 238, 0.1) 100%)
+            radial-gradient(circle at 20% 20%, rgba(255, 182, 193, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 40%, rgba(255, 218, 185, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(255, 240, 245, 0.08) 0%, transparent 50%),
+            linear-gradient(45deg, rgba(255, 228, 225, 0.05) 0%, rgba(255, 245, 238, 0.03) 100%)
           `,
           animation: 'sakuraDrift 25s ease-in-out infinite alternate',
           zIndex: 1,
@@ -227,7 +227,7 @@ export default function Home() {
             radial-gradient(circle at 20% 20%, rgba(2, 6, 23, 0.25) 0%, transparent 45%),
             radial-gradient(circle at 80% 40%, rgba(2, 6, 23, 0.25) 0%, transparent 45%),
             linear-gradient(0deg, rgba(2, 6, 23, 0.35) 0%, rgba(2, 6, 23, 0.15) 40%, rgba(2, 6, 23, 0.55) 100%);
-            backdrop-filter: blur(1.5px);
+            /* blur removed for crisper background */
           }
           @keyframes sakuraFloat {
             0%, 100% {
