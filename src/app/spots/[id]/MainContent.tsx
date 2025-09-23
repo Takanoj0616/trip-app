@@ -214,6 +214,8 @@ export default function MainContent({
       snsRealtime: 'SNSリアルタイム',
       facilities: '設備・注意事項',
       faq: 'よくある質問',
+      quickFacts: '要点まとめ',
+      officialSite: '公式サイト',
       nearbyAttractions: '近隣の観光スポット',
       fromLabel: 'から',
       openInGoogleMaps: 'Googleマップで開く',
@@ -284,6 +286,8 @@ export default function MainContent({
       snsRealtime: 'Social Media Updates',
       facilities: 'Facilities & Important Notes',
       faq: 'Frequently Asked Questions',
+      quickFacts: 'Quick Facts',
+      officialSite: 'Official Site',
       nearbyAttractions: 'Nearby Attractions',
       fromLabel: 'From',
       openInGoogleMaps: 'Open in Google Maps',
@@ -354,6 +358,8 @@ export default function MainContent({
       snsRealtime: 'SNS 실시간',
       facilities: '시설・주의사항',
       faq: '자주 묻는 질문',
+      quickFacts: '요점 정리',
+      officialSite: '공식 사이트',
       nearbyAttractions: '주변 관광 명소',
       fromLabel: '부터',
       openInGoogleMaps: 'Google 지도에서 열기',
@@ -424,6 +430,8 @@ export default function MainContent({
       snsRealtime: 'Mises à jour des réseaux sociaux',
       facilities: 'Installations et notes importantes',
       faq: 'Questions fréquemment posées',
+      quickFacts: 'À retenir',
+      officialSite: 'Site officiel',
       nearbyAttractions: 'Attractions à proximité',
       fromLabel: 'À partir de',
       openInGoogleMaps: 'Ouvrir dans Google Maps',
@@ -459,8 +467,12 @@ export default function MainContent({
   } as const;
   const i18n = (dicts as any)[lang] || dicts.en;
 
+
   // Restore simple local UGC state per spot
   useEffect(() => {
+    // クライアントサイドのみで実行
+    if (typeof window === 'undefined') return;
+
     const keyBase = spotId || (spotData?.googlePlaceId as string) || (spotData?.name || 'spot');
     try {
       const poll = localStorage.getItem(`poll-${keyBase}`);
@@ -733,10 +745,12 @@ export default function MainContent({
 
   const showNotification = (message: string, _type: 'success' | 'info' = 'info') => {
     setToastMsg(message);
-    try {
-      clearTimeout((window as any).__toastTimer);
-    } catch { }
-    (window as any).__toastTimer = setTimeout(() => setToastMsg(null), 2600);
+    if (typeof window !== 'undefined') {
+      try {
+        clearTimeout((window as any).__toastTimer);
+        (window as any).__toastTimer = setTimeout(() => setToastMsg(null), 2600);
+      } catch { }
+    }
   };
 
   const addToFavorites = () => {
@@ -753,17 +767,19 @@ export default function MainContent({
       showNotification(loginMessage);
 
       // ログイン後にAI旅行プラン画面に戻れるように、現在のスポットIDを保存
-      try {
-        sessionStorage.setItem('pending-spot-add', spotId);
-        sessionStorage.setItem('return-to-ai-plan', '1');
-      } catch (error) {
-        console.error('Error saving pending spot:', error);
-      }
+      if (typeof window !== 'undefined') {
+        try {
+          sessionStorage.setItem('pending-spot-add', spotId);
+          sessionStorage.setItem('return-to-ai-plan', '1');
+        } catch (error) {
+          console.error('Error saving pending spot:', error);
+        }
 
-      // 2秒後にログインページに移動
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 2000);
+        // 2秒後にログインページに移動
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
+      }
       return;
     }
     if (!spotData) {
@@ -804,28 +820,30 @@ export default function MainContent({
     }
 
     // localStorageに保存（ページ遷移直後の読み込み対策）
-    try {
-      const raw = localStorage.getItem('selected-spots');
-      const arr = raw ? JSON.parse(raw) : [];
-      const exists = Array.isArray(arr) && arr.some((s: any) => s.id === spotForPlan.id);
-      if (!exists) {
-        const next = Array.isArray(arr) ? [...arr, spotForPlan] : [spotForPlan];
-        localStorage.setItem('selected-spots', JSON.stringify(next));
-        console.log('✅ Saved to localStorage. Total spots:', next.length);
-      } else {
-        console.log('ℹ️ Spot already exists in localStorage');
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('selected-spots');
+        const arr = raw ? JSON.parse(raw) : [];
+        const exists = Array.isArray(arr) && arr.some((s: any) => s.id === spotForPlan.id);
+        if (!exists) {
+          const next = Array.isArray(arr) ? [...arr, spotForPlan] : [spotForPlan];
+          localStorage.setItem('selected-spots', JSON.stringify(next));
+          console.log('✅ Saved to localStorage. Total spots:', next.length);
+        } else {
+          console.log('ℹ️ Spot already exists in localStorage');
+        }
+      } catch (error) {
+        console.error('❌ Error saving to localStorage:', error);
       }
-    } catch (error) {
-      console.error('❌ Error saving to localStorage:', error);
-    }
 
-    // セッションストレージにフラグを設定
-    try {
-      sessionStorage.setItem('ai-plan-added', '1');
-      sessionStorage.setItem('last-added-spot', spotId);
-      console.log('✅ Set session storage flags');
-    } catch (error) {
-      console.error('❌ Error setting session storage:', error);
+      // セッションストレージにフラグを設定
+      try {
+        sessionStorage.setItem('ai-plan-added', '1');
+        sessionStorage.setItem('last-added-spot', spotId);
+        console.log('✅ Set session storage flags');
+      } catch (error) {
+        console.error('❌ Error setting session storage:', error);
+      }
     }
     const total = (selectedSpotsFromCtx?.length || 0) + 1;
 
@@ -839,16 +857,18 @@ export default function MainContent({
     console.log('🚀 Showing success notification and preparing to navigate');
 
     // 1.5秒後にAI旅行プラン画面に移動（より確実に）
-    setTimeout(() => {
-      try {
-        console.log('Navigating to AI plan page...');
-        window.location.href = '/ai-plan';
-      } catch (error) {
-        console.error('Error navigating to AI plan:', error);
-        // フォールバック
-        window.open('/ai-plan', '_self');
-      }
-    }, 1500);
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        try {
+          console.log('Navigating to AI plan page...');
+          window.location.href = '/ai-plan';
+        } catch (error) {
+          console.error('Error navigating to AI plan:', error);
+          // フォールバック
+          window.open('/ai-plan', '_self');
+        }
+      }, 1500);
+    }
   };
 
 
@@ -935,7 +955,7 @@ export default function MainContent({
   // 現在の営業時間を計算
   const getBusinessHours = () => {
     const prefix = lang === 'en' ? 'Today: ' : lang === 'ko' ? '오늘: ' : lang === 'fr' ? "Aujourd'hui: " : '本日: ';
-    if (spotData?.openingHours) {
+    if (spotData?.openingHours && typeof window !== 'undefined') {
       const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
       const key = days[new Date().getDay()];
       const today = (spotData.openingHours as Record<string, string | undefined>)[key];
@@ -982,12 +1002,16 @@ export default function MainContent({
       return { label, score };
     }
     const rating = spotData?.rating ?? 4.0;
-    const d = new Date();
     let score = rating >= 4.4 ? 3 : rating >= 4.1 ? 2 : 1;
-    const day = d.getDay();
-    const h = d.getHours();
-    if (day === 0 || day === 6) score += 1;
-    if ((h >= 11 && h <= 13) || (h >= 16 && h <= 20)) score += 1;
+
+    if (typeof window !== 'undefined') {
+      const d = new Date();
+      const day = d.getDay();
+      const h = d.getHours();
+      if (day === 0 || day === 6) score += 1;
+      if ((h >= 11 && h <= 13) || (h >= 16 && h <= 20)) score += 1;
+    }
+
     score = Math.max(1, Math.min(5, score));
     const label = score >= 4 ? i18n.crowdLabels.busy : score >= 3 ? i18n.crowdLabels.normal : i18n.crowdLabels.empty;
     return { label, score };
@@ -1389,7 +1413,11 @@ export default function MainContent({
             <CheckCircle size={24} className="text-emerald-200" />
             <span className="font-semibold">{toastMsg}</span>
             <button
-              onClick={() => window.location.href = '/ai-plan'}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.href = '/ai-plan';
+                }
+              }}
               className="ml-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-sm font-semibold transition-all duration-200 backdrop-blur-sm border border-white/30 flex items-center gap-2"
             >
               <Eye size={16} />
@@ -1424,6 +1452,8 @@ export default function MainContent({
       `}</style>
 
       <div className="container mx-auto px-6">
+        {/* JSON-LD: TouristAttraction / Breadcrumbs / FAQ */}
+        {/* JSON-LD moved to server page component to avoid hydration mismatches */}
         {/* 概要（上部固定カード） */}
         <div className="sticky top-24 z-30 mb-8">
           <div className="backdrop-blur-xl bg-white/80 border border-white/60 shadow-xl rounded-2xl px-5 py-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
@@ -1466,7 +1496,63 @@ export default function MainContent({
         </div>
         {/* 3秒要約（基本情報タブのみ） */}
         {mainTab === 'basic' && (
-        <section className="relative -mt-32 z-10 large-spacing" style={{ marginBottom: '5rem !important' }}>
+        <section className="mb-8">
+          <div className="bg-white rounded-2xl shadow border border-gray-200 p-6">
+            <h2 className="flex items-center gap-3 text-xl font-bold text-gray-800 mb-4">
+              <Info className="text-blue-600" size={24} />
+              {i18n.quickFacts}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <Clock className="text-blue-600 mt-1" size={20} />
+                <div>
+                  <div className="text-sm text-gray-500">{i18n.hours}</div>
+                  <div className="font-semibold text-gray-800">{spotData?.hours || (lang === 'en' ? 'Unknown' : lang === 'ko' ? '미정' : lang === 'fr' ? 'Inconnu' : '営業時間未定')}</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <DollarSign className="text-green-600 mt-1" size={20} />
+                <div>
+                  <div className="text-sm text-gray-500">{i18n.price}</div>
+                  <div className="font-semibold text-gray-800">{spotData?.price || (lang === 'en' ? 'Varies' : lang === 'ko' ? '변동' : lang === 'fr' ? 'Variable' : '変動')}</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <Navigation className="text-emerald-600 mt-1" size={20} />
+                <div>
+                  <div className="text-sm text-gray-500">{i18n.accessMap}</div>
+                  {spotData?.location?.address ? (
+                    <a
+                      className="font-semibold text-blue-700 underline"
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((spotData?.name || '') + ' ' + (spotData?.location?.address || ''))}`}
+                      target="_blank" rel="noopener noreferrer"
+                    >
+                      {i18n.openInGoogleMaps}
+                    </a>
+                  ) : (
+                    <div className="font-semibold text-gray-800">—</div>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <ExternalLink className="text-indigo-600 mt-1" size={20} />
+                <div>
+                  <div className="text-sm text-gray-500">{i18n.officialSite}</div>
+                  {spotData?.contact?.website ? (
+                    <a className="font-semibold text-blue-700 underline" href={spotData?.contact?.website} target="_blank" rel="noopener noreferrer">
+                      {spotData?.contact?.website?.replace(/^https?:\/\//, '')}
+                    </a>
+                  ) : (
+                    <div className="font-semibold text-gray-800">—</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        )}
+        {mainTab === 'basic' && (
+        <section className="relative -mt-32 z-10 large-spacing">
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
             <h2 className="flex items-center gap-3 text-xl font-bold text-gray-800 mb-4">
               <Eye className="text-blue-600" size={24} />
@@ -1487,7 +1573,6 @@ export default function MainContent({
         <section
           id="ai-plan"
           className="bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 rounded-3xl p-12 text-center text-gray-900 relative overflow-hidden large-spacing"
-          style={{ marginBottom: '5rem !important' }}
         >
           {/* 背景パターン */}
           <div className="absolute inset-0 opacity-10">
@@ -1528,7 +1613,11 @@ export default function MainContent({
                       'AI旅行プランに追加'}
               </button>
               <button
-                onClick={() => window.location.href = '/ai-plan'}
+                onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.href = '/ai-plan';
+                }
+              }}
                 className="px-8 py-4 bg-white/90 text-sky-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
               >
                 <Eye size={20} />
@@ -1677,7 +1766,7 @@ export default function MainContent({
 
         {/* チケット情報（基本情報タブ内） */}
         {mainTab === 'basic' && (
-        <section id="tickets" className="large-spacing" style={{ marginBottom: '5rem !important' }}>
+        <section id="tickets" className="large-spacing">
           <h2 className="flex items-center gap-3 text-2xl font-bold text-gray-800 mb-6">
             <Ticket className="text-blue-600" size={28} />
             {i18n.ticketInfo}
@@ -1943,7 +2032,7 @@ export default function MainContent({
               <div className="text-center p-6 border border-border-light rounded-2xl bg-gradient-to-br from-white to-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <Clock className="mx-auto mb-4 text-primary" size={40} />
                 <h3 className="font-semibold text-secondary mb-2">{i18n.hours}</h3>
-                <p className="text-lg font-semibold mb-1">{getBusinessHours()}</p>
+                <p className="text-lg font-semibold mb-1" suppressHydrationWarning>{getBusinessHours()}</p>
                 <small className="text-text-light">{i18n.hoursHint}</small>
               </div>
 
@@ -2309,7 +2398,9 @@ export default function MainContent({
                     if (pollChoice) return; // 1回のみ
                     const next = { morning: pollStats.morning + 1, night: pollStats.night };
                     setPollChoice('morning'); setPollStats(next);
-                    try { localStorage.setItem(`poll-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ choice: 'morning', stats: next })); } catch {}
+                    if (typeof window !== 'undefined') {
+                      try { localStorage.setItem(`poll-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ choice: 'morning', stats: next })); } catch {}
+                    }
                   }}
                 >朝派</button>
                 <button
@@ -2318,7 +2409,9 @@ export default function MainContent({
                     if (pollChoice) return;
                     const next = { morning: pollStats.morning, night: pollStats.night + 1 };
                     setPollChoice('night'); setPollStats(next);
-                    try { localStorage.setItem(`poll-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ choice: 'night', stats: next })); } catch {}
+                    if (typeof window !== 'undefined') {
+                      try { localStorage.setItem(`poll-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ choice: 'night', stats: next })); } catch {}
+                    }
                   }}
                 >夜派</button>
               </div>
@@ -2334,7 +2427,9 @@ export default function MainContent({
                   onClick={() => {
                     const nextVisited = !visited; setVisited(nextVisited);
                     const nextCount = visitedCount + (nextVisited ? 1 : -1); setVisitedCount(Math.max(0, nextCount));
-                    try { localStorage.setItem(`visited-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ visited: nextVisited, count: Math.max(0, nextCount) })); } catch {}
+                    if (typeof window !== 'undefined') {
+                      try { localStorage.setItem(`visited-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ visited: nextVisited, count: Math.max(0, nextCount) })); } catch {}
+                    }
                   }}
                 >{visited ? '行った！済み' : '行った！'}</button>
                 <div className="text-sm text-gray-600">{visitedCount.toLocaleString()}人が行きました</div>
@@ -2350,10 +2445,13 @@ export default function MainContent({
                   className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold disabled:opacity-50"
                   disabled={!commentText.trim()}
                   onClick={() => {
-                    const item = { text: commentText.trim(), ts: Date.now() };
+                    const timestamp = typeof window !== 'undefined' ? Date.now() : 0;
+                    const item = { text: commentText.trim(), ts: timestamp };
                     const next = [item, ...comments].slice(0, 10);
                     setComments(next); setCommentText('');
-                    try { localStorage.setItem(`comments-${spotId || spotData?.name || 'spot'}`, JSON.stringify(next)); } catch {}
+                    if (typeof window !== 'undefined') {
+                      try { localStorage.setItem(`comments-${spotId || spotData?.name || 'spot'}`, JSON.stringify(next)); } catch {}
+                    }
                   }}
                 >投稿</button>
               </div>

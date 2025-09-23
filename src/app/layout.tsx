@@ -5,6 +5,7 @@ import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
 import Header from "@/components/Header";
 import Script from "next/script";
+import SiteFooter from "@/components/SiteFooter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -293,6 +294,7 @@ export default function RootLayout({
           <main>
             {children}
           </main>
+          <SiteFooter />
         </ClientProviders>
       </body>
     </html>

@@ -1,150 +1,106 @@
 import { MetadataRoute } from 'next'
+import { allRestaurantSpots } from '@/data/tokyo-restaurant-spots'
+import { hotelSpots } from '@/data/hotel-spots'
+import { kanngouSpots } from '@/data/kankou-spots'
+import { tokyoSpots } from '@/data/tokyo-spots'
+import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots'
+import { tokyoSpotsDetailed } from '@/data/tokyo-spots-detailed'
 
 export const dynamic = 'force-static'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app'
-  
-  // Static pages with SEO-optimized priorities
-  const staticPages = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily' as const,
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/areas`,
-      lastModified: new Date(),
-      changeFrequency: 'daily' as const,
-      priority: 0.95,
-    },
-    {
-      url: `${baseUrl}/ai-spots`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/courses`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/coordinator`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/plan`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.7,
-    },
+
+  const now = new Date()
+
+  // Static top-level pages
+  const staticPages: MetadataRoute.Sitemap = [
+    { url: baseUrl, lastModified: now, changeFrequency: 'daily', priority: 1 },
+    { url: `${baseUrl}/areas`, lastModified: now, changeFrequency: 'daily', priority: 0.95 },
+    { url: `${baseUrl}/ai-spots`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${baseUrl}/plan`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/courses`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
   ]
 
-  // Area pages - key tourist destinations with high SEO value
-  const areaPages = [
-    'tokyo',
-    'yokohama', 
-    'saitama',
-    'chiba'
-  ].map(area => ({
+  // Area pages
+  const areaPages: MetadataRoute.Sitemap = ['tokyo', 'yokohama', 'saitama', 'chiba'].map((area) => ({
     url: `${baseUrl}/areas/${area}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.95, // High priority for main tourist destinations
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.9,
   }))
 
-  // Course pages - popular tourism routes
-  const courseIds = Array.from({ length: 15 }, (_, i) => i + 1)
-  const coursePages = courseIds.map(id => ({
+  // Course IDs (mirrors course detail page data)
+  const courseIds = [
+    'akihabara-anime',
+    'asakusa-traditional',
+    'shibuya-modern',
+    'tsukiji-gourmet',
+    'ueno-museum',
+    'harajuku-kawaii',
+    'shinjuku-nightlife',
+    'odaiba-future',
+    'kichijoji-local',
+    'roppongi-art',
+    'sumida-traditional',
+    'daikanyama-sophisticated',
+    'imperial-nature',
+    'yokohama-port',
+    'kamakura-zen',
+  ]
+  const coursePages: MetadataRoute.Sitemap = courseIds.map((id) => ({
     url: `${baseUrl}/courses/${id}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
+    lastModified: now,
+    changeFrequency: 'monthly',
     priority: 0.7,
   }))
 
-  // Add dynamic spot pages for better indexing
-  const spotPages = [
-    'tokyo-tower',
-    'asakusa-temple',
-    'shibuya-crossing',
-    'ginza-district',
-    'tokyo-skytree',
-    'imperial-palace',
-    'meiji-shrine',
-    'tsukiji-market',
-    'harajuku',
-    'roppongi',
-    'minato-mirai',
-    'yokohama-chinatown',
-    'red-brick-warehouse',
-    'cosmo-world',
-    'kawagoe',
-    'chichibu',
-    'tokyo-disneyland',
-    'narita-san-temple'
-  ].map(spot => ({
-    url: `${baseUrl}/spots/${spot}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
+  // Collect all known spot IDs from datasets
+  const spotIdSet = new Set<string>()
+  ;[
+    ...allRestaurantSpots,
+    ...hotelSpots,
+    ...kanngouSpots,
+    ...tokyoSpots,
+    ...allBookstoreSpots,
+  ].forEach((s: any) => s?.id && spotIdSet.add(s.id))
+  tokyoSpotsDetailed.forEach((s: any) => s?.id && spotIdSet.add(s.id))
+  const spotIds = Array.from(spotIdSet)
+
+  // Default (ja) spot pages
+  const spotPages: MetadataRoute.Sitemap = spotIds.map((id) => ({
+    url: `${baseUrl}/spots/${id}`,
+    lastModified: now,
+    changeFrequency: 'monthly',
+    priority: 0.75,
   }))
 
-  // Multi-language versions of main pages for international SEO
-  const languagePages = [
-    // English (UK) pages
-    { url: `${baseUrl}/en`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.95 },
-    { url: `${baseUrl}/en/areas`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.9 },
-    { url: `${baseUrl}/en/ai-spots`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.85 },
-    { url: `${baseUrl}/en/ai-plan`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.8 },
-
-    // French pages
-    { url: `${baseUrl}/fr`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.95 },
-    { url: `${baseUrl}/fr/areas`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.9 },
-    { url: `${baseUrl}/fr/ai-spots`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.85 },
-    { url: `${baseUrl}/fr/ai-plan`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.8 },
-
-    // Korean pages
-    { url: `${baseUrl}/ko`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.9 },
-    { url: `${baseUrl}/ko/areas`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.85 },
-    { url: `${baseUrl}/ko/ai-spots`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.8 },
-    { url: `${baseUrl}/ko/ai-plan`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.75 },
-
-    // Arabic pages
-    { url: `${baseUrl}/ar`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.8 },
-    { url: `${baseUrl}/ar/areas`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.75 },
-    { url: `${baseUrl}/ar/ai-spots`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.7 },
-    { url: `${baseUrl}/ar/ai-plan`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.65 }
+  // Multi-language roots and main lists
+  const langs = ['en', 'fr', 'ko', 'ar'] as const
+  const languagePages: MetadataRoute.Sitemap = [
+    ...langs.map((l) => ({ url: `${baseUrl}/${l}`, lastModified: now, changeFrequency: 'daily', priority: 0.9 })),
+    ...langs.map((l) => ({ url: `${baseUrl}/${l}/areas`, lastModified: now, changeFrequency: 'daily', priority: 0.85 })),
+    ...langs.map((l) => ({ url: `${baseUrl}/${l}/ai-spots`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 })),
+    ...langs.map((l) => ({ url: `${baseUrl}/${l}/ai-plan`, lastModified: now, changeFrequency: 'weekly', priority: 0.75 })),
+    ...langs.map((l) => ({ url: `${baseUrl}/${l}/spots/tokyo`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 })),
   ]
 
-  // Tokyo area pages for international markets
-  const internationalTokyoPages = [
-    // English Tokyo pages
-    { url: `${baseUrl}/en/spots/tokyo`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.9 },
+  // Localized spot pages
+  const internationalSpotPages: MetadataRoute.Sitemap = langs.flatMap((l) =>
+    spotIds.map((id) => ({
+      url: `${baseUrl}/${l}/spots/${id}`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    }))
+  )
 
-    // French Tokyo pages
-    { url: `${baseUrl}/fr/spots/tokyo`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.9 },
-
-    // Korean Tokyo pages
-    { url: `${baseUrl}/ko/spots/tokyo`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.85 },
-
-    // Arabic Tokyo pages
-    { url: `${baseUrl}/ar/spots/tokyo`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.8 }
+  return [
+    ...staticPages,
+    ...areaPages,
+    ...coursePages,
+    ...spotPages,
+    ...languagePages,
+    ...internationalSpotPages,
   ]
-
-  // Popular international spot pages for better indexing
-  const internationalSpotPages = [
-    // Major attractions in multiple languages
-    ...['en', 'fr', 'ko', 'ar'].flatMap(lang => [
-      { url: `${baseUrl}/${lang}/spots/1`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.7 },
-      { url: `${baseUrl}/${lang}/spots/2`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.7 },
-      { url: `${baseUrl}/${lang}/spots/3`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.7 }
-    ])
-  ]
-
-  return [...staticPages, ...areaPages, ...coursePages, ...spotPages, ...languagePages, ...internationalTokyoPages, ...internationalSpotPages]
 }

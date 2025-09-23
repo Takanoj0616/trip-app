@@ -25,29 +25,43 @@ const Header: React.FC = () => {
   const isLocalhost = true;
 
   // パスベース言語切り替え関数
-  const handleLanguageChange = (newLang: string) => {
-    const currentLang = getCurrentLanguageFromPath(pathname);
-    let newPath = pathname;
+  const handleLanguageChange = async (newLang: string) => {
+    try {
+      const currentLang = getCurrentLanguageFromPath(pathname);
+      let newPath = pathname;
 
-    if (currentLang === 'ja') {
-      // 日本語（デフォルト）から他の言語へ
-      if (newLang !== 'ja') {
-        newPath = `/${newLang}${pathname}`;
-      }
-    } else {
-      // 他の言語から
-      if (newLang === 'ja') {
-        // 日本語（デフォルト）へ - プレフィックスを削除
-        newPath = pathname.replace(`/${currentLang}`, '') || '/';
+      if (currentLang === 'ja') {
+        // 日本語（デフォルト）から他の言語へ
+        if (newLang !== 'ja') {
+          newPath = `/${newLang}${pathname}`;
+        }
       } else {
-        // 他の言語へ - プレフィックスを置換
-        newPath = pathname.replace(`/${currentLang}`, `/${newLang}`);
+        // 他の言語から
+        if (newLang === 'ja') {
+          // 日本語（デフォルト）へ - プレフィックスを削除
+          newPath = pathname.replace(`/${currentLang}`, '') || '/';
+        } else {
+          // 他の言語へ - プレフィックスを置換
+          newPath = pathname.replace(`/${currentLang}`, `/${newLang}`);
+        }
       }
-    }
 
-    // ナビゲーションとコンテキスト更新
-    setCurrentLanguage(newLang);
-    router.push(newPath);
+      // ナビゲーションとコンテキスト更新
+      setCurrentLanguage(newLang);
+
+      // ページの存在確認とエラーハンドリング
+      if (newPath === pathname) {
+        // パスが変わらない場合（同じ言語）は何もしない
+        return;
+      }
+
+      // 安全なナビゲーション
+      await router.push(newPath);
+    } catch (error) {
+      console.error('Language change error:', error);
+      // エラーが発生した場合、言語設定だけ更新してページはそのまま
+      setCurrentLanguage(newLang);
+    }
   };
 
   // パスから現在の言語を取得
