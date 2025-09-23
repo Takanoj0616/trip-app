@@ -3006,6 +3006,182 @@ export default function MainContent({
           </div>
         </section>
         )}
+
+        {/* 関連スポット・内部リンク強化セクション */}
+        <section className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl shadow-lg border border-blue-100 p-8 mb-12">
+          <h2 className="flex items-center gap-4 text-2xl font-bold text-gray-800 mb-8 border-b border-blue-200 pb-4">
+            <MapPin className="text-blue-600" size={28} />
+            {lang === 'en' ? 'Related Spots & Travel Plans' :
+              lang === 'ko' ? '관련 스팟 & 여행 계획' :
+                lang === 'fr' ? 'Spots connexes et plans de voyage' :
+                  '関連スポット・旅行プラン'}
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* AI旅行プラン作成 */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-blue-100 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                  <Bot className="text-white" size={24} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800">
+                    {lang === 'en' ? 'Create AI Travel Plan' :
+                      lang === 'ko' ? 'AI 여행 계획 만들기' :
+                        lang === 'fr' ? 'Créer un plan de voyage IA' :
+                          'AI旅行プラン作成'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {lang === 'en' ? 'Add this spot to your personalized itinerary' :
+                      lang === 'ko' ? '이 스팟을 맞춤 여행일정에 추가' :
+                        lang === 'fr' ? 'Ajoutez ce lieu à votre itinéraire personnalisé' :
+                          'このスポットを個人向け旅行プランに追加'}
+                  </p>
+                </div>
+              </div>
+              <p className="text-gray-600 text-sm mb-4">
+                {lang === 'en' ? 'AI will create the optimal route considering travel time and costs between spots.' :
+                  lang === 'ko' ? 'AI가 스팟 간 이동 시간과 비용을 고려한 최적 루트를 생성합니다.' :
+                    lang === 'fr' ? 'L\'IA créera l\'itinéraire optimal en tenant compte du temps de trajet et des coûts entre les lieux.' :
+                      'AIがスポット間の移動時間や料金を考慮した最適なルートを生成します。'}
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={addToAITravelPlan}
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-600 transition-colors"
+                >
+                  {lang === 'en' ? 'Add to Plan' :
+                    lang === 'ko' ? '플랜에 추가' :
+                      lang === 'fr' ? 'Ajouter au plan' :
+                        'プランに追加'}
+                </button>
+                <a
+                  href="/ai-spots"
+                  className="px-4 py-2 border border-blue-300 text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-center"
+                >
+                  {lang === 'en' ? 'AI Spots' :
+                    lang === 'ko' ? 'AI 스팟' :
+                      lang === 'fr' ? 'Spots IA' :
+                        'AIスポット'}
+                </a>
+              </div>
+            </div>
+
+            {/* 関連エリア・スポット */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-blue-100 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                  <Map className="text-white" size={24} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800">
+                    {lang === 'en' ? 'Explore More Areas' :
+                      lang === 'ko' ? '더 많은 지역 탐험' :
+                        lang === 'fr' ? 'Explorer plus de régions' :
+                          'もっとエリアを探索'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {lang === 'en' ? 'Discover other attractions in Tokyo' :
+                      lang === 'ko' ? '도쿄의 다른 명소 발견' :
+                        lang === 'fr' ? 'Découvrez d\'autres attractions de Tokyo' :
+                          '東京の他の観光名所を発見'}
+                  </p>
+                </div>
+              </div>
+              <p className="text-gray-600 text-sm mb-4">
+                {lang === 'en' ? 'Browse spots by area to find the perfect combination for your Tokyo adventure.' :
+                  lang === 'ko' ? '지역별로 스팟을 찾아보고 완벽한 도쿄 모험 조합을 찾아보세요.' :
+                    lang === 'fr' ? 'Parcourez les lieux par région pour trouver la combinaison parfaite pour votre aventure à Tokyo.' :
+                      'エリア別にスポットを閲覧して、東京での完璧な組み合わせを見つけましょう。'}
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <a
+                  href="/areas"
+                  className="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-semibold hover:bg-green-200 transition-colors text-center"
+                >
+                  {lang === 'en' ? 'All Areas' :
+                    lang === 'ko' ? '모든 지역' :
+                      lang === 'fr' ? 'Toutes les régions' :
+                        '全エリア'}
+                </a>
+                <a
+                  href="/discover"
+                  className="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-semibold hover:bg-green-200 transition-colors text-center"
+                >
+                  {lang === 'en' ? 'Discover' :
+                    lang === 'ko' ? '발견' :
+                      lang === 'fr' ? 'Découvrir' :
+                        '発見'}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* 人気のスポット組み合わせ */}
+          <div className="mt-8 bg-white rounded-2xl p-6 shadow-sm border border-blue-100">
+            <h3 className="flex items-center gap-2 font-semibold text-gray-800 mb-4">
+              <Star className="text-yellow-500" size={20} />
+              {lang === 'en' ? 'Popular Spot Combinations' :
+                lang === 'ko' ? '인기 스팟 조합' :
+                  lang === 'fr' ? 'Combinaisons de lieux populaires' :
+                    '人気のスポット組み合わせ'}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                {
+                  title: lang === 'en' ? 'Tokyo Tower → Tsukiji → Ginza' :
+                    lang === 'ko' ? '도쿄타워 → 츠키지 → 긴자' :
+                      lang === 'fr' ? 'Tokyo Tower → Tsukiji → Ginza' :
+                        '東京タワー → 築地 → 銀座',
+                  time: lang === 'en' ? 'Half day' :
+                    lang === 'ko' ? '반나절' :
+                      lang === 'fr' ? 'Demi-journée' :
+                        '半日',
+                  description: lang === 'en' ? 'Tower views, fresh sushi, luxury shopping' :
+                    lang === 'ko' ? '타워 전망, 신선한 스시, 럭셔리 쇼핑' :
+                      lang === 'fr' ? 'Vues de la tour, sushi frais, shopping de luxe' :
+                        'タワーの眺望、新鮮な寿司、高級ショッピング'
+                },
+                {
+                  title: lang === 'en' ? 'Tokyo Tower → Shibuya → Harajuku' :
+                    lang === 'ko' ? '도쿄타워 → 시부야 → 하라주쿠' :
+                      lang === 'fr' ? 'Tokyo Tower → Shibuya → Harajuku' :
+                        '東京タワー → 渋谷 → 原宿',
+                  time: lang === 'en' ? 'Full day' :
+                    lang === 'ko' ? '하루' :
+                      lang === 'fr' ? 'Journée complète' :
+                        '1日',
+                  description: lang === 'en' ? 'Classic Tokyo sights and youth culture' :
+                    lang === 'ko' ? '클래식 도쿄 명소와 청년 문화' :
+                      lang === 'fr' ? 'Sites classiques de Tokyo et culture jeune' :
+                        '東京の定番スポットと若者文化'
+                },
+                {
+                  title: lang === 'en' ? 'Tokyo Tower → Asakusa → Ueno' :
+                    lang === 'ko' ? '도쿄타워 → 아사쿠사 → 우에노' :
+                      lang === 'fr' ? 'Tokyo Tower → Asakusa → Ueno' :
+                        '東京タワー → 浅草 → 上野',
+                  time: lang === 'en' ? 'Full day' :
+                    lang === 'ko' ? '하루' :
+                      lang === 'fr' ? 'Journée complète' :
+                        '1日',
+                  description: lang === 'en' ? 'Modern and traditional Tokyo contrast' :
+                    lang === 'ko' ? '현대와 전통 도쿄의 대비' :
+                      lang === 'fr' ? 'Contraste entre Tokyo moderne et traditionnel' :
+                        'モダンと伝統の東京対比'
+                }
+              ].map((combo, index) => (
+                <div key={index} className="p-4 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-sm transition-all">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-gray-800 text-sm">{combo.title}</h4>
+                    <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">{combo.time}</span>
+                  </div>
+                  <p className="text-xs text-gray-600">{combo.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
 
       {/* フローティングCTA（右下固定） */}

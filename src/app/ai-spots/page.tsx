@@ -647,7 +647,7 @@ export default function AISpotRecommendationPage() {
                               {spot.description}
                             </p>
                           </div>
-                          <div style={{ width: '100px', height: '60px', marginLeft: '15px' }}>
+                          <div style={{ width: '100px', height: '60px', marginLeft: '15px', position: 'relative' }}>
                             <img
                               src={spot.images?.[0] || spot.image || 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&h=300&fit=crop'}
                               alt={spot.name}
@@ -657,6 +657,7 @@ export default function AISpotRecommendationPage() {
                                 objectFit: 'cover',
                                 borderRadius: '8px'
                               }}
+                              loading="lazy"
                             />
                           </div>
                         </div>

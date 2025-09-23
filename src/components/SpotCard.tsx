@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Star, MapPin, Clock, ExternalLink } from 'lucide-react';
 import { TouristSpot } from '@/types';
 import FavoriteButton from './FavoriteButton';
@@ -88,12 +89,17 @@ const SpotCard: React.FC<SpotCardProps> = ({
       <Link href={`/spots/${spot.id}`}>
         <div className="relative">
           {/* Image */}
-          <div className="aspect-video bg-gray-200 overflow-hidden">
+          <div className="aspect-video bg-gray-200 overflow-hidden relative">
             {spot.images && spot.images.length > 0 ? (
-              <img
+              <Image
                 src={spot.images[0]}
                 alt={spot.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-100">

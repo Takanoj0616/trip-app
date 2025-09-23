@@ -247,14 +247,44 @@ export default function RootLayout({
               "@type": "WebSite",
               "name": "Japan Travel Guide",
               "url": baseUrl,
-              "inLanguage": "en",
+              "inLanguage": "ja",
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": `${baseUrl}/?q={search_term_string}`,
                 "query-input": "required name=search_term_string"
               },
-              "alternateName": ["Japan Tourism Guide"],
-              "alternateNameLanguage": ["en-US", "en-GB", "fr-FR"],
+              "alternateName": ["Japan Tourism Guide", "日本旅行ガイド"],
+              "alternateNameLanguage": ["en-US", "en-GB", "fr-FR", "ja-JP"],
+            })
+          }}
+        />
+        <Script
+          id="schema-organization"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "TravelGuideJapan",
+              "url": baseUrl,
+              "logo": `${baseUrl}/icon`,
+              "sameAs": [
+                "https://twitter.com/japan_travel_jp",
+                "https://www.facebook.com/japantravelguide",
+                "https://www.instagram.com/japantravelguide"
+              ],
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "availableLanguage": ["Japanese", "English", "French", "Korean"]
+              },
+              "founder": {
+                "@type": "Person",
+                "name": "TravelGuideJapan Team"
+              },
+              "foundingDate": "2024",
+              "description": "AI搭載の日本旅行プランニングと観光ガイドサービス"
             })
           }}
         />
