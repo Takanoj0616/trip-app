@@ -177,13 +177,13 @@ const structuredData = {
   }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   // Read locale/dir set by middleware for correct SSR attributes
-  const h = headers();
+  const h = await headers();
   const ssrDir = h.get('x-dir') || 'ltr';
   const ssrLang = h.get('x-locale') || 'ja-JP';
 

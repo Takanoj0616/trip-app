@@ -1,7 +1,8 @@
 
-'use client';
+"use client";
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { shouldUseSSR } from '@/lib/render-utils';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { heroFeatures } from '../data/homepage';
@@ -13,66 +14,18 @@ export default function Home() {
   const { t, currentLanguage } = useLanguage();
   const { signInWithGoogle, signInWithApple } = useAuth();
 
-  // Simple A/B variant for CTA (persisted in localStorage)
-  const [ctaVariant, setCtaVariant] = useState<'A' | 'B'>('A');
-  // A/B variant for TOP background (assigned via middleware cookie)
-  const [bgVariant, setBgVariant] = useState<'A' | 'B'>('A');
-  useEffect(() => {
-    try {
-      const stored = typeof window !== 'undefined' ? localStorage.getItem('homeCtaVariant') : null;
-      const v = stored === 'A' || stored === 'B' ? (stored as 'A' | 'B') : (Math.random() < 0.5 ? 'A' : 'B');
-      if (!stored) localStorage.setItem('homeCtaVariant', v);
-      setCtaVariant(v);
-    } catch {
-      setCtaVariant('A');
-    }
-  }, []);
-
-  // Read variant from cookie set by middleware
-  useEffect(() => {
-    try {
-      if (typeof document === 'undefined') return;
-      const match = document.cookie.match(/(?:^|; )ab_top_bg=([^;]+)/);
-      const v = match ? decodeURIComponent(match[1]) : null;
-      if (v === 'A' || v === 'B') setBgVariant(v);
-    } catch {}
-  }, []);
-
-  // Step 1: Fire exposure event once on first render when variant is known
-  useEffect(() => {
-    try {
-      if (typeof window === 'undefined') return;
-      const w: any = window as any;
-      if (!w.__ab_top_bg_exposure_sent && (bgVariant === 'A' || bgVariant === 'B')) {
-        if (w.gtag) {
-          w.gtag('event', 'ab_top_bg_exposure', { ab_variant: bgVariant });
-        } else {
-          console.log('GA4 Event: ab_top_bg_exposure', { ab_variant: bgVariant });
-        }
-        w.__ab_top_bg_exposure_sent = true;
-      }
-    } catch {}
-  }, [bgVariant]);
-
   const pageBackground = useMemo(() => {
-    if (bgVariant === 'B') {
-      // Fuji-oriented cool gradient to complement hero image
-      return 'linear-gradient(135deg, #0ea5e9 0%, #60a5fa 35%, #1e293b 100%)';
-    }
-    return 'linear-gradient(135deg, #1e3a8a 0%, #312e81 25%, #1e1b4b 50%, #0f172a 75%, #020617 100%)';
-  }, [bgVariant]);
+    // 背景の青を削除し、透明に設定
+    return 'transparent';
+  }, []);
 
   const heroBackground = useMemo(() => {
-    if (bgVariant === 'B') {
-      // Emphasize Mt. Fuji with provided local image
-      return 'linear-gradient(rgba(255,255,255,0.08), rgba(14,165,233,0.18)), url("/images/fuzi.png"), url("/images/fuzi.png")';
-    }
+    // 桜デザインに統一（淡いピンクのグラデ + 背景写真）
     return 'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 182, 193, 0.1)), url("https://images.unsplash.com/photo-1522383225653-ed111181a951?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80"), url("https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")';
-  }, [bgVariant]);
+  }, []);
 
   const trackCta = (location: 'hero' | 'features' | 'footer' | 'bottom_bar', label: 'primary' | 'secondary') => {
-    // Step 2: Include ab_variant label from TOP background test
-    const params = { location, label, variant: ctaVariant, ab_variant: bgVariant } as const;
+    const params = { location, label } as const;
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'cta_click', params);
     } else {
@@ -80,6 +33,37 @@ export default function Home() {
     }
     try { if (analytics) logEvent(analytics as any, 'cta_click', params as any); } catch {}
   };
+
+  // Minimal FAQPage structured data for rich results
+  const faqJson = useMemo(() => {
+    const qa = currentLanguage === 'fr'
+      ? [
+          { q: "AI旅行プランとは？".replace('AI旅行プラン', 'Qu\'est‑ce que le plan de voyage IA ?'), a: "Vos préférences (durée, budget, centres d'intérêt) sont analysées pour générer un itinéraire jour par jour au Japon." },
+          { q: "料金はかかりますか？".replace('料金はかかりますか？', 'Est‑ce payant ?'), a: "La création et l\'aperçu du plan sont gratuits. Des options premium sont proposées au besoin." },
+          { q: "対応言語は？".replace('対応言語は？', 'Quelles langues sont prises en charge ?'), a: "Japonais, Anglais (R.-U.), Français et Coréen." },
+        ]
+      : currentLanguage === 'en'
+      ? [
+          { q: 'What is the AI trip planner?', a: 'We analyse your preferences (duration, budget, interests) to generate a day‑by‑day Japan itinerary.' },
+          { q: 'Is it free?', a: 'Creating and previewing a plan is free. Optional premium services are available.' },
+          { q: 'Which languages are supported?', a: 'Japanese, English (UK), French and Korean.' },
+        ]
+      : [
+          { q: 'AI旅行プランとは？', a: '滞在日数・予算・興味をもとにAIが日本旅行の最適な日別ルートを自動作成します。' },
+          { q: '料金はかかりますか？', a: 'プラン作成とプレビューは無料です。必要に応じて有料オプションをご利用いただけます。' },
+          { q: '対応言語は？', a: '日本語・英語(UK)・フランス語・韓国語に対応しています。' },
+        ];
+    const obj = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: qa.map(({ q, a }) => ({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: { '@type': 'Answer', text: a },
+      })),
+    } as const;
+    return JSON.stringify(obj);
+  }, [currentLanguage]);
 
   // Multilingual features data
   const getMainFeatures = () => [
@@ -185,15 +169,21 @@ export default function Home() {
       minHeight: "100vh"
     }}>
 
+      {/* Structured data for FAQ rich result */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJson }} />
+
       {/* Hero Section */}
       <main style={{
         height: '100vh',
         backgroundImage: heroBackground,
-        backgroundSize: 'cover, cover',
-        backgroundPosition: 'center, center',
-        backgroundAttachment: 'fixed, fixed',
-        backgroundBlendMode: 'overlay',
-        animation: bgVariant === 'B' ? 'none' : 'sakuraFloat 20s ease-in-out infinite',
+        // Use single values so both single- and multi-layer backgrounds render consistently
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        // Disable overlay blending to keep colors natural
+        backgroundBlendMode: 'normal',
+        // 桜の柔らかなアニメーション
+        animation: 'sakuraFloat 20s ease-in-out infinite',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -693,10 +683,10 @@ export default function Home() {
               style={{
                 display: 'inline-block', padding: '1rem 2rem', borderRadius: 30, fontWeight: 800,
                 textDecoration: 'none',
-                background: ctaVariant === 'B' ? 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)' : 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
                 color: '#fff', boxShadow: '0 10px 24px rgba(0,0,0,.25)'
               }}
-            >{ctaVariant === 'B' ? t('home.ctaPrimaryAlt') : t('home.ctaPrimary')}</Link>
+            >{t('home.ctaPrimary')}</Link>
             <div style={{ marginTop: 10, color: 'rgba(255,255,255,0.95)' }}>{t('home.ctaExplainer2')}</div>
           </div>
         </div>
@@ -805,10 +795,10 @@ export default function Home() {
             style={{
               display: 'inline-block', padding: '1rem 2rem', borderRadius: 30, fontWeight: 800,
               textDecoration: 'none',
-              background: ctaVariant === 'B' ? 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)' : 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
               color: '#fff', boxShadow: '0 10px 24px rgba(0,0,0,.25)'
             }}
-          >{ctaVariant === 'B' ? t('home.ctaPrimaryAlt') : t('home.ctaPrimary')}</Link>
+          >{t('home.ctaPrimary')}</Link>
           <div style={{ marginTop: 10, color: 'rgba(255,255,255,0.9)' }}>{t('home.ctaExplainer1')}</div>
         </div>
       </section>

@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
+  // Bot対策: 動的レンダリングでSSRを有効化、一般ユーザーは静的生成
+  output: 'hybrid',
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -30,12 +32,10 @@ const nextConfig: NextConfig = {
   // Core Web Vitals optimizations
   experimental: {
     optimizePackageImports: ['lucide-react', 'react-icons', 'react-i18next'],
-    optimizeCss: true,
+    // If you want CSS inlining, install 'critters' and re-enable below.
+    // optimizeCss: true,
     scrollRestoration: true,
     webVitalsAttribution: ['CLS', 'LCP'],
-    turbo: {
-      resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
-    },
   },
   // Performance optimizations
   compress: true,
@@ -43,55 +43,7 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   generateEtags: true,
   reactStrictMode: true,
-  swcMinify: true,
-  // Webpack optimizations for Core Web Vitals
-  webpack: (config, { dev, isServer }) => {
-    // Bundle analyzer and optimization
-    if (!dev && !isServer) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          cacheGroups: {
-            framework: {
-              chunks: 'all',
-              name: 'framework',
-              test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
-              priority: 40,
-              enforce: true,
-            },
-            lib: {
-              test(module: any) {
-                return module.size() > 160000 && /node_modules[/\\]/.test(module.identifier());
-              },
-              name(module: any) {
-                const hash = require('crypto').createHash('sha1');
-                hash.update(module.libIdent({context: config.context}));
-                return 'lib-' + hash.digest('hex').substring(0, 8);
-              },
-              priority: 30,
-              minChunks: 1,
-              reuseExistingChunk: true,
-            },
-            commons: {
-              name: 'commons',
-              chunks: 'all',
-              minChunks: 2,
-              priority: 20,
-            },
-            shared: {
-              name: 'shared',
-              chunks: 'all',
-              minChunks: 1,
-              priority: 10,
-              reuseExistingChunk: true,
-            },
-          },
-        },
-      };
-    }
-    return config;
-  },
+  // Use Next's default Webpack/Turbopack optimizations (custom splitChunks removed to avoid build issues)
   // Headers for performance and security
   async headers() {
     return [

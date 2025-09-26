@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import MainContent from './MainContent';
+import { headers } from 'next/headers';
 import SuspenseWrapper from '@/components/SuspenseWrapper';
 import type { Metadata } from 'next';
 import { allRestaurantSpots } from '@/data/tokyo-restaurant-spots';
@@ -7,6 +7,9 @@ import { hotelSpots } from '@/data/hotel-spots';
 import { kanngouSpots } from '@/data/kankou-spots';
 import { tokyoSpots } from '@/data/tokyo-spots';
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
+import { shouldUseSSR } from '@/lib/render-utils';
+
+import MainContent from './MainContent';
 
 interface SpotPageProps {
   params: Promise<{ id: string }>;
@@ -19,6 +22,15 @@ export default async function SpotPage({ params, searchParams }: SpotPageProps) 
   const language = resolvedSearchParams.lang as string;
   const currency = resolvedSearchParams.currency as string;
   const unit = resolvedSearchParams.unit as string;
+
+  // Bot判定によるSSR/SSG切り分け
+  const useSSR = await shouldUseSSR();
+
+  // Bot以外で静的生成が無効な場合は動的レンダリングを強制
+  if (useSSR) {
+    // Bot対策: headers()を呼び出すことで動的レンダリングを強制
+    const headersList = await headers();
+  }
 
   // 言語が指定されている場合は適切なパスにリダイレクト
   if (language && language !== 'ja') {
@@ -98,6 +110,23 @@ export default async function SpotPage({ params, searchParams }: SpotPageProps) 
   );
 }
 
+// SSG用の静的パス生成（ユーザー向けの事前生成）
+export async function generateStaticParams() {
+  const allSpots = [
+    ...allRestaurantSpots,
+    ...hotelSpots,
+    ...kanngouSpots,
+    ...tokyoSpots,
+    ...allBookstoreSpots,
+  ];
+
+  // 人気のスポットのみ事前生成（例：最初の20件）
+  // 残りはISRでオンデマンド生成
+  return allSpots.slice(0, 20).map((spot: any) => ({
+    id: spot.id,
+  }));
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
   const spot = [
@@ -110,13 +139,28 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const title = spot?.name ? `${spot.name} | 観光スポット詳細` : '観光スポット詳細'
   const description = spot?.description || '観光スポットの詳細情報。営業時間、料金、アクセス、口コミなど観光に必要な情報をまとめています。'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app'
+  const canonical = `${baseUrl}/spots/${id}`
 
   return {
     title,
     description,
+    alternates: {
+      canonical,
+      languages: {
+        'x-default': canonical,
+        'ja-JP': canonical,
+        'en-GB': `${baseUrl}/en/spots/${id}`,
+        'en-US': `${baseUrl}/en/spots/${id}`,
+        'fr-FR': `${baseUrl}/fr/spots/${id}`,
+        'ko-KR': `${baseUrl}/ko/spots/${id}`,
+        'ar-SA': `${baseUrl}/ar/spots/${id}`,
+      },
+    },
     openGraph: {
       title,
       description,
+      url: canonical,
       images: [`/spots/${id}/opengraph-image`],
     },
     twitter: {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { db, doc, getDoc } from '@/lib/firebase';
 import { TouristSpot } from '@/types';
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
@@ -130,6 +130,8 @@ export default function MainContent({
 
   // Main top-level tabs requested: 基本情報 / 見どころ / AIプラン / レビュー
   const [mainTab, setMainTab] = useState<'basic' | 'highlights' | 'ai' | 'reviews'>('basic');
+  const [isClient, setIsClient] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Simple local poll + UGC
   const [pollChoice, setPollChoice] = useState<'morning' | 'night' | null>(null);
@@ -468,11 +470,14 @@ export default function MainContent({
   const i18n = (dicts as any)[lang] || dicts.en;
 
 
+  // クライアントサイドであることを確認
+  useEffect(() => {
+    setIsClient(true);
+    setIsMounted(true);
+  }, []);
+
   // Restore simple local UGC state per spot
   useEffect(() => {
-    // クライアントサイドのみで実行
-    if (typeof window === 'undefined') return;
-
     const keyBase = spotId || (spotData?.googlePlaceId as string) || (spotData?.name || 'spot');
     try {
       const poll = localStorage.getItem(`poll-${keyBase}`);
@@ -745,12 +750,10 @@ export default function MainContent({
 
   const showNotification = (message: string, _type: 'success' | 'info' = 'info') => {
     setToastMsg(message);
-    if (typeof window !== 'undefined') {
-      try {
-        clearTimeout((window as any).__toastTimer);
-        (window as any).__toastTimer = setTimeout(() => setToastMsg(null), 2600);
-      } catch { }
-    }
+    try {
+      clearTimeout((window as any).__toastTimer);
+      (window as any).__toastTimer = setTimeout(() => setToastMsg(null), 2600);
+    } catch { }
   };
 
   const addToFavorites = () => {
@@ -767,19 +770,17 @@ export default function MainContent({
       showNotification(loginMessage);
 
       // ログイン後にAI旅行プラン画面に戻れるように、現在のスポットIDを保存
-      if (typeof window !== 'undefined') {
-        try {
-          sessionStorage.setItem('pending-spot-add', spotId);
-          sessionStorage.setItem('return-to-ai-plan', '1');
-        } catch (error) {
-          console.error('Error saving pending spot:', error);
-        }
-
-        // 2秒後にログインページに移動
-        setTimeout(() => {
-          window.location.href = '/login';
-        }, 2000);
+      try {
+        sessionStorage.setItem('pending-spot-add', spotId);
+        sessionStorage.setItem('return-to-ai-plan', '1');
+      } catch (error) {
+        console.error('Error saving pending spot:', error);
       }
+
+      // 2秒後にログインページに移動
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
       return;
     }
     if (!spotData) {
@@ -820,8 +821,7 @@ export default function MainContent({
     }
 
     // localStorageに保存（ページ遷移直後の読み込み対策）
-    if (typeof window !== 'undefined') {
-      try {
+    try {
         const raw = localStorage.getItem('selected-spots');
         const arr = raw ? JSON.parse(raw) : [];
         const exists = Array.isArray(arr) && arr.some((s: any) => s.id === spotForPlan.id);
@@ -832,18 +832,17 @@ export default function MainContent({
         } else {
           console.log('ℹ️ Spot already exists in localStorage');
         }
-      } catch (error) {
-        console.error('❌ Error saving to localStorage:', error);
-      }
+    } catch (error) {
+      console.error('❌ Error saving to localStorage:', error);
+    }
 
-      // セッションストレージにフラグを設定
-      try {
-        sessionStorage.setItem('ai-plan-added', '1');
-        sessionStorage.setItem('last-added-spot', spotId);
-        console.log('✅ Set session storage flags');
-      } catch (error) {
-        console.error('❌ Error setting session storage:', error);
-      }
+    // セッションストレージにフラグを設定
+    try {
+      sessionStorage.setItem('ai-plan-added', '1');
+      sessionStorage.setItem('last-added-spot', spotId);
+      console.log('✅ Set session storage flags');
+    } catch (error) {
+      console.error('❌ Error setting session storage:', error);
     }
     const total = (selectedSpotsFromCtx?.length || 0) + 1;
 
@@ -857,18 +856,16 @@ export default function MainContent({
     console.log('🚀 Showing success notification and preparing to navigate');
 
     // 1.5秒後にAI旅行プラン画面に移動（より確実に）
-    if (typeof window !== 'undefined') {
-      setTimeout(() => {
-        try {
-          console.log('Navigating to AI plan page...');
-          window.location.href = '/ai-plan';
-        } catch (error) {
-          console.error('Error navigating to AI plan:', error);
-          // フォールバック
-          window.open('/ai-plan', '_self');
-        }
-      }, 1500);
-    }
+    setTimeout(() => {
+      try {
+        console.log('Navigating to AI plan page...');
+        window.location.href = '/ai-plan';
+      } catch (error) {
+        console.error('Error navigating to AI plan:', error);
+        // フォールバック
+        window.open('/ai-plan', '_self');
+      }
+    }, 1500);
   };
 
 
@@ -952,10 +949,10 @@ export default function MainContent({
     return table[key] || tag;
   };
 
-  // 現在の営業時間を計算
-  const getBusinessHours = () => {
+  // 現在の営業時間を計算 - memoized
+  const getBusinessHours = useMemo(() => {
     const prefix = lang === 'en' ? 'Today: ' : lang === 'ko' ? '오늘: ' : lang === 'fr' ? "Aujourd'hui: " : '本日: ';
-    if (spotData?.openingHours && typeof window !== 'undefined') {
+    if (spotData?.openingHours) {
       const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
       const key = days[new Date().getDay()];
       const today = (spotData.openingHours as Record<string, string | undefined>)[key];
@@ -963,7 +960,7 @@ export default function MainContent({
     }
     if (spotData?.hours) return `${prefix}${spotData.hours}`;
     return lang === 'en' ? 'Today: Hours unavailable' : lang === 'ko' ? '오늘: 영업시간 미정' : lang === 'fr' ? "Aujourd'hui: Horaires indisponibles" : '本日: 営業時間未定';
-  };
+  }, [spotData?.openingHours, spotData?.hours, lang]);
 
   // 料金表示
   const getPriceDisplay = () => {
@@ -993,8 +990,8 @@ export default function MainContent({
     return `${min} - ${max}分`;
   };
 
-  // 混雑状況（簡易推定）
-  const getCrowd = () => {
+  // 混雑状況（簡易推定）- memoized
+  const getCrowd = useMemo(() => {
     if (spotData?.crowdLevel) {
       const base = spotData.crowdLevel;
       const score = base === '混雑' ? 4 : base === '普通' ? 3 : 2;
@@ -1004,18 +1001,17 @@ export default function MainContent({
     const rating = spotData?.rating ?? 4.0;
     let score = rating >= 4.4 ? 3 : rating >= 4.1 ? 2 : 1;
 
-    if (typeof window !== 'undefined') {
-      const d = new Date();
-      const day = d.getDay();
-      const h = d.getHours();
-      if (day === 0 || day === 6) score += 1;
-      if ((h >= 11 && h <= 13) || (h >= 16 && h <= 20)) score += 1;
-    }
+    // 時間ベースの計算（クライアントサイドでのみ実行）
+    const d = new Date();
+    const day = d.getDay();
+    const h = d.getHours();
+    if (day === 0 || day === 6) score += 1;
+    if ((h >= 11 && h <= 13) || (h >= 16 && h <= 20)) score += 1;
 
     score = Math.max(1, Math.min(5, score));
     const label = score >= 4 ? i18n.crowdLabels.busy : score >= 3 ? i18n.crowdLabels.normal : i18n.crowdLabels.empty;
     return { label, score };
-  };
+  }, [spotData?.crowdLevel, spotData?.rating, i18n.crowdLabels]);
 
   const getReviewCountDisplay = () => {
     const count = typeof spotData?.reviewCount === 'number'
@@ -1224,6 +1220,8 @@ export default function MainContent({
     ];
   }
 
+  // Dynamic import により SSR は無効化されているため、条件分岐不要
+
   return (
     <main className="min-h-screen pt-32 sm:pt-36 md:pt-40">
       {/* 上部固定CTAバーはUX簡素化のため削除（右下フローティングに集約） */}
@@ -1414,9 +1412,7 @@ export default function MainContent({
             <span className="font-semibold">{toastMsg}</span>
             <button
               onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.location.href = '/ai-plan';
-                }
+                window.location.href = '/ai-plan';
               }}
               className="ml-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-sm font-semibold transition-all duration-200 backdrop-blur-sm border border-white/30 flex items-center gap-2"
             >
@@ -1614,9 +1610,7 @@ export default function MainContent({
               </button>
               <button
                 onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.location.href = '/ai-plan';
-                }
+                window.location.href = '/ai-plan';
               }}
                 className="px-8 py-4 bg-white/90 text-sky-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
               >
@@ -2032,7 +2026,7 @@ export default function MainContent({
               <div className="text-center p-6 border border-border-light rounded-2xl bg-gradient-to-br from-white to-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <Clock className="mx-auto mb-4 text-primary" size={40} />
                 <h3 className="font-semibold text-secondary mb-2">{i18n.hours}</h3>
-                <p className="text-lg font-semibold mb-1" suppressHydrationWarning>{getBusinessHours()}</p>
+                <p className="text-lg font-semibold mb-1" suppressHydrationWarning>{getBusinessHours}</p>
                 <small className="text-text-light">{i18n.hoursHint}</small>
               </div>
 
@@ -2065,12 +2059,12 @@ export default function MainContent({
               <div className="text-center p-6 border border-border-light rounded-2xl bg-gradient-to-br from-white to-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <Users className="mx-auto mb-4 text-primary" size={40} />
                 <h3 className="font-semibold text-secondary mb-2">{i18n.crowd}</h3>
-                <p className="text-lg font-semibold mb-2">{getCrowd().label}</p>
+                <p className="text-lg font-semibold mb-2">{getCrowd.label}</p>
                 <div className="flex justify-center gap-1">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div
                       key={i}
-                      className={`w-6 h-1.5 rounded-full ${i <= getCrowd().score ? 'bg-warning' : 'bg-border'
+                      className={`w-6 h-1.5 rounded-full ${i <= getCrowd.score ? 'bg-warning' : 'bg-border'
                         }`}
                     />
                   ))}
@@ -2398,9 +2392,7 @@ export default function MainContent({
                     if (pollChoice) return; // 1回のみ
                     const next = { morning: pollStats.morning + 1, night: pollStats.night };
                     setPollChoice('morning'); setPollStats(next);
-                    if (typeof window !== 'undefined') {
-                      try { localStorage.setItem(`poll-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ choice: 'morning', stats: next })); } catch {}
-                    }
+                    try { localStorage.setItem(`poll-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ choice: 'morning', stats: next })); } catch {}
                   }}
                 >朝派</button>
                 <button
@@ -2409,9 +2401,7 @@ export default function MainContent({
                     if (pollChoice) return;
                     const next = { morning: pollStats.morning, night: pollStats.night + 1 };
                     setPollChoice('night'); setPollStats(next);
-                    if (typeof window !== 'undefined') {
-                      try { localStorage.setItem(`poll-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ choice: 'night', stats: next })); } catch {}
-                    }
+                    try { localStorage.setItem(`poll-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ choice: 'night', stats: next })); } catch {}
                   }}
                 >夜派</button>
               </div>
@@ -2427,9 +2417,7 @@ export default function MainContent({
                   onClick={() => {
                     const nextVisited = !visited; setVisited(nextVisited);
                     const nextCount = visitedCount + (nextVisited ? 1 : -1); setVisitedCount(Math.max(0, nextCount));
-                    if (typeof window !== 'undefined') {
-                      try { localStorage.setItem(`visited-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ visited: nextVisited, count: Math.max(0, nextCount) })); } catch {}
-                    }
+                    try { localStorage.setItem(`visited-${spotId || spotData?.name || 'spot'}`, JSON.stringify({ visited: nextVisited, count: Math.max(0, nextCount) })); } catch {}
                   }}
                 >{visited ? '行った！済み' : '行った！'}</button>
                 <div className="text-sm text-gray-600">{visitedCount.toLocaleString()}人が行きました</div>
@@ -2445,13 +2433,11 @@ export default function MainContent({
                   className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold disabled:opacity-50"
                   disabled={!commentText.trim()}
                   onClick={() => {
-                    const timestamp = typeof window !== 'undefined' ? Date.now() : 0;
+                    const timestamp = Date.now();
                     const item = { text: commentText.trim(), ts: timestamp };
                     const next = [item, ...comments].slice(0, 10);
                     setComments(next); setCommentText('');
-                    if (typeof window !== 'undefined') {
-                      try { localStorage.setItem(`comments-${spotId || spotData?.name || 'spot'}`, JSON.stringify(next)); } catch {}
-                    }
+                    try { localStorage.setItem(`comments-${spotId || spotData?.name || 'spot'}`, JSON.stringify(next)); } catch {}
                   }}
                 >投稿</button>
               </div>

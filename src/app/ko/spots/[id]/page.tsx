@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { headers } from 'next/headers';
 import { Metadata } from 'next';
 import MainContent from '@/app/spots/[id]/MainContent';
 import SuspenseWrapper from '@/components/SuspenseWrapper';
@@ -9,6 +10,7 @@ import { tokyoSpots } from '@/data/tokyo-spots';
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
 import { convertTokyoSpotsToTouristSpots } from '@/utils/convertTokyoSpots';
 import { TouristSpot } from '@/types';
+import { shouldUseSSR } from '@/lib/render-utils';
 
 const allSpots: TouristSpot[] = [
   ...allRestaurantSpots,
@@ -36,10 +38,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+  const canonical = `${baseUrl}/ko/spots/${id}`;
   return {
     title: `${spot.name} - Trip App`,
     description: spot.description,
+    alternates: {
+      canonical,
+      languages: {
+        'x-default': `${baseUrl}/spots/${id}`,
+        'ja-JP': `${baseUrl}/spots/${id}`,
+        'en-GB': `${baseUrl}/en/spots/${id}`,
+        'en-US': `${baseUrl}/en/spots/${id}`,
+        'fr-FR': `${baseUrl}/fr/spots/${id}`,
+        'ko-KR': canonical,
+        'ar-SA': `${baseUrl}/ar/spots/${id}`,
+      },
+    },
     openGraph: {
+      url: canonical,
       images: [`/spots/${id}/opengraph-image`],
       title: `${spot.name} - Trip App`,
       description: spot.description,
@@ -55,6 +72,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function SpotDetailPage({ params }: Props) {
   const { id } = await params;
+
+  // Bot判定によるSSR/SSG切り分け
+  const useSSR = await shouldUseSSR();
+
+  // Bot以外で静的生成が無効な場合は動的レンダリングを強制
+  if (useSSR) {
+    // Bot対策: headers()を呼び出すことで動的レンダリングを強制
+    const headersList = await headers();
+  }
+
   const spot = allSpots.find((s) => s.id === id);
 
   if (!spot) {
@@ -106,7 +133,9 @@ export default async function SpotDetailPage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  return allSpots.map((spot) => ({
+  // 人気のスポットのみ事前生成（例：最初の20件）
+  // 残りはISRでオンデマンド生成
+  return allSpots.slice(0, 20).map((spot) => ({
     id: spot.id,
   }));
 }

@@ -97,13 +97,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     }
     try {
-      const match = typeof document !== 'undefined' ? document.cookie.match(/(?:^|; )ab_top_bg=([^;]+)/) : null;
-      const abv = match ? decodeURIComponent(match[1]) : undefined;
       const w: any = typeof window !== 'undefined' ? (window as any) : undefined;
       if (w && w.gtag) {
-        w.gtag('event', 'sign_up', { method: 'email', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+        w.gtag('event', 'sign_up', { method: 'email' });
       } else {
-        console.log('GA4 Event: sign_up', { method: 'email', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+        console.log('GA4 Event: sign_up', { method: 'email' });
       }
     } catch {}
   };
@@ -119,13 +117,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const u = result?.user as any;
       const isNew = u?.metadata?.creationTime && u?.metadata?.lastSignInTime && (u.metadata.creationTime === u.metadata.lastSignInTime);
       if (isNew) {
-        const match = typeof document !== 'undefined' ? document.cookie.match(/(?:^|; )ab_top_bg=([^;]+)/) : null;
-        const abv = match ? decodeURIComponent(match[1]) : undefined;
         const w: any = typeof window !== 'undefined' ? (window as any) : undefined;
         if (w && w.gtag) {
-          w.gtag('event', 'sign_up', { method: 'google', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+          w.gtag('event', 'sign_up', { method: 'google' });
         } else {
-          console.log('GA4 Event: sign_up', { method: 'google', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+          console.log('GA4 Event: sign_up', { method: 'google' });
         }
       }
     } catch {}
@@ -142,13 +138,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const u = result?.user as any;
         const isNew = u?.metadata?.creationTime && u?.metadata?.lastSignInTime && (u.metadata.creationTime === u.metadata.lastSignInTime);
         if (isNew) {
-          const match = typeof document !== 'undefined' ? document.cookie.match(/(?:^|; )ab_top_bg=([^;]+)/) : null;
-          const abv = match ? decodeURIComponent(match[1]) : undefined;
           const w: any = typeof window !== 'undefined' ? (window as any) : undefined;
           if (w && w.gtag) {
-            w.gtag('event', 'sign_up', { method: 'apple', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+            w.gtag('event', 'sign_up', { method: 'apple' });
           } else {
-            console.log('GA4 Event: sign_up', { method: 'apple', ab_variant: (abv === 'A' || abv === 'B') ? abv : 'unknown' });
+            console.log('GA4 Event: sign_up', { method: 'apple' });
           }
         }
       } catch {}
