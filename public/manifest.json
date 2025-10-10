@@ -1,16 +1,16 @@
 {
-  "name": "日本旅行ガイド - AI搭載観光プランナー",
-  "short_name": "日本旅行",
-  "description": "AI搭載の旅行プランニングで日本を発見しよう。東京・横浜・埼玉・千葉の完全観光ガイド。ホテル・レストラン・観光スポット・オーダーメイド旅行プラン。",
+  "name": "日本旅行ガイド - 東京観光スポット・ホテル・レストラン完全ガイド",
+  "short_name": "日本旅行ガイド",
+  "description": "東京・横浜・埼玉・千葉の観光スポット、ホテル、レストラン、グルメを完全網羅。AI搭載の旅行プランニングで、あなただけの日本旅行プランを無料作成。浅草、渋谷、新宿、秋葉原など人気エリアの最新情報をお届けします。",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#667eea",
+  "theme_color": "#dc2626",
   "orientation": "portrait-primary",
   "scope": "/",
-  "lang": "ja",
+  "lang": "ja-JP",
   "dir": "ltr",
-  "categories": ["travel", "tourism", "lifestyle", "navigation", "productivity"],
+  "categories": ["travel", "tourism", "lifestyle", "navigation", "productivity", "食事", "宿泊", "観光"],
   "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
     {

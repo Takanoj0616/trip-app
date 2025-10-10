@@ -8,8 +8,9 @@ export const size = {
 export const contentType = 'image/png'
 
 export default async function OpengraphImage() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app'
-  const title = 'Japan Travel Guide — Plan Your Japan Trip'
+  const title = '日本旅行ガイド'
+  const subtitle = '東京観光スポット・ホテル・レストラン完全ガイド'
+  const description = 'AI旅行プランで最適な日本旅行を無料作成'
 
   return new ImageResponse(
     (
@@ -20,7 +21,7 @@ export default async function OpengraphImage() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: `linear-gradient(135deg, #0ea5e9, #6366f1)`,
+          background: `linear-gradient(135deg, #dc2626 0%, #f97316 50%, #fbbf24 100%)`,
           color: '#fff',
           position: 'relative',
           fontFamily: 'sans-serif',
@@ -34,15 +35,20 @@ export default async function OpengraphImage() {
               'url(https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=1500&q=60)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            opacity: 0.2,
+            opacity: 0.25,
           }}
         />
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, padding: 60 }}>
-          <div style={{ fontSize: 56, fontWeight: 800, textAlign: 'center', lineHeight: 1.15 }}>{title}</div>
-          <div style={{ fontSize: 28, opacity: 0.95, textAlign: 'center' }}>
-            AI itineraries, hidden gems and authentic experiences
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, padding: 60, textShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+          <div style={{ fontSize: 72, fontWeight: 900, textAlign: 'center', lineHeight: 1.1 }}>{title}</div>
+          <div style={{ fontSize: 36, fontWeight: 700, opacity: 0.98, textAlign: 'center', lineHeight: 1.3 }}>
+            {subtitle}
           </div>
-          <div style={{ marginTop: 20, fontSize: 24, opacity: 0.9 }}>{baseUrl.replace(/^https?:\/\//, '')}</div>
+          <div style={{ fontSize: 28, opacity: 0.95, textAlign: 'center', marginTop: 12 }}>
+            {description}
+          </div>
+          <div style={{ marginTop: 24, fontSize: 22, opacity: 0.9, background: 'rgba(0,0,0,0.3)', padding: '12px 32px', borderRadius: 999 }}>
+            🗼 浅草 | 渋谷 | 新宿 | 秋葉原
+          </div>
         </div>
       </div>
     ),

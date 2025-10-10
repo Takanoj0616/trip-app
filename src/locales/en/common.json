@@ -35,8 +35,28 @@
       "description": "Access live updates on opening hours, crowd levels, weather conditions, and transportation schedules for seamless travel."
     },
     "multilingual": {
-      "title": "Multilingual Support",
-      "description": "Available in English, Japanese, and Korean to help international visitors navigate Japan with confidence."
+      "title": "Your Language, Your Journey",
+      "description": "Available in Japanese, English, Korean, and French. Explore Japan in the language you're comfortable with."
+    },
+    "areaGuide": {
+      "title": "Area & Category Guides",
+      "description": "Explore Tokyo, Yokohama, Saitama, Chiba and more. From popular spots to hidden local favorites, discover each area's unique charm."
+    },
+    "userExperience": {
+      "title": "Make It Your Own",
+      "description": "Save favorites, write reviews, create travel logs, and share your experiences. Connect with fellow travelers and build your Japan story."
+    },
+    "aiRecommendation": {
+      "title": "Tailored Just for You",
+      "description": "Based on your preferences, budget, and interests, AI crafts the perfect itinerary that matches your travel style."
+    },
+    "realTimeInfo": {
+      "title": "Stay Updated",
+      "description": "Check crowd levels, weather, and transport delays in real time to travel smarter."
+    },
+    "community": {
+      "title": "Join the Community",
+      "description": "Ask questions, share experiences, and get tips from locals and fellow travelers in our vibrant travel community."
     }
   },
   "areas": {

@@ -21,19 +21,25 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-taka
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "日本旅行ガイド | 東京観光 | AI旅行プランナー 2025年版",
-  description: "AI搭載の旅行プランニングで日本を発見しよう。東京・横浜・埼玉・千葉の完全観光ガイド。ホテル・レストラン・観光スポット・オーダーメイド旅行プランで完璧な日本旅行を。",
+  title: "日本旅行ガイド | 東京観光スポット・ホテル・レストラン完全ガイド 2025",
+  description: "東京・横浜・埼玉・千葉の観光スポット、ホテル、レストラン、グルメを完全網羅。AI搭載の旅行プランニングで、あなただけの日本旅行プランを無料作成。浅草、渋谷、新宿、秋葉原など人気エリアの最新情報をお届けします。",
   keywords: [
-    "日本旅行", "日本観光", "東京旅行ガイド", "日本旅行プランナー",
-    "東京観光スポット", "日本ホテル", "日本レストラン", "横浜旅行",
-    "埼玉観光", "千葉旅行", "日本旅行プラン", "東京観光",
-    "AI旅行プランニング", "東京ホテル", "横浜観光スポット", "日本旅行",
-    "東京観光ツアー", "日本旅行のコツ", "東京グルメガイド", "温泉旅行",
-    "桜の名所", "紅葉スポット", "神社仏閣", "日本文化体験",
-    "東京ディズニーランド", "富士山ツアー", "スキー場", "日本の祭り",
-    "着物レンタル", "寿司体験", "日本料理", "旅館予約"
+    "日本旅行", "東京観光", "東京旅行ガイド", "日本観光ガイド",
+    "東京観光スポット", "東京ホテル", "東京レストラン", "東京グルメ",
+    "横浜観光", "横浜旅行", "埼玉観光", "千葉観光",
+    "AI旅行プランナー", "旅行プラン作成", "日本旅行プラン", "東京旅行プラン",
+    "浅草観光", "渋谷観光", "新宿観光", "秋葉原観光", "上野観光",
+    "東京スカイツリー", "東京タワー", "浅草寺", "明治神宮", "皇居",
+    "東京ディズニーランド", "ディズニーシー", "お台場", "六本木", "原宿",
+    "温泉旅行", "温泉宿", "旅館予約", "ホテル予約", "民泊",
+    "桜の名所", "お花見スポット", "紅葉スポット", "夜景スポット",
+    "神社仏閣", "パワースポット", "日本文化体験", "着物レンタル",
+    "寿司", "ラーメン", "焼肉", "居酒屋", "日本料理",
+    "築地市場", "豊洲市場", "アメ横", "食べ歩き", "スイーツ",
+    "富士山", "箱根", "鎌倉", "日光", "伊豆",
+    "日本の祭り", "花火大会", "イベント情報", "季節の観光"
   ],
-  authors: [{ name: "日本旅行ガイド" }],
+  authors: [{ name: "日本旅行ガイド編集部" }],
   creator: "日本旅行ガイド",
   publisher: "日本旅行ガイド",
   robots: {
@@ -64,15 +70,15 @@ export const metadata: Metadata = {
     locale: 'ja_JP',
     alternateLocale: ['en_GB', 'en_US', 'fr_FR', 'ko_KR', 'ar_SA'],
     url: baseUrl,
-    title: "日本旅行ガイド | 東京観光 | AI旅行プランナー 2025年版",
-    description: "AI搭載の旅行プランニングで日本を発見しよう。東京・横浜・埼玉・千葉の完全観光ガイド。ホテル・レストラン・観光スポット・オーダーメイド旅行プランで完璧な日本旅行を。",
+    title: "日本旅行ガイド | 東京観光スポット・ホテル・レストラン完全ガイド 2025",
+    description: "東京・横浜・埼玉・千葉の観光スポット、ホテル、レストラン、グルメを完全網羅。AI搭載の旅行プランニングで、あなただけの日本旅行プランを無料作成。浅草、渋谷、新宿など人気エリアの最新情報をお届けします。",
     siteName: "日本旅行ガイド",
     images: [
       {
         url: `${baseUrl}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "日本旅行ガイド - AI搭載日本旅行プランナー",
+        alt: "日本旅行ガイド - 東京観光スポット・ホテル・レストラン完全ガイド",
       },
     ],
   },
@@ -80,8 +86,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@japan_travel_jp',
     creator: '@japan_travel_jp',
-    title: "日本旅行ガイド | 東京観光 | AI旅行プランナー 2025年版",
-    description: "AI搭載の旅行プランニングで日本を発見しよう。東京・横浜・埼玉・千葉の完全観光ガイド。",
+    title: "日本旅行ガイド | 東京観光スポット完全ガイド 2025",
+    description: "東京・横浜・埼玉・千葉の観光スポット、ホテル、グルメを完全網羅。AI旅行プランニングで最適な日本旅行を。",
     images: [`${baseUrl}/twitter-image`],
   },
   verification: {
@@ -106,8 +112,8 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
   "name": "日本旅行ガイド",
-  "alternateName": ["Japan Travel Guide", "日本観光ガイド"],
-  "description": "AI搭載の日本旅行プランニングと観光ガイド。東京・横浜・埼玉・千葉のオーダーメイド旅行プラン、ホテル推薦、レストランガイドで日本を発見しよう。",
+  "alternateName": ["Japan Travel Guide", "日本観光ガイド", "東京観光ガイド"],
+  "description": "東京・横浜・埼玉・千葉の観光スポット、ホテル、レストラン、グルメを完全網羅。AI搭載の旅行プランニングで、あなただけの日本旅行プランを無料作成。",
   "url": baseUrl,
   "logo": `${baseUrl}/icon`,
   "image": `${baseUrl}/opengraph-image`,
@@ -120,21 +126,35 @@ const structuredData = {
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "カスタマーサービス",
-    "availableLanguage": ["日本語", "English", "Français", "한국어", "العربية"]
+    "availableLanguage": ["日本語", "English", "Français", "한국어", "العربية"],
+    "areaServed": "JP"
   },
   "areaServed": [
-    { "@type": "Country", "name": "日本" },
-    { "@type": "Country", "name": "アメリカ" },
-    { "@type": "Country", "name": "イギリス" },
-    { "@type": "Country", "name": "フランス" },
-    { "@type": "Country", "name": "韓国" },
-    { "@type": "Country", "name": "オーストラリア" }
+    {
+      "@type": "Country",
+      "name": "日本",
+      "sameAs": "https://ja.wikipedia.org/wiki/日本"
+    },
+    {
+      "@type": "City",
+      "name": "東京",
+      "containedIn": "日本",
+      "sameAs": "https://ja.wikipedia.org/wiki/東京"
+    },
+    {
+      "@type": "City",
+      "name": "横浜",
+      "containedIn": "神奈川県",
+      "sameAs": "https://ja.wikipedia.org/wiki/横浜市"
+    }
   ],
-  "serviceType": "旅行プランニング",
+  "serviceType": ["旅行プランニング", "観光ガイド", "ホテル予約支援", "レストラン情報"],
   "priceRange": "無料",
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.8",
+    "bestRating": "5",
+    "worstRating": "1",
     "reviewCount": "1250"
   },
   "hasOfferCatalog": {
@@ -146,31 +166,49 @@ const structuredData = {
         "itemOffered": {
           "@type": "Service",
           "name": "AI旅行プランニング",
-          "description": "AI技術を活用したオーダーメイド日本旅行プラン作成"
-        }
+          "description": "AI技術を活用したオーダーメイド日本旅行プラン作成。東京、横浜、埼玉、千葉を中心に最適な旅行ルートを提案します。",
+          "provider": {
+            "@type": "Organization",
+            "name": "日本旅行ガイド"
+          }
+        },
+        "price": "0",
+        "priceCurrency": "JPY"
       },
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
           "name": "東京観光ガイド",
-          "description": "東京の完全旅行情報と推薦スポット"
+          "description": "東京の完全旅行情報と推薦スポット。浅草、渋谷、新宿、秋葉原、上野など人気エリアの詳細情報。",
+          "provider": {
+            "@type": "Organization",
+            "name": "日本旅行ガイド"
+          }
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "ホテル推薦",
-          "description": "日本旅行に最適な厳選ホテル情報"
+          "name": "ホテル・宿泊施設ガイド",
+          "description": "日本旅行に最適な厳選ホテル、旅館、温泉宿の詳細情報と予約支援。",
+          "provider": {
+            "@type": "Organization",
+            "name": "日本旅行ガイド"
+          }
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "レストランガイド",
-          "description": "日本の最高のレストランとグルメ推薦"
+          "name": "レストラン・グルメガイド",
+          "description": "東京の最高のレストラン、寿司、ラーメン、焼肉、居酒屋などのグルメ情報。",
+          "provider": {
+            "@type": "Organization",
+            "name": "日本旅行ガイド"
+          }
         }
       }
     ]

@@ -1,16 +1,23 @@
+# 日本旅行ガイド - Robots.txt
+# 日本市場を最優先にしたSEO最適化
+
 User-agent: *
 Allow: /
 
-# Important pages for international SEO
+# 重要ページ（日本語）- 優先クロール
 Allow: /areas/
 Allow: /spots/
 Allow: /courses/
-Allow: /plan/
-Allow: /coordinator/
 Allow: /ai-spots/
 Allow: /ai-plan/
+Allow: /plan/
+Allow: /discover/
+Allow: /stories/
+Allow: /qna/
+Allow: /travel-experiences/
+Allow: /about/
 
-# Multi-language pages for international markets
+# 多言語ページ
 Allow: /en/
 Allow: /fr/
 Allow: /ko/
@@ -32,7 +39,7 @@ Allow: /ar/spots/
 Allow: /ar/ai-spots/
 Allow: /ar/ai-plan/
 
-# Block private or dynamic content
+# ブロック対象（プライベート・動的コンテンツ）
 Disallow: /api/
 Disallow: /favorites/
 Disallow: /history/
@@ -41,76 +48,59 @@ Disallow: /404
 Disallow: /500
 Disallow: /login/
 Disallow: /register/
+Disallow: /coordinator/
+Disallow: /route/
 
-# Sitemap location
+# サイトマップ
 Sitemap: https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app/sitemap.xml
 
-# Crawl delay for polite crawling
-Crawl-delay: 1
-
-# International search engines optimization
-# Google (Global)
+# Google (日本を最優先)
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 1
+Crawl-delay: 0.5
+# 日本のGooglebot優先設定
 
-# Google UK
-User-agent: Googlebot
-Allow: /en/
-Crawl-delay: 1
-
-# Google France
-User-agent: Googlebot
-Allow: /fr/
-Crawl-delay: 1
-
-# Google Japan
-User-agent: Googlebot
+# Google画像検索（重要）
+User-agent: Googlebot-Image
 Allow: /
-Crawl-delay: 1
+Allow: /images/
+Allow: /_next/static/media/
+Allow: /opengraph-image
+Allow: /twitter-image
 
-# Bing (Microsoft)
-User-agent: Bingbot
+# Google動画検索
+User-agent: Googlebot-Video
 Allow: /
-Crawl-delay: 1
+Allow: /videos/
+Allow: /douga.mp4
 
-# Bing UK
-User-agent: Bingbot
-Allow: /en/
-Crawl-delay: 1
-
-# Yahoo (Verizon Media)
+# Yahoo! JAPAN（日本で重要）
 User-agent: Slurp
 Allow: /
+Crawl-delay: 0.5
+
+# Bing（Microsoft）
+User-agent: Bingbot
+Allow: /
 Crawl-delay: 1
 
-# Yandex (Russia)
-User-agent: YandexBot
+# Naver（韓国市場）
+User-agent: Yeti
 Allow: /
-Crawl-delay: 2
+Allow: /ko/
+Crawl-delay: 1
 
-# Baidu (China)
+# Baidu（中国市場）
 User-agent: Baiduspider
 Allow: /
 Crawl-delay: 2
 
-# Naver (Korea)
-User-agent: Yeti
-Allow: /ko/
-Crawl-delay: 1
+# Yandex（ロシア）
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 2
 
 # DuckDuckGo
 User-agent: DuckDuckBot
 Allow: /
 Crawl-delay: 1
-
-# Image indexing optimization
-User-agent: Googlebot-Image
-Allow: /images/
-Allow: /public/images/
-Allow: /_next/static/media/
-
-# Video indexing optimization
-User-agent: Googlebot-Video
-Allow: /videos/
-Allow: /public/videos/
