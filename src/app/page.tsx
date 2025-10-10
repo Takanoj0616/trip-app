@@ -269,7 +269,7 @@ export default function Home() {
 
           <p style={{
             fontSize: '1.25rem',
-            marginBottom: '2rem',
+            marginBottom: '3rem',
             color: '#000000',
             textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
             fontWeight: 500
@@ -277,22 +277,23 @@ export default function Home() {
             {t('home.heroSubtitle')}
           </p>
 
-          <div className="hero-cta-row" style={{
+          {/* メインCTAボタン - 1つに絞る */}
+          <div style={{
             display: 'flex',
-            gap: '1rem',
-            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '1.5rem',
             marginBottom: '2rem',
-            flexWrap: 'wrap',
             position: 'relative',
             zIndex: 20
           }}>
             <Link
-              href="/ai-plan"
+              href="/ai-spots"
               style={{
                 display: 'inline-block',
-                padding: '1rem 2rem',
-                fontSize: '1.1rem',
-                borderRadius: '30px',
+                padding: '1.25rem 3rem',
+                fontSize: '1.25rem',
+                borderRadius: '50px',
                 fontWeight: 800,
                 letterSpacing: '0.3px',
                 textDecoration: 'none',
@@ -302,7 +303,7 @@ export default function Home() {
                 background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
                 color: '#ffffff',
                 backdropFilter: 'blur(15px)',
-                boxShadow: '0 10px 28px rgba(79,172,254,0.45)',
+                boxShadow: '0 12px 32px rgba(79,172,254,0.5)',
                 userSelect: 'none',
                 WebkitTapHighlightColor: 'transparent',
                 position: 'relative',
@@ -311,91 +312,96 @@ export default function Home() {
               }}
               onMouseEnter={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
-                target.style.transform = 'translateY(-3px) scale(1.04)';
-                target.style.boxShadow = '0 14px 34px rgba(79,172,254,0.55)';
+                target.style.transform = 'translateY(-4px) scale(1.05)';
+                target.style.boxShadow = '0 16px 40px rgba(79,172,254,0.6)';
               }}
               onMouseLeave={(e) => {
                 const target = e.currentTarget as HTMLAnchorElement;
                 target.style.transform = 'translateY(0) scale(1)';
-                target.style.boxShadow = '0 10px 28px rgba(79,172,254,0.45)';
+                target.style.boxShadow = '0 12px 32px rgba(79,172,254,0.5)';
               }}
               onClick={() => trackCta('hero', 'primary')}
             >
-              {t('home.tryFree')}
+              {t('home.mainCta')}
             </Link>
+
+            {/* CTA説明文 */}
+            <p style={{
+              color: '#000',
+              textShadow: '0 1px 2px rgba(255,255,255,0.85)',
+              fontSize: '1rem',
+              fontWeight: 600,
+              margin: 0
+            }}>
+              {t('home.ctaDescription')}
+            </p>
           </div>
 
-          {/* Explainer and social proof under the CTA */}
-          <div style={{ maxWidth: 760, margin: '0 auto 1rem', color: '#000', textShadow: '0 1px 2px rgba(255,255,255,0.85)' }}>
-            <div style={{ fontWeight: 700, marginBottom: 4 }}>{t('home.ctaExplainer1')}</div>
-            <div style={{ opacity: 0.9 }}>{t('home.ctaExplainer2')}</div>
-          </div>
+          {/* ソーシャルプルーフ */}
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-            background: 'rgba(34, 197, 94, 0.9)', padding: '0.4rem 0.9rem', borderRadius: '20px',
-            fontSize: '0.9rem', marginTop: '0.5rem', color: '#052e16'
+            background: 'rgba(34, 197, 94, 0.9)', padding: '0.5rem 1rem', borderRadius: '25px',
+            fontSize: '0.95rem', color: '#052e16', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
           }}>
             <span style={{ fontWeight: 'bold' }}>✓</span> {t('home.trustedBy')}
           </div>
 
-          {/* Guide link moved below in hero */}
-          <div style={{ marginTop: '0.75rem' }}>
-            <Link href="/ai-plan" style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: 600 }}>
-              {t('home.ctaSecondary')}
-            </Link>
-          </div>
-
+          {/* 人気エリアへのクイックリンク */}
           <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '3rem',
-            flexWrap: 'wrap'
+            marginTop: '2rem',
+            textAlign: 'center'
           }}>
-            {heroFeatures.map((feature, index) => (
-              <div key={index} style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                fontSize: '1rem',
-                opacity: 0.9,
-                color: '#000'
-              }}>
-                <div style={{
-                  width: '24px',
-                  height: '24px',
-                  background: '#2563eb',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '0.8rem',
-                  fontWeight: 'bold'
-                }}>{feature.icon}</div>
-                <span style={{ color: '#000' }}>{feature.title}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* AI quick CTA under hero */}
-          <div style={{
-            marginTop: '0.75rem',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            padding: '0.5rem 0.9rem',
-            borderRadius: '9999px',
-            background: 'rgba(255,255,255,0.85)',
-            boxShadow: '0 6px 18px rgba(0,0,0,.08)'
-          }}>
-            <span style={{ color: '#000' }}>🤖 {t('home.aiQuickPitch')}</span>
-            <a href="/ai-spots" style={{
-              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-              color: 'white',
-              padding: '6px 12px',
-              borderRadius: '9999px',
-              fontWeight: 700,
-              textDecoration: 'none'
-            }}>{t('home.tryFree')}</a>
+            <p style={{
+              color: '#000',
+              textShadow: '0 1px 2px rgba(255,255,255,0.85)',
+              fontSize: '0.95rem',
+              fontWeight: 600,
+              marginBottom: '1rem'
+            }}>
+              {currentLanguage === 'en' ? 'Popular Areas:' :
+               currentLanguage === 'ko' ? '인기 지역:' :
+               currentLanguage === 'fr' ? 'Zones populaires :' :
+               currentLanguage === 'ar' ? 'المناطق الشهيرة:' : '人気エリアから選ぶ'}
+            </p>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '1rem',
+              flexWrap: 'wrap'
+            }}>
+              {['東京', '京都', '大阪', '北海道'].map((area, index) => (
+                <Link
+                  key={index}
+                  href={`/${currentLanguage === 'ja' ? '' : currentLanguage + '/'}areas`}
+                  style={{
+                    padding: '0.6rem 1.5rem',
+                    background: 'rgba(255,255,255,0.9)',
+                    borderRadius: '25px',
+                    color: '#1e293b',
+                    textDecoration: 'none',
+                    fontWeight: 600,
+                    fontSize: '0.95rem',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                    transition: 'all 0.3s',
+                    border: '1px solid rgba(0,0,0,0.05)'
+                  }}
+                  onMouseEnter={(e) => {
+                    const target = e.currentTarget as HTMLAnchorElement;
+                    target.style.transform = 'translateY(-2px)';
+                    target.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)';
+                    target.style.background = 'rgba(255,255,255,1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    const target = e.currentTarget as HTMLAnchorElement;
+                    target.style.transform = 'translateY(0)';
+                    target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                    target.style.background = 'rgba(255,255,255,0.9)';
+                  }}
+                >
+                  {area}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
         {/* Visual sample overlay (2-day itinerary mock) */}
@@ -805,8 +811,8 @@ export default function Home() {
 
       {/* Bottom mobile CTA bar */}
       <div className="mobile-cta-bar">
-        <Link href="/ai-plan" onClick={() => trackCta('bottom_bar', 'primary')} className="mobile-cta-link">
-          {t('home.ctaBottomBar')}
+        <Link href="/ai-spots" onClick={() => trackCta('bottom_bar', 'primary')} className="mobile-cta-link">
+          {t('home.mainCta')}
         </Link>
       </div>
 
