@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+  const baseUrl = BASE_URL;
   const canonical = `${baseUrl}/en/spots/${id}`;
   return {
     title: `${spot.name} - Trip App`,
@@ -88,7 +88,7 @@ export default async function SpotDetailPage({ params }: Props) {
     notFound();
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+  const baseUrl = BASE_URL;
   const pageUrl = `${baseUrl}/en/spots/${id}`;
   const attractionSchema = {
     '@context': 'https://schema.org',
@@ -139,3 +139,4 @@ export async function generateStaticParams() {
     id: spot.id,
   }));
 }
+import { BASE_URL } from '@/lib/site';

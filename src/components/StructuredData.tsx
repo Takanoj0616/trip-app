@@ -1,8 +1,7 @@
 'use client';
 
 import Script from 'next/script';
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+import { BASE_URL as baseUrl } from '@/lib/site';
 
 interface TouristAttractionData {
   name: string;

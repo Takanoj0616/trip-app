@@ -13,7 +13,7 @@ type Params = { params: Promise<{ id: string }> }
 
 export default async function SpotOg({ params }: Params) {
   const { id } = await params
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app'
+  const baseUrl = BASE_URL
 
   const all = [
     ...allRestaurantSpots,
@@ -80,4 +80,4 @@ export default async function SpotOg({ params }: Params) {
     { ...size }
   )
 }
-
+import { BASE_URL } from '@/lib/site'

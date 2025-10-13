@@ -46,6 +46,7 @@ const nextConfig: NextConfig = {
   // Use Next's default Webpack/Turbopack optimizations (custom splitChunks removed to avoid build issues)
   // Headers for performance and security
   async headers() {
+    const isPreview = process.env.VERCEL_ENV === 'preview';
     return [
       {
         source: '/(.*)',
@@ -54,6 +55,9 @@ const nextConfig: NextConfig = {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'
           },
+          ...(isPreview
+            ? [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }]
+            : []),
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload'

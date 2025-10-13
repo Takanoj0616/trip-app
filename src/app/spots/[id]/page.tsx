@@ -8,6 +8,7 @@ import { kanngouSpots } from '@/data/kankou-spots';
 import { tokyoSpots } from '@/data/tokyo-spots';
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots';
 import { shouldUseSSR } from '@/lib/render-utils';
+import { BASE_URL } from '@/lib/site';
 
 import MainContent from './MainContent';
 
@@ -37,7 +38,7 @@ export default async function SpotPage({ params, searchParams }: SpotPageProps) 
     redirect(`/${language}/spots/${id}`);
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app'
+  const baseUrl = BASE_URL
   const datasets: any[] = [
     ...allRestaurantSpots,
     ...hotelSpots,
@@ -139,7 +140,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const title = spot?.name ? `${spot.name} | 観光スポット詳細` : '観光スポット詳細'
   const description = spot?.description || '観光スポットの詳細情報。営業時間、料金、アクセス、口コミなど観光に必要な情報をまとめています。'
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app'
+  const baseUrl = BASE_URL
   const canonical = `${baseUrl}/spots/${id}`
 
   return {

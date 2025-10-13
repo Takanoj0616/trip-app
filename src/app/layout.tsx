@@ -6,6 +6,7 @@ import ClientProviders from "@/components/ClientProviders";
 import Header from "@/components/Header";
 import Script from "next/script";
 import SiteFooter from "@/components/SiteFooter";
+import { BASE_URL as baseUrl, GA_ID, IS_PREVIEW } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,8 +17,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -42,17 +41,19 @@ export const metadata: Metadata = {
   authors: [{ name: "日本旅行ガイド編集部" }],
   creator: "日本旅行ガイド",
   publisher: "日本旅行ガイド",
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
+  robots: IS_PREVIEW
+    ? { index: false, follow: false }
+    : {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
+      },
   alternates: {
     canonical: baseUrl,
     languages: {
@@ -238,25 +239,29 @@ export default async function RootLayout({
             __html: JSON.stringify(structuredData),
           }}
         />
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-E5ZZN1NNE9"
-          strategy="afterInteractive"
-        />
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-E5ZZN1NNE9', {
-                page_title: document.title,
-                page_location: window.location.href
-              });
-            `,
-          }}
-        />
+        {GA_ID ? (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script
+              id="google-analytics"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_ID}', {
+                    page_title: document.title,
+                    page_location: window.location.href
+                  });
+                `,
+              }}
+            />
+          </>
+        ) : null}
         <Script
           id="schema-breadcrumb"
           type="application/ld+json"

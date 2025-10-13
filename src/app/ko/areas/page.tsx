@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import AreasPage from '@/app/areas/page';
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001';
+import { BASE_URL as baseUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: '일본 지역 | 여행 가이드 - 도쿄, 요코하마, 사이타마, 치바',

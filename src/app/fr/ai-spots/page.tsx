@@ -1,7 +1,7 @@
 import AISpotsPage from '@/app/ai-spots/page';
 import { Metadata } from 'next';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+import { BASE_URL as baseUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Recommandations IA | Créez votre plan de voyage parfait',

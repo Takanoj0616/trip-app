@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import Home from '@/app/page';
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001';
+import { BASE_URL as baseUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'دليل السفر لليابان | اكتشف اليابان',

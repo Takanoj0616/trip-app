@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+import { BASE_URL as baseUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: "AI観光スポット推薦 | 個人向けおすすめプラン作成 | TravelGuideJapan",

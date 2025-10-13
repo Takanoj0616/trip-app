@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { BASE_URL } from '@/lib/site'
 import { allRestaurantSpots } from '@/data/tokyo-restaurant-spots'
 import { hotelSpots } from '@/data/hotel-spots'
 import { kanngouSpots } from '@/data/kankou-spots'
@@ -6,7 +7,7 @@ import { tokyoSpots } from '@/data/tokyo-spots'
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots'
 import { tokyoSpotsDetailed } from '@/data/tokyo-spots-detailed'
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app'
+const baseUrl = BASE_URL
 
 export async function GET() {
   const now = new Date()

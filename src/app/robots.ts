@@ -1,7 +1,18 @@
 import { MetadataRoute } from 'next'
+import { BASE_URL, IS_PREVIEW } from '@/lib/site'
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app'
+  if (IS_PREVIEW) {
+    // Prevent preview deployments from being indexed
+    return {
+      rules: [
+        {
+          userAgent: '*',
+          disallow: '/',
+        },
+      ],
+    }
+  }
 
   return {
     rules: [
@@ -11,7 +22,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/login', '/register'],
       },
     ],
-    sitemap: [`${baseUrl}/sitemap.xml`],
-    host: baseUrl,
+    sitemap: [`${BASE_URL}/sitemap.xml`],
+    host: BASE_URL,
   }
 }

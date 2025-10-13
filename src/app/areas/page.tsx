@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { BASE_URL } from '@/lib/site';
 
 // Page now uses the global LanguageContext from Header
 
@@ -162,7 +163,7 @@ export default function AreasPage() {
 
   const baseUrl = typeof window !== 'undefined' 
     ? window.location.origin
-    : 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+    : BASE_URL;
   
   const pageTitle = t('areas.page.title');
   const pageDescription = t('areas.page.subtitle');

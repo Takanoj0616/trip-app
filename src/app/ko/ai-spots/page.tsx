@@ -1,7 +1,6 @@
 import AISpotsPage from '@/app/ai-spots/page';
 import { Metadata } from 'next';
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001';
+import { BASE_URL as baseUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'AI 추천 명소 | 완벽한 여행 계획 만들기',

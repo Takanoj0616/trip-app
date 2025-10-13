@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import TokyoSpotsPage from '@/app/spots/tokyo/page';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+import { BASE_URL as baseUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Tokyo Spots | Travel Guide - Attractions, Restaurants and Hotels',

@@ -4,6 +4,7 @@ import "../globals.css";
 import ClientProviders from "@/components/ClientProviders";
 import Header from "@/components/Header";
 import Script from "next/script";
+import { BASE_URL as baseUrl } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,7 +16,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+// baseUrl centralized via lib/site
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),

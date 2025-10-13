@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { BASE_URL } from '@/lib/site'
 import { allRestaurantSpots } from '@/data/tokyo-restaurant-spots'
 import { hotelSpots } from '@/data/hotel-spots'
 import { kanngouSpots } from '@/data/kankou-spots'
@@ -9,7 +10,7 @@ import { tokyoSpotsDetailed } from '@/data/tokyo-spots-detailed'
 export const dynamic = 'force-static'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app'
+  const baseUrl = BASE_URL
 
   const now = new Date()
 

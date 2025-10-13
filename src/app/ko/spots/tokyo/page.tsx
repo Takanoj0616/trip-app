@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import TokyoSpotsPage from '@/app/spots/tokyo/page';
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001';
+import { BASE_URL as baseUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: '도쿄 스팟 | 여행 가이드 - 명소, 레스토랑, 호텔',

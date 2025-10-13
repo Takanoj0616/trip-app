@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import AreasPage from '@/app/areas/page';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trip-iwlemq2cb-takanoj0616s-projects.vercel.app';
+import { BASE_URL as baseUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Japan Regions | Travel Guide - Tokyo, Yokohama, Saitama, Chiba',
