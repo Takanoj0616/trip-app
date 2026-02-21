@@ -162,6 +162,8 @@ export default function MainContent({
   const { currentLanguage: ctxLanguage } = useLanguage();
   const [currentLang, setCurrentLang] = useState<string>(locale || ctxLanguage || _language || 'ja');
   const lang = currentLang as 'ja' | 'en' | 'ko' | 'fr' | 'ar';
+  const localePrefix = lang === 'ja' ? '' : `/${lang}`;
+  const aiPlanPath = `${localePrefix}/ai-plan`;
 
   // localeプロパティが変更された時に言語状態を更新
   useEffect(() => {
@@ -859,11 +861,11 @@ export default function MainContent({
     setTimeout(() => {
       try {
         console.log('Navigating to AI plan page...');
-        window.location.href = '/ai-plan';
+        window.location.href = aiPlanPath;
       } catch (error) {
         console.error('Error navigating to AI plan:', error);
         // フォールバック
-        window.open('/ai-plan', '_self');
+        window.open(aiPlanPath, '_self');
       }
     }, 1500);
   };
@@ -1351,7 +1353,7 @@ export default function MainContent({
                      lang === 'ar' ? 'جرّب خطة مجانية خلال 60 ثانية' :
                      '60秒で無料プランを体験'}
                   </button>
-                  <a href="/ai-plan" className="text-sky-700 font-semibold underline">
+                  <a href={aiPlanPath} className="text-sky-700 font-semibold underline">
                     {lang === 'en' ? 'How it works' : lang === 'ko' ? '사용 방법' : lang === 'fr' ? 'Voir le guide' : lang === 'ar' ? 'طريقة العمل' : '説明ページへ'}
                   </a>
                 </div>
@@ -1412,7 +1414,7 @@ export default function MainContent({
             <span className="font-semibold">{toastMsg}</span>
             <button
               onClick={() => {
-                window.location.href = '/ai-plan';
+                window.location.href = aiPlanPath;
               }}
               className="ml-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-sm font-semibold transition-all duration-200 backdrop-blur-sm border border-white/30 flex items-center gap-2"
             >
@@ -1610,7 +1612,7 @@ export default function MainContent({
               </button>
               <button
                 onClick={() => {
-                window.location.href = '/ai-plan';
+                window.location.href = aiPlanPath;
               }}
                 className="px-8 py-4 bg-white/90 text-sky-700 rounded-xl font-semibold backdrop-blur-sm hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
               >

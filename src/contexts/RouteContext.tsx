@@ -26,6 +26,20 @@ interface RouteProviderProps {
   children: React.ReactNode;
 }
 
+const dedupeSpotsById = (spots: TouristSpot[]): TouristSpot[] => {
+  const seen = new Set<string>();
+  const deduped: TouristSpot[] = [];
+
+  for (const spot of spots) {
+    const id = typeof spot?.id === 'string' ? spot.id.trim() : '';
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    deduped.push({ ...spot, id });
+  }
+
+  return deduped;
+};
+
 export const RouteProvider: React.FC<RouteProviderProps> = ({ children }) => {
   const [selectedSpots, setSelectedSpots] = useState<TouristSpot[]>([]);
 
@@ -36,10 +50,10 @@ export const RouteProvider: React.FC<RouteProviderProps> = ({ children }) => {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
-          setSelectedSpots(parsed);
+          setSelectedSpots(dedupeSpotsById(parsed as TouristSpot[]));
         }
       }
-    } catch (_) {}
+    } catch {}
   }, []);
 
   const addSpot = useCallback((spot: TouristSpot) => {
@@ -127,8 +141,8 @@ export const RouteProvider: React.FC<RouteProviderProps> = ({ children }) => {
   // Persist to localStorage whenever it changes
   useEffect(() => {
     try {
-      localStorage.setItem('selected-spots', JSON.stringify(selectedSpots));
-    } catch (_) {}
+      localStorage.setItem('selected-spots', JSON.stringify(dedupeSpotsById(selectedSpots)));
+    } catch {}
   }, [selectedSpots]);
 
   const value = {

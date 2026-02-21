@@ -2,9 +2,9 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Head from 'next/head';
+import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { BASE_URL } from '@/lib/site';
+import { toSupportedLocale, withLocale } from '@/lib/locale-routing';
 
 // Page now uses the global LanguageContext from Header
 
@@ -32,7 +32,7 @@ const areas: AreaData[] = [
     rating: 4.5,
     descriptionKey: 'areas.yokohama.description',
     spots: 124,
-    href: '/spots/yokohama'
+    href: '/spots/tokyo?category=sights&area=yokohama'
   },
   {
     icon: '⛩️',
@@ -40,7 +40,7 @@ const areas: AreaData[] = [
     rating: 4.3,
     descriptionKey: 'areas.saitama.description',
     spots: 98,
-    href: '/spots/saitama'
+    href: '/spots/tokyo?category=sights&area=saitama'
   },
   {
     icon: '🏖️',
@@ -48,12 +48,15 @@ const areas: AreaData[] = [
     rating: 4.4,
     descriptionKey: 'areas.chiba.description',
     spots: 112,
-    href: '/spots/chiba'
+    href: '/spots/tokyo?category=sights&area=chiba'
   }
 ];
 
 export default function AreasPage() {
-  const { t } = useLanguage();
+  const { t, currentLanguage } = useLanguage();
+  const router = useRouter();
+  const locale = toSupportedLocale(currentLanguage);
+  const toLocalizedAreaHref = (href: string) => withLocale(href, locale, '/areas');
   const heroBackgroundRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -74,41 +77,42 @@ export default function AreasPage() {
 
   // 3D tilt effect for cards
   useEffect(() => {
-    const addCardTiltEffect = () => {
-      cardRefs.current.forEach((card) => {
-        if (!card) return;
+    const cleanups: Array<() => void> = [];
 
-        const handleMouseMove = (e: MouseEvent) => {
-          if (window.innerWidth < 1024) return;
-          
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          
-          const rotateX = (y - centerY) / centerY * -6;
-          const rotateY = (x - centerX) / centerX * 6;
-          
-          card.style.transform = `translateY(-14px) scale(1.06) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        };
-        
-        const handleMouseLeave = () => {
-          card.style.transform = '';
-        };
+    cardRefs.current.forEach((card) => {
+      if (!card) return;
 
-        card.addEventListener('mousemove', handleMouseMove);
-        card.addEventListener('mouseleave', handleMouseLeave);
+      const handleMouseMove = (e: MouseEvent) => {
+        if (window.innerWidth < 1024) return;
 
-        return () => {
-          card.removeEventListener('mousemove', handleMouseMove);
-          card.removeEventListener('mouseleave', handleMouseLeave);
-        };
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -6;
+        const rotateY = ((x - centerX) / centerX) * 6;
+
+        card.style.transform = `translateY(-14px) scale(1.06) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      };
+
+      const handleMouseLeave = () => {
+        card.style.transform = '';
+      };
+
+      card.addEventListener('mousemove', handleMouseMove);
+      card.addEventListener('mouseleave', handleMouseLeave);
+      cleanups.push(() => {
+        card.removeEventListener('mousemove', handleMouseMove);
+        card.removeEventListener('mouseleave', handleMouseLeave);
       });
-    };
+    });
 
-    addCardTiltEffect();
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+    };
   }, []);
 
   // Count up animation
@@ -161,87 +165,8 @@ export default function AreasPage() {
     return stars;
   };
 
-  const baseUrl = typeof window !== 'undefined' 
-    ? window.location.origin
-    : BASE_URL;
-  
-  const pageTitle = t('areas.page.title');
-  const pageDescription = t('areas.page.subtitle');
-  
-  const jsonLdData = {
-    "@context": "https://schema.org",
-    "@type": "TouristDestination",
-    "name": pageTitle,
-    "description": pageDescription,
-    "url": `${baseUrl}/areas`,
-    "inLanguage": "ja-JP",
-    "image": "https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 35.6762,
-      "longitude": 139.6503
-    },
-    "touristType": "cultural tourism, urban tourism, historical tourism",
-    "includesAttraction": areas.map(area => ({
-      "@type": "TouristAttraction",
-      "name": t(area.nameKey),
-      "description": t(area.descriptionKey),
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": area.rating,
-        "reviewCount": area.spots * 12
-      }
-    }))
-  };
-
   return (
     <>
-      <Head>
-        <title>{pageTitle} | Japan Travel Guide - Tokyo Metropolitan Area Tourism</title>
-        <meta name="description" content={pageDescription + " - Discover Tokyo, Yokohama, Saitama, and Chiba with detailed guides, ratings, and travel recommendations."} />
-        <meta name="keywords" content="Japan areas, Tokyo regions, Yokohama tourism, Saitama travel, Chiba attractions, Tokyo metropolitan area, Japan travel guide" />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href={`${baseUrl}/areas`} />
-        
-        {/* Open Graph */}
-        <meta property="og:title" content={`${pageTitle} | Japan Travel Guide`} />
-        <meta property="og:description" content={pageDescription + " - Discover Tokyo, Yokohama, Saitama, and Chiba."} />
-        <meta property="og:url" content={`${baseUrl}/areas`} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="ja_JP" />
-        <meta property="og:image" content="https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=630" />
-        
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${pageTitle} | Japan Travel Guide`} />
-        <meta name="twitter:description" content={pageDescription} />
-        <meta name="twitter:image" content="https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=630" />
-        
-        {/* Language alternates */}
-        <link rel="alternate" hrefLang="x-default" href={`${baseUrl}/areas`} />
-        <link rel="alternate" hrefLang="ja-JP" href={`${baseUrl}/areas`} />
-        <link rel="alternate" hrefLang="en-GB" href={`${baseUrl}/en/areas`} />
-        <link rel="alternate" hrefLang="en-US" href={`${baseUrl}/en/areas`} />
-        <link rel="alternate" hrefLang="fr-FR" href={`${baseUrl}/fr/areas`} />
-        <link rel="alternate" hrefLang="ko-KR" href={`${baseUrl}/ko/areas`} />
-        <link rel="alternate" hrefLang="ar-SA" href={`${baseUrl}/ar/areas`} />
-        
-        {/* Structured data */}
-        <script type="application/ld+json">
-          {JSON.stringify(jsonLdData)}
-        </script>
-        <script type="application/ld+json" id="schema-breadcrumb-areas">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
-              { "@type": "ListItem", "position": 2, "name": t('areas.features.title'), "item": `${baseUrl}/areas` }
-            ]
-          })}
-        </script>
-      </Head>
-      
       <style jsx>{`
         * {
           margin: 0;
@@ -613,11 +538,11 @@ export default function AreasPage() {
                   tabIndex={0} 
                   aria-label={`${t('common.viewDetails')} - ${area.spots} ${t('area.spots')}`}
                   ref={(el) => cardRefs.current[index] = el}
-                  onClick={() => window.location.href = area.href}
+                  onClick={() => router.push(toLocalizedAreaHref(area.href))}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      window.location.href = area.href;
+                      router.push(toLocalizedAreaHref(area.href));
                     }
                   }}
                 >
@@ -633,7 +558,7 @@ export default function AreasPage() {
                   <div className="area-spots">
                     <span className="spot-count">{area.spots}</span> {t('area.spots')}
                   </div>
-                  <Link href={area.href} className="area-cta">
+                  <Link href={toLocalizedAreaHref(area.href)} className="area-cta">
                     {t('common.viewDetails')}
                   </Link>
                 </div>

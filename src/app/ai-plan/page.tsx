@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRoute } from '@/contexts/RouteContext';
 import Image from 'next/image';
@@ -12,7 +12,6 @@ import {
   Star, 
   Plus,
   Sparkles,
-  Mountain,
   Cherry,
   Zap
 } from 'lucide-react';
@@ -24,10 +23,22 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export default function AIPlanPage() {
   const router = useRouter();
   const { selectedSpots } = useRoute();
-  const { t } = useLanguage();
+  const { t, currentLanguage } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const localePrefix = ['en', 'ko', 'fr', 'ar'].includes(currentLanguage) ? `/${currentLanguage}` : '';
+  const withLocale = (path: string) => `${localePrefix}${path}`;
+  const uniqueSelectedSpots = useMemo(() => {
+    if (!Array.isArray(selectedSpots)) return [];
+    const seen = new Set<string>();
+    return selectedSpots.filter((spot) => {
+      const id = typeof spot?.id === 'string' ? spot.id.trim() : '';
+      if (!id || seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    });
+  }, [selectedSpots]);
 
   useEffect(() => {
     try {
@@ -38,27 +49,27 @@ export default function AIPlanPage() {
         setTimeout(() => setToastMsg(null), 4000);
       }
     } catch {}
-  }, []);
+  }, [t]);
 
   const generate = async () => {
     setError(null);
-    if (!selectedSpots || selectedSpots.length < 2) {
+    if (uniqueSelectedSpots.length < 2) {
       setError(t('aiPlan.errors.needTwo'));
       return;
     }
     setLoading(true);
     try {
-      const area = selectedSpots[0]?.area || 'tokyo';
+      const area = uniqueSelectedSpots[0]?.area || 'tokyo';
       const resp = await fetch('/api/generate-route', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          selectedSpots,
+          selectedSpots: uniqueSelectedSpots,
           area,
           preferences: {
             transportation: 'mixed',
             duration: 'full-day',
-            interests: Array.from(new Set((selectedSpots.flatMap(s => s.tags || []) as string[]).slice(0, 5)))
+            interests: Array.from(new Set((uniqueSelectedSpots.flatMap(s => s.tags || []) as string[]).slice(0, 5)))
           }
         })
       });
@@ -117,7 +128,7 @@ export default function AIPlanPage() {
             <h1 className="heroCard__title">{t('home.aiPlan.headline')}</h1>
             <p className="heroCard__lead">{t('home.aiPlan.subhead')}</p>
             <div className="heroCard__ctas" role="group" aria-label="primary actions">
-              <Link href="/spots/tokyo?category=sights" className="cta cta--primary">{t('home.tryFree')}</Link>
+              <Link href={withLocale('/spots/tokyo?category=sights')} className="cta cta--primary">{t('home.tryFree')}</Link>
               <Link href="#areas" className="cta cta--secondary">{t('home.ctaSecondary')}</Link>
             </div>
           </div>
@@ -128,7 +139,7 @@ export default function AIPlanPage() {
       <section id="areas" className="areasWrap mt-6 mb-10">
         <div className="areas" aria-label="areas list">
           {/* Tokyo */}
-          <Link href="/spots/tokyo" className="areaCard" aria-label={t('areas.tokyo.title')}>
+          <Link href={withLocale('/spots/tokyo')} className="areaCard" aria-label={t('areas.tokyo.title')}>
             <div className="areaCardThumb" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=1200&q=70')" }} />
             <div className="areaCardBody">
               <div className="areaTitle">{t('areas.tokyo.title')}</div>
@@ -138,7 +149,7 @@ export default function AIPlanPage() {
             </div>
           </Link>
           {/* Yokohama */}
-          <Link href="/areas" className="areaCard" aria-label={t('areas.yokohama.title')}>
+          <Link href={withLocale('/areas')} className="areaCard" aria-label={t('areas.yokohama.title')}>
             <div className="areaCardThumb" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1557579113-5f0a738bb863?auto=format&fit=crop&w=1200&q=70')" }} />
             <div className="areaCardBody">
               <div className="areaTitle">{t('areas.yokohama.title')}</div>
@@ -148,7 +159,7 @@ export default function AIPlanPage() {
             </div>
           </Link>
           {/* Saitama */}
-          <Link href="/areas" className="areaCard" aria-label={t('areas.saitama.title')}>
+          <Link href={withLocale('/areas')} className="areaCard" aria-label={t('areas.saitama.title')}>
             <div className="areaCardThumb" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=70')" }} />
             <div className="areaCardBody">
               <div className="areaTitle">{t('areas.saitama.title')}</div>
@@ -158,7 +169,7 @@ export default function AIPlanPage() {
             </div>
           </Link>
           {/* Chiba */}
-          <Link href="/areas" className="areaCard" aria-label={t('areas.chiba.title')}>
+          <Link href={withLocale('/areas')} className="areaCard" aria-label={t('areas.chiba.title')}>
             <div className="areaCardThumb" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=1200&q=70')" }} />
             <div className="areaCardBody">
               <div className="areaTitle">{t('areas.chiba.title')}</div>
@@ -206,7 +217,7 @@ export default function AIPlanPage() {
 
                 <button
                   onClick={generate}
-                  disabled={loading || (selectedSpots?.length || 0) < 2}
+                  disabled={loading || uniqueSelectedSpots.length < 2}
                   className="inline-flex items-center gap-4 px-12 py-6 bg-gradient-to-r from-emerald-500 to-blue-500 text-white text-xl font-bold rounded-2xl hover:from-emerald-600 hover:to-blue-600 disabled:from-slate-400 disabled:to-slate-500 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-300 shadow-2xl"
                 >
                   {loading ? (
@@ -214,7 +225,7 @@ export default function AIPlanPage() {
                       <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       {t('aiPlan.generate.loading')}
                     </>
-                  ) : (selectedSpots?.length || 0) < 2 ? (
+                  ) : uniqueSelectedSpots.length < 2 ? (
                     <>
                       <Plus size={24} />
                       {t('aiPlan.generate.needTwo')}
@@ -227,10 +238,10 @@ export default function AIPlanPage() {
                   )}
                 </button>
 
-                {(selectedSpots?.length || 0) < 2 && (
+                {uniqueSelectedSpots.length < 2 && (
                   <div className="mt-6">
                     <Link
-                      href="/spots/tokyo?category=sights"
+                      href={withLocale('/spots/tokyo?category=sights')}
                       className="text-blue-600 hover:text-blue-700 underline underline-offset-4 font-medium"
                     >
                       → {t('aiPlan.findSpots')}
@@ -250,7 +261,7 @@ export default function AIPlanPage() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-slate-800">{t('aiPlan.selected.title')}</h2>
-                  <p className="text-slate-600">{t('aiPlan.selected.count').replace('{count}', String(selectedSpots?.length || 0))}</p>
+                  <p className="text-slate-600">{t('aiPlan.selected.count').replace('{count}', String(uniqueSelectedSpots.length))}</p>
                 </div>
               </div>
 
@@ -263,9 +274,9 @@ export default function AIPlanPage() {
                 </div>
               )}
 
-              {selectedSpots?.length ? (
+              {uniqueSelectedSpots.length ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                  {selectedSpots.map((spot, index) => {
+                  {uniqueSelectedSpots.map((spot, index) => {
                     const img = (spot.images && spot.images[0]) || 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&auto=format&fit=crop&q=70';
                     return (
                       <div key={spot.id} className="rounded-3xl overflow-hidden bg-white text-slate-900 shadow-xl border border-white/60">
@@ -298,9 +309,9 @@ export default function AIPlanPage() {
                             </div>
                           )}
                           <div className="mt-4">
-                            <a href={`/spots/${spot.id}`} className="block w-full text-center px-4 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors">
+                            <Link href={withLocale(`/spots/${spot.id}`)} className="block w-full text-center px-4 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors">
                               {t('common.viewDetails')}
-                            </a>
+                            </Link>
                           </div>
                         </div>
                       </div>
@@ -320,7 +331,7 @@ export default function AIPlanPage() {
                   {/* エリアカードグリッド */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
                     {/* 東京カード */}
-                    <Link href="/spots/tokyo?category=sights" className="group block">
+                    <Link href={withLocale('/spots/tokyo?category=sights')} className="group block">
                       <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 border border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 hover:bg-white">
                         {/* アイコン */}
                         <div className="flex justify-center mb-6">
@@ -354,7 +365,7 @@ export default function AIPlanPage() {
                     </Link>
 
                     {/* 大阪カード */}
-                    <Link href="/spots/osaka?category=sights" className="group block">
+                    <Link href={withLocale('/areas')} className="group block">
                       <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 border border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 hover:bg-white">
                         <div className="flex justify-center mb-6">
                           <div className="w-16 h-16 text-6xl flex items-center justify-center">🏰</div>
@@ -377,7 +388,7 @@ export default function AIPlanPage() {
                     </Link>
 
                     {/* 京都カード */}
-                    <Link href="/spots/kyoto?category=sights" className="group block">
+                    <Link href={withLocale('/areas')} className="group block">
                       <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 border border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 hover:bg-white">
                         <div className="flex justify-center mb-6">
                           <div className="w-16 h-16 text-6xl flex items-center justify-center">⛩️</div>
@@ -400,7 +411,7 @@ export default function AIPlanPage() {
                     </Link>
 
                     {/* 横浜カード */}
-                    <Link href="/spots/yokohama?category=sights" className="group block">
+                    <Link href={withLocale('/areas')} className="group block">
                       <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 border border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 hover:bg-white">
                         <div className="flex justify-center mb-6">
                           <div className="w-16 h-16 text-6xl flex items-center justify-center">🌆</div>
@@ -418,52 +429,6 @@ export default function AIPlanPage() {
                         </div>
                         <p className="text-slate-600 text-sm mb-6 leading-relaxed">{t('areas.yokohama.description')}</p>
                         <div className="text-blue-600 font-bold text-lg mb-6">76 {t('area.spots')}</div>
-                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">{t('common.viewDetails')}</div>
-                      </div>
-                    </Link>
-
-                    {/* 奈良カード */}
-                    <Link href="/spots/nara?category=sights" className="group block">
-                      <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 border border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 hover:bg-white">
-                        <div className="flex justify-center mb-6">
-                          <div className="w-16 h-16 text-6xl flex items-center justify-center">🦌</div>
-                        </div>
-                        <h4 className="text-2xl font-bold text-slate-800 mb-4">{t('areas.kyoto.title')}</h4>
-                        <div className="flex items-center justify-center gap-1 mb-4">
-                          <div className="flex text-yellow-400">
-                            <Star size={16} fill="currentColor" />
-                            <Star size={16} fill="currentColor" />
-                            <Star size={16} fill="currentColor" />
-                            <Star size={16} fill="currentColor" />
-                            <Star size={16} className="text-gray-300" />
-                          </div>
-                          <span className="text-yellow-600 text-sm font-semibold ml-1">4.7</span>
-                        </div>
-                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">{t('areas.kyoto.description')}</p>
-                        <div className="text-blue-600 font-bold text-lg mb-6">54 {t('area.spots')}</div>
-                        <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">{t('common.viewDetails')}</div>
-                      </div>
-                    </Link>
-
-                    {/* 神戸カード */}
-                    <Link href="/spots/kobe?category=sights" className="group block">
-                      <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 border border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 hover:bg-white">
-                        <div className="flex justify-center mb-6">
-                          <div className="w-16 h-16 text-6xl flex items-center justify-center">⛵</div>
-                        </div>
-                        <h4 className="text-2xl font-bold text-slate-800 mb-4">{t('areas.osaka.title')}</h4>
-                        <div className="flex items-center justify-center gap-1 mb-4">
-                          <div className="flex text-yellow-400">
-                            <Star size={16} fill="currentColor" />
-                            <Star size={16} fill="currentColor" />
-                            <Star size={16} fill="currentColor" />
-                            <Star size={16} fill="currentColor" />
-                            <Star size={16} className="text-gray-300" />
-                          </div>
-                          <span className="text-yellow-600 text-sm font-semibold ml-1">4.4</span>
-                        </div>
-                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">{t('areas.osaka.description')}</p>
-                        <div className="text-blue-600 font-bold text-lg mb-6">62 {t('area.spots')}</div>
                         <div className="text-blue-600 font-semibold text-sm hover:text-blue-800 transition-colors group-hover:underline">{t('common.viewDetails')}</div>
                       </div>
                     </Link>
@@ -507,7 +472,7 @@ export default function AIPlanPage() {
           </section>
 
           {/* AI Features Section (hide when empty state already shows above) */}
-          {(selectedSpots?.length || 0) > 0 && (
+          {uniqueSelectedSpots.length > 0 && (
           <section className="mb-12">
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300">

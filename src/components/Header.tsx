@@ -1,11 +1,17 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import AuthRequiredLink from './AuthRequiredLink';
+import {
+  switchLocalePath,
+  toSupportedLocale,
+  withLocale,
+  withLocaleOrJaFallback,
+} from '@/lib/locale-routing';
 
 const Header: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -20,6 +26,7 @@ const Header: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const locale = toSupportedLocale(currentLanguage);
 
   // フランス語ボタンを常に表示するため、isLocalhostの判定を削除
   const isLocalhost = true;
@@ -27,27 +34,11 @@ const Header: React.FC = () => {
   // パスベース言語切り替え関数
   const handleLanguageChange = async (newLang: string) => {
     try {
-      const currentLang = getCurrentLanguageFromPath(pathname);
-      let newPath = pathname;
-
-      if (currentLang === 'ja') {
-        // 日本語（デフォルト）から他の言語へ
-        if (newLang !== 'ja') {
-          newPath = `/${newLang}${pathname}`;
-        }
-      } else {
-        // 他の言語から
-        if (newLang === 'ja') {
-          // 日本語（デフォルト）へ - プレフィックスを削除
-          newPath = pathname.replace(`/${currentLang}`, '') || '/';
-        } else {
-          // 他の言語へ - プレフィックスを置換
-          newPath = pathname.replace(`/${currentLang}`, `/${newLang}`);
-        }
-      }
+      const targetLocale = toSupportedLocale(newLang);
+      const newPath = switchLocalePath(pathname, targetLocale);
 
       // ナビゲーションとコンテキスト更新
-      setCurrentLanguage(newLang);
+      setCurrentLanguage(targetLocale);
 
       // ページの存在確認とエラーハンドリング
       if (newPath === pathname) {
@@ -63,17 +54,8 @@ const Header: React.FC = () => {
       setCurrentLanguage(newLang);
     }
   };
-
-  // パスから現在の言語を取得
-  const getCurrentLanguageFromPath = (path: string): string => {
-    const segments = path.split('/').filter(Boolean);
-    const locales = ['en', 'ko', 'fr', 'ar'];
-
-    if (segments.length > 0 && locales.includes(segments[0])) {
-      return segments[0];
-    }
-    return 'ja'; // デフォルト
-  };
+  const localizedHref = (path: string) => withLocaleOrJaFallback(path, locale);
+  const localizedStrictHref = (path: string) => withLocale(path, locale, '/');
 
   const resetAuthForm = () => {
     setEmail('');
@@ -141,7 +123,7 @@ const Header: React.FC = () => {
   return (
     <header className="header--dark-text">
       <div className="header-content">
-        <Link href="/" className="logo">
+        <Link href={localizedStrictHref('/')} className="logo">
           <span>🗾</span>
           <span>Japan Guide</span>
         </Link>
@@ -159,36 +141,36 @@ const Header: React.FC = () => {
         
         {/* Navigation Menu */}
         <nav className="nav-menu">
-          <Link href="/areas" className="nav-link">
+          <Link href={localizedStrictHref('/areas')} className="nav-link">
             <i className="fas fa-map-marked-alt"></i>
             <span data-translate="nav.areas">{t('nav.areas')}</span>
           </Link>
-          <Link href="/courses" className="nav-link">
+          <Link href={localizedHref('/courses')} className="nav-link">
             <i className="fas fa-route"></i>
             <span data-translate="nav.courses">{t('nav.courses')}</span>
           </Link>
           {/* ai-spots は5回まで無料体験を許可するため、認証必須リンクを解除 */}
-          <Link href="/ai-spots" className="nav-link">
+          <Link href={localizedStrictHref('/ai-spots')} className="nav-link">
             <i className="fas fa-brain"></i>
             <span data-translate="nav.ai-spots">{t('nav.ai-spots')}</span>
           </Link>
-          <AuthRequiredLink href="/coordinator" className="nav-link">
+          <AuthRequiredLink href={localizedHref('/coordinator')} className="nav-link">
             <i className="fas fa-users"></i>
             <span data-translate="nav.coordinator">{t('nav.coordinator')}</span>
           </AuthRequiredLink>
-          <Link href="/qna" className="nav-link">
+          <Link href={localizedHref('/qna')} className="nav-link">
             <i className="fas fa-question-circle"></i>
             <span>Q&A</span>
           </Link>
-          <Link href="/realtime" className="nav-link">
+          <Link href={localizedHref('/realtime')} className="nav-link">
             <i className="fas fa-satellite-dish"></i>
             <span data-translate="nav.realtime">{t('nav.realtime')}</span>
           </Link>
-          <Link href="/travel-experiences" className="nav-link">
+          <Link href={localizedHref('/travel-experiences')} className="nav-link">
             <i className="fas fa-book"></i>
             <span data-translate="nav.stories">{t('nav.stories')}</span>
           </Link>
-          <Link href="/favorites" className="nav-link">
+          <Link href={localizedHref('/favorites')} className="nav-link">
             <i className="fas fa-heart"></i>
             <span data-translate="nav.favorites">{t('nav.favorites')}</span>
           </Link>
@@ -196,7 +178,7 @@ const Header: React.FC = () => {
 
         {/* AI Features */}
         <div className="ai-header-section">
-          <AuthRequiredLink href="/plan" className="btn btn-primary ai-cta-header">
+          <AuthRequiredLink href={localizedHref('/plan')} className="btn btn-primary ai-cta-header">
             <i className="fas fa-magic"></i>
             <span data-translate="ai.cta">{t('auth.createPlan')}</span>
           </AuthRequiredLink>
@@ -306,7 +288,7 @@ const Header: React.FC = () => {
             <div className="mobile-drawer__backdrop" onClick={() => setMobileOpen(false)} />
             <div className="mobile-drawer__panel">
               <div className="mobile-drawer__header">
-                <Link href="/" className="logo" onClick={() => setMobileOpen(false)}>
+                <Link href={localizedStrictHref('/')} className="logo" onClick={() => setMobileOpen(false)}>
                   <span>🗾</span>
                   <span>Japan Guide</span>
                 </Link>
@@ -314,15 +296,15 @@ const Header: React.FC = () => {
               </div>
 
               <nav className="mobile-drawer__nav">
-                <Link href="/areas" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.areas')}</Link>
-                <Link href="/courses" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.courses')}</Link>
+                <Link href={localizedStrictHref('/areas')} onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.areas')}</Link>
+                <Link href={localizedHref('/courses')} onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.courses')}</Link>
                 {/* 5回まで無料体験のため、こちらも通常リンクに変更 */}
-                <Link href="/ai-spots" onClick={() => setMobileOpen(false)} className="mobile-link">AI</Link>
-                <AuthRequiredLink href="/coordinator" onClick={() => setMobileOpen(false)} className="mobile-link">Coordinator</AuthRequiredLink>
-                <Link href="/qna" onClick={() => setMobileOpen(false)} className="mobile-link">Q&A</Link>
-                <Link href="/realtime" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.realtime')}</Link>
-                <Link href="/travel-experiences" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.stories')}</Link>
-                <Link href="/favorites" onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.favorites')}</Link>
+                <Link href={localizedStrictHref('/ai-spots')} onClick={() => setMobileOpen(false)} className="mobile-link">AI</Link>
+                <AuthRequiredLink href={localizedHref('/coordinator')} onClick={() => setMobileOpen(false)} className="mobile-link">Coordinator</AuthRequiredLink>
+                <Link href={localizedHref('/qna')} onClick={() => setMobileOpen(false)} className="mobile-link">Q&A</Link>
+                <Link href={localizedHref('/realtime')} onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.realtime')}</Link>
+                <Link href={localizedHref('/travel-experiences')} onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.stories')}</Link>
+                <Link href={localizedHref('/favorites')} onClick={() => setMobileOpen(false)} className="mobile-link">{t('nav.favorites')}</Link>
               </nav>
 
               <div className="mobile-drawer__languages">

@@ -36,6 +36,19 @@ interface ModelCourse {
   recommendedFor?: string[];
 }
 
+const COURSE_AREA_KEY_MAP: Record<string, string> = {
+  tokyo: 'tokyo',
+  東京: 'tokyo',
+  yokohama: 'yokohama',
+  横浜: 'yokohama',
+  saitama: 'saitama',
+  埼玉: 'saitama',
+  chiba: 'chiba',
+  千葉: 'chiba',
+  kanagawa: 'kanagawa',
+  神奈川: 'kanagawa',
+};
+
 export default function ModelCoursesPage() {
   const router = useRouter();
   const { t } = useLanguage();
@@ -947,6 +960,13 @@ export default function ModelCoursesPage() {
     }
   ];
 
+  const getAreaLabel = (area: string) => {
+    const trimmed = area.trim();
+    const normalized = trimmed.toLowerCase();
+    const areaKey = COURSE_AREA_KEY_MAP[trimmed] || COURSE_AREA_KEY_MAP[normalized];
+    return areaKey ? t(`courses.area.${areaKey}`) : trimmed;
+  };
+
   const themes = [
     { id: 'all', label: t('courses.theme.all'), color: '#4FACFE' },
     { id: 'アニメ・ゲーム', label: t('courses.theme.anime'), color: '#FF6B9D' },
@@ -1118,7 +1138,7 @@ export default function ModelCoursesPage() {
                       <div className="flex items-center gap-2">
                         <i className="fas fa-map-marker-alt" style={{ color: '#FF6B9D' }}></i>
                         <span style={{ color: 'black', fontSize: '14px' }}>
-                          {t(`courses.area.${course.area.toLowerCase()}`)}
+                          {getAreaLabel(course.area)}
                         </span>
                       </div>
                                           <div className="flex items-center gap-2">
