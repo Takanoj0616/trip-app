@@ -5,8 +5,6 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
-  // Bot対策: 動的レンダリングでSSRを有効化、一般ユーザーは静的生成
-  output: 'hybrid',
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -73,6 +71,18 @@ const nextConfig: NextConfig = {
           {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin'
+          },
+          {
+            // Low-risk baseline CSP. Tightening script-src with a nonce is
+            // tracked separately — Next inline scripts + Stripe/Google Maps
+            // would break under a strict script-src without nonce support.
+            key: 'Content-Security-Policy',
+            value: [
+              "object-src 'none'",
+              "base-uri 'self'",
+              "frame-ancestors 'none'",
+              "form-action 'self'",
+            ].join('; ')
           },
         ],
       },

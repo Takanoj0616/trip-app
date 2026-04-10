@@ -1,0 +1,39 @@
+name: typecheck
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tsc-ratchet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tsc --noEmit and compare against baseline
+        run: |
+          set +e
+          npx tsc --noEmit > tsc.log 2>&1
+          ERRORS=$(grep -c "error TS" tsc.log || true)
+          BASELINE=$(cat .tsc-baseline | tr -d '[:space:]')
+          echo "::notice::TypeScript errors: ${ERRORS} (baseline: ${BASELINE})"
+          if [ "${ERRORS}" -gt "${BASELINE}" ]; then
+            echo "::error::TypeScript errors increased: ${ERRORS} > ${BASELINE}"
+            echo "--- new errors ---"
+            cat tsc.log
+            exit 1
+          fi
+          if [ "${ERRORS}" -lt "${BASELINE}" ]; then
+            echo "::warning::TypeScript errors decreased from ${BASELINE} to ${ERRORS}. Please update .tsc-baseline in the same PR so the ratchet keeps tightening."
+            exit 1
+          fi
+          echo "OK: ${ERRORS} errors (matches baseline)"
