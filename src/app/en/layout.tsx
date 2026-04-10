@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "Japan Travel Guide | Tokyo Tourism & Holidays | Best UK Japan Trip Planner 2025",
+  title: "Japan Travel Guide | Tokyo Tourism & Holidays | Best UK Japan Trip Planner 2026",
   description: "Discover Japan with AI-powered travel planning from the UK. Complete guide to Tokyo, Yokohama, Saitama & Chiba holidays. Hotels, restaurants, attractions & personalised itineraries for your perfect Japan holiday from Britain.",
   keywords: [
     "Japan travel UK", "Japan holidays", "Tokyo travel guide UK", "Japan trip planner Britain",
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     locale: 'en_GB',
     alternateLocale: ['ja_JP', 'fr_FR', 'ko_KR', 'ar_SA', 'en_US'],
     url: `${baseUrl}/en`,
-    title: "Japan Travel Guide | Tokyo Tourism & Holidays | Best UK Japan Trip Planner 2025",
+    title: "Japan Travel Guide | Tokyo Tourism & Holidays | Best UK Japan Trip Planner 2026",
     description: "Discover Japan with AI-powered travel planning from the UK. Complete guide to Tokyo, Yokohama, Saitama & Chiba holidays. Hotels, restaurants, attractions & personalised itineraries for your perfect Japan holiday from Britain.",
     siteName: "Japan Travel Guide UK",
     images: [
@@ -78,15 +78,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@japantravelguideuk',
     creator: '@japantravelguideuk',
-    title: "Japan Travel Guide | Tokyo Tourism & Holidays | Best UK Japan Trip Planner 2025",
+    title: "Japan Travel Guide | Tokyo Tourism & Holidays | Best UK Japan Trip Planner 2026",
     description: "Discover Japan with AI-powered travel planning from the UK. Complete guide to Tokyo, Yokohama, Saitama & Chiba holidays.",
     images: [`${baseUrl}/twitter-image`],
-  },
-  verification: {
-    google: 'your-google-verification-code-uk',
-    other: {
-      'msvalidate.01': 'your-bing-verification-code-uk',
-    },
   },
   category: 'travel',
 };

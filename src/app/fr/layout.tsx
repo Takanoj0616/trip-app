@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "Guide Voyage Japon | Tourisme Tokyo & Vacances | Planificateur Japon France 2025",
+  title: "Guide Voyage Japon | Tourisme Tokyo & Vacances | Planificateur Japon France 2026",
   description: "Découvrez le Japon avec la planification IA depuis la France. Guide complet de Tokyo, Yokohama, Saitama & Chiba. Hôtels, restaurants, attractions et itinéraires personnalisés pour vos vacances parfaites au Japon depuis la France.",
   keywords: [
     "voyage japon france", "vacances japon", "guide tokyo france", "planificateur voyage japon",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     locale: 'fr_FR',
     alternateLocale: ['ja_JP', 'en_GB', 'en_US', 'ko_KR', 'ar_SA'],
     url: `${baseUrl}/fr`,
-    title: "Guide Voyage Japon | Tourisme Tokyo & Vacances | Planificateur Japon France 2025",
+    title: "Guide Voyage Japon | Tourisme Tokyo & Vacances | Planificateur Japon France 2026",
     description: "Découvrez le Japon avec la planification IA depuis la France. Guide complet de Tokyo, Yokohama, Saitama & Chiba. Hôtels, restaurants, attractions et itinéraires personnalisés pour vos vacances parfaites au Japon.",
     siteName: "Guide Voyage Japon France",
     images: [
@@ -79,15 +79,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@voyagejapon_fr',
     creator: '@voyagejapon_fr',
-    title: "Guide Voyage Japon | Tourisme Tokyo & Vacances | Planificateur Japon France 2025",
+    title: "Guide Voyage Japon | Tourisme Tokyo & Vacances | Planificateur Japon France 2026",
     description: "Découvrez le Japon avec la planification IA depuis la France. Guide complet de Tokyo, Yokohama, Saitama & Chiba.",
     images: [`${baseUrl}/twitter-image`],
-  },
-  verification: {
-    google: 'your-google-verification-code-fr',
-    other: {
-      'msvalidate.01': 'your-bing-verification-code-fr',
-    },
   },
   category: 'voyage',
 };

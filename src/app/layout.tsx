@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "日本旅行ガイド | 東京観光スポット・ホテル・レストラン完全ガイド 2025",
+  title: "日本旅行ガイド | 東京観光スポット・ホテル・レストラン完全ガイド 2026",
   description: "東京・横浜・埼玉・千葉の観光スポット、ホテル、レストラン、グルメを完全網羅。AI搭載の旅行プランニングで、あなただけの日本旅行プランを無料作成。浅草、渋谷、新宿、秋葉原など人気エリアの最新情報をお届けします。",
   keywords: [
     "日本旅行", "東京観光", "東京旅行ガイド", "日本観光ガイド",
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     locale: 'ja_JP',
     alternateLocale: ['en_GB', 'en_US', 'fr_FR', 'ko_KR', 'ar_SA'],
     url: baseUrl,
-    title: "日本旅行ガイド | 東京観光スポット・ホテル・レストラン完全ガイド 2025",
+    title: "日本旅行ガイド | 東京観光スポット・ホテル・レストラン完全ガイド 2026",
     description: "東京・横浜・埼玉・千葉の観光スポット、ホテル、レストラン、グルメを完全網羅。AI搭載の旅行プランニングで、あなただけの日本旅行プランを無料作成。浅草、渋谷、新宿など人気エリアの最新情報をお届けします。",
     siteName: "日本旅行ガイド",
     images: [
@@ -87,16 +87,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@japan_travel_jp',
     creator: '@japan_travel_jp',
-    title: "日本旅行ガイド | 東京観光スポット完全ガイド 2025",
+    title: "日本旅行ガイド | 東京観光スポット完全ガイド 2026",
     description: "東京・横浜・埼玉・千葉の観光スポット、ホテル、グルメを完全網羅。AI旅行プランニングで最適な日本旅行を。",
     images: [`${baseUrl}/twitter-image`],
-  },
-  verification: {
-    google: 'your-google-verification-code-jp',
-    yahoo: 'your-yahoo-verification-code-jp',
-    other: {
-      'msvalidate.01': 'your-bing-verification-code-jp',
-    },
   },
   icons: {
     icon: [

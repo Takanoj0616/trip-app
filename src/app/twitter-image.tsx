@@ -9,7 +9,7 @@ export const contentType = 'image/png'
 
 export default async function TwitterImage() {
   const title = '日本旅行ガイド'
-  const subtitle = '東京観光スポット完全ガイド 2025'
+  const subtitle = '東京観光スポット完全ガイド 2026'
   return new ImageResponse(
     (
       <div

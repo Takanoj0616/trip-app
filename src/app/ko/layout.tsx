@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "일본 여행 가이드 | 도쿄 관광 | 최고의 일본 여행 플래너 2025",
+  title: "일본 여행 가이드 | 도쿄 관광 | 최고의 일본 여행 플래너 2026",
   description: "AI 기반 여행 계획으로 일본을 발견하세요. 도쿄, 요코하마, 사이타마, 치바 관광의 완전한 가이드. 호텔, 레스토랑, 명소와 맞춤형 여행 일정.",
   keywords: [
     "일본 여행", "일본 관광", "도쿄 여행 가이드", "일본 여행 플래너",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     locale: 'ko_KR',
     alternateLocale: ['ja_JP', 'en_US', 'fr_FR', 'ar_SA'],
     url: `${baseUrl}/ko`,
-    title: "일본 여행 가이드 | 도쿄 관광 | 최고의 일본 여행 플래너 2025",
+    title: "일본 여행 가이드 | 도쿄 관광 | 최고의 일본 여행 플래너 2026",
     description: "AI 기반 여행 계획으로 일본을 발견하세요. 도쿄, 요코하마, 사이타마, 치바 관광의 완전한 가이드.",
     siteName: "일본 여행 가이드",
     images: [
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@japantravelguide',
     creator: '@japantravelguide',
-    title: "일본 여행 가이드 | 도쿄 관광 | 최고의 일본 여행 플래너 2025",
+    title: "일본 여행 가이드 | 도쿄 관광 | 최고의 일본 여행 플래너 2026",
     description: "AI 기반 여행 계획으로 일본을 발견하세요. 도쿄, 요코하마, 사이타마, 치바 관광의 완전한 가이드.",
     images: [`${baseUrl}/twitter-image`],
   },

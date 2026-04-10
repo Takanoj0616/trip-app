@@ -96,6 +96,18 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // Public marketing/content pages: allow CDN to cache the SSR HTML
+        // briefly and serve stale while revalidating. Authenticated routes
+        // (/coordinator, /favorites, /api/*) are excluded below.
+        source: '/:path((?!coordinator|favorites|login|register|api).*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=300, stale-while-revalidate=86400'
+          },
+        ],
+      },
+      {
         source: '/_next/static/(.*)',
         headers: [
           {
