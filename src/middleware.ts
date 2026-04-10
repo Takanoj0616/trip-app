@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   const locales = ['ja', 'en', 'fr', 'ko', 'ar'];
 
   // Bot判定
-  const userAgent = request.headers.get('user-agent');
+  const userAgent = request.headers.get('user-agent') ?? undefined;
   const isBotRequest = isBot(userAgent);
   const isSEOBotRequest = isSEOBot(userAgent);
 

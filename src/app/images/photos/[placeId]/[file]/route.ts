@@ -77,8 +77,8 @@ async function fetchPhotoFromGoogle(placeId: string, index: number, apiKey: stri
   });
 }
 
-export async function GET(_req: NextRequest, context: { params: { placeId: string; file: string } }) {
-  const { placeId, file } = context.params;
+export async function GET(_req: NextRequest, context: { params: Promise<{ placeId: string; file: string }> }) {
+  const { placeId, file } = await context.params;
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_API_KEY;
 
   // If no API key, return 404 to avoid invalid image response
