@@ -469,7 +469,7 @@ export default function MainContent({
       accessByCar: 'Accès en voiture',
     },
   } as const;
-  const i18n = (dicts as any)[lang] || dicts.en;
+  const i18n = dicts[lang] || dicts.en;
 
 
   // クライアントサイドであることを確認
@@ -753,8 +753,8 @@ export default function MainContent({
   const showNotification = (message: string, _type: 'success' | 'info' = 'info') => {
     setToastMsg(message);
     try {
-      clearTimeout((window as any).__toastTimer);
-      (window as any).__toastTimer = setTimeout(() => setToastMsg(null), 2600);
+      clearTimeout((window as unknown as Record<string, ReturnType<typeof setTimeout>>).__toastTimer);
+      (window as unknown as Record<string, ReturnType<typeof setTimeout>>).__toastTimer = setTimeout(() => setToastMsg(null), 2600);
     } catch { }
   };
 
@@ -1016,11 +1016,11 @@ export default function MainContent({
   }, [spotData?.crowdLevel, spotData?.rating, i18n.crowdLabels]);
 
   const getReviewCountDisplay = () => {
-    const count = typeof spotData?.reviewCount === 'number'
+    const count: number | undefined = typeof spotData?.reviewCount === 'number'
       ? spotData.reviewCount
-      : ((spotData as any)?.reviews?.length as number | undefined);
+      : undefined;
     if (!count && count !== 0) return '';
-    const n = (count as number).toLocaleString();
+    const n = count.toLocaleString();
     const suffix = lang === 'en' ? 'reviews' : lang === 'ko' ? '리뷰' : lang === 'fr' ? 'avis' : '件';
     return `(${n} ${suffix})`;
   };
@@ -1484,7 +1484,7 @@ export default function MainContent({
             ] as const).map(tab => (
               <button
                 key={tab.key}
-                onClick={() => setMainTab(tab.key as any)}
+                onClick={() => setMainTab(tab.key)}
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${mainTab === tab.key ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white' : 'text-gray-700 hover:bg-white'}`}
               >
                 {tab.label}
@@ -2368,7 +2368,9 @@ export default function MainContent({
 
           <div className="mt-10">
             <h3 className="text-lg font-bold text-secondary mb-3">ショート動画</h3>
-            <video src="/douga.mp4" controls muted playsInline className="w-full rounded-2xl shadow" poster="/images/spots/東京タワー_20250714_121123.jpg" />
+            <video controls muted playsInline preload="none" className="w-full rounded-2xl shadow" poster="/images/spots/東京タワー_20250714_121123.jpg">
+              <source src="/douga.mp4" type="video/mp4" />
+            </video>
           </div>
 
         </section>

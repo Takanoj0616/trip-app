@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { GA_ID } from '@/lib/site'
+import { WindowWithGtag } from '@/types'
 
 export default function Analytics() {
   const pathname = usePathname()
@@ -11,7 +12,7 @@ export default function Analytics() {
   useEffect(() => {
     if (!GA_ID) return
     const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '')
-    const w: any = typeof window !== 'undefined' ? (window as any) : undefined
+    const w: WindowWithGtag | undefined = typeof window !== 'undefined' ? (window as WindowWithGtag) : undefined
     if (w && w.gtag) {
       w.gtag('config', GA_ID, {
         page_path: url,

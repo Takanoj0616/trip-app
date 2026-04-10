@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { rateLimit } from '@/lib/rate-limit';
+import { verifyAuth, isAuthError } from '@/lib/api-auth';
+
+const limiter = rateLimit({ interval: 60 * 1000, uniqueTokenPerInterval: 5 });
 
 function getStripe(): Stripe | null {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -7,11 +11,17 @@ function getStripe(): Stripe | null {
   try {
     return new Stripe(key, { apiVersion: '2024-06-20' });
   } catch {
-    return new Stripe(key as string) as any;
+    return new Stripe(key) as Stripe;
   }
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimitResult = limiter.check(request);
+  if (rateLimitResult) return rateLimitResult;
+
+  const authResult = await verifyAuth(request);
+  if (isAuthError(authResult)) return authResult;
+
   try {
     const stripe = getStripe();
     if (!stripe) {

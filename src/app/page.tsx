@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { shouldUseSSR } from '@/lib/render-utils';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -13,6 +13,26 @@ import { logEvent } from 'firebase/analytics';
 export default function Home() {
   const { t, currentLanguage } = useLanguage();
   const { signInWithGoogle, signInWithApple } = useAuth();
+
+  // 動画遅延読み込み用
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const [heroVideoVisible, setHeroVideoVisible] = useState(false);
+
+  useEffect(() => {
+    const video = heroVideoRef.current;
+    if (!video) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeroVideoVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
 
   const pageBackground = useMemo(() => {
     // 背景の青を削除し、透明に設定
@@ -835,10 +855,12 @@ export default function Home() {
         }}>
           {/* Background Video */}
           <video
+            ref={heroVideoRef}
             autoPlay
             muted
             loop
             playsInline
+            preload="none"
             poster="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
             style={{
               position: 'absolute',
@@ -861,7 +883,7 @@ export default function Home() {
               }
             }}
           >
-            <source src="/douga.mp4" type="video/mp4" />
+            {heroVideoVisible && <source src="/douga.mp4" type="video/mp4" />}
             Your browser does not support the video tag.
           </video>
 

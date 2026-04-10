@@ -57,7 +57,7 @@ export function convertTokyoSpotsToTouristSpots(locale: string = 'ja'): TouristS
       tags: spot.tags || [],
       googlePlaceId: undefined,
       reviewCount: spot.reviewCount,
-      crowdLevel: spot.info?.crowdLevel as any,
+      crowdLevel: spot.info?.crowdLevel as TouristSpot['crowdLevel'],
       averageStayMinutes: spot.info?.duration ? parseInt(spot.info.duration) * 60 : undefined,
       stayRange: spot.info?.duration
     };

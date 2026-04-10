@@ -113,3 +113,9 @@ export interface FooterColumn {
   title: string;
   links: FooterLink[];
 }
+
+// Google Analytics gtag用のWindow拡張型
+export interface WindowWithGtag extends Window {
+  gtag?: (...args: [string, ...unknown[]]) => void;
+  dataLayer?: unknown[];
+}

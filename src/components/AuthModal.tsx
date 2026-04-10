@@ -37,8 +37,9 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
       setEmail('');
       setPassword('');
       setName('');
-    } catch (err: any) {
-      setError(err.message || 'エラーが発生しました');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'エラーが発生しました';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -51,8 +52,9 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
     try {
       await signInWithGoogle();
       onClose();
-    } catch (err: any) {
-      setError(err.message || 'Googleログインでエラーが発生しました');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Googleログインでエラーが発生しました';
+      setError(message);
     } finally {
       setLoading(false);
     }

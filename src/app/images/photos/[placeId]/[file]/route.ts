@@ -38,7 +38,13 @@ async function fetchPhotoFromGoogle(placeId: string, index: number, apiKey: stri
     return NextResponse.json({ error: 'Failed to fetch place details' }, { status: 502 });
   }
   const details = await detailsRes.json();
-  const photos: any[] | undefined = details?.result?.photos;
+  interface GooglePlacePhoto {
+    photo_reference?: string;
+    photoReference?: string;
+    height?: number;
+    width?: number;
+  }
+  const photos: GooglePlacePhoto[] | undefined = details?.result?.photos;
   if (!photos || photos.length === 0) {
     return NextResponse.json({ error: 'No photos available' }, { status: 404 });
   }

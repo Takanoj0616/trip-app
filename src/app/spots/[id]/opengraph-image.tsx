@@ -6,6 +6,12 @@ import { tokyoSpots } from '@/data/tokyo-spots'
 import { allBookstoreSpots } from '@/data/tokyo-bookstore-spots'
 import { tokyoSpotsDetailed } from '@/data/tokyo-spots-detailed'
 
+interface SpotLike {
+  id: string;
+  name: string;
+  images?: string[];
+}
+
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -15,13 +21,13 @@ export default async function SpotOg({ params }: Params) {
   const { id } = await params
   const baseUrl = BASE_URL
 
-  const all = [
+  const all: SpotLike[] = [
     ...allRestaurantSpots,
     ...hotelSpots,
     ...kanngouSpots,
     ...tokyoSpots,
     ...allBookstoreSpots,
-  ] as any[]
+  ] as SpotLike[]
 
   let name = 'Japan Travel Guide'
   let image: string | undefined

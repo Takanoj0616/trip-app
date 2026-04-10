@@ -11,13 +11,13 @@ interface PaginationProps {
 
 export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
   const { currentLanguage } = useLanguage();
-  const i18n = {
+  const i18n: Record<string, { prev: string; next: string; aria: string }> = {
     ja: { prev: '前へ', next: '次へ', aria: 'ページネーション' },
     en: { prev: 'Prev', next: 'Next', aria: 'Pagination' },
     ko: { prev: '이전', next: '다음', aria: '페이지네이션' },
     fr: { prev: 'Préc.', next: 'Suiv.', aria: 'Pagination' },
-  } as const;
-  const tr = (i18n as any)[currentLanguage] || (i18n as any).ja;
+  };
+  const tr = i18n[currentLanguage] || i18n.ja;
   const getPageNumbers = () => {
     const pages = [];
     const showPages = 5;

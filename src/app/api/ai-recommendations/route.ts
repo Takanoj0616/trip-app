@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TouristSpot } from '@/types';
 import { tokyoSpots } from '@/data/tokyo-spots';
+import { rateLimit } from '@/lib/rate-limit';
+import { verifyAuth, isAuthError } from '@/lib/api-auth';
+
+const limiter = rateLimit({ interval: 60 * 1000, uniqueTokenPerInterval: 10 });
 
 interface RecommendationRequest {
   interests: string[];
@@ -25,6 +29,12 @@ interface RecommendationResponse {
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimitResult = limiter.check(request);
+  if (rateLimitResult) return rateLimitResult;
+
+  const authResult = await verifyAuth(request);
+  if (isAuthError(authResult)) return authResult;
+
   try {
     const data: RecommendationRequest = await request.json();
 

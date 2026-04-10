@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Star, MapPin, Clock, ExternalLink } from 'lucide-react';
-import { TouristSpot } from '@/types';
+import { TouristSpot, OpeningHours } from '@/types';
 import FavoriteButton from './FavoriteButton';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -65,7 +65,7 @@ const SpotCard: React.FC<SpotCardProps> = ({
     return categoryNames[currentLanguage]?.[category] || category;
   };
 
-  const formatOpeningHours = (openingHours?: any) => {
+  const formatOpeningHours = (openingHours?: OpeningHours) => {
     if (!openingHours) return null;
     
     const today = new Date().getDay();

@@ -1,4 +1,7 @@
 import { NextRequest } from 'next/server';
+import { rateLimit } from '@/lib/rate-limit';
+
+const limiter = rateLimit({ interval: 60 * 1000, uniqueTokenPerInterval: 20 });
 
 type ApiTweet = {
   id: string;
@@ -95,6 +98,9 @@ function buildFallbackTweets(count: number): ApiTweet[] {
 }
 
 export async function GET(req: NextRequest) {
+  const rateLimitResult = limiter.check(req);
+  if (rateLimitResult) return rateLimitResult;
+
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q') || '#Tokyo OR #東京';
   const count = Math.min(50, Math.max(1, parseInt(searchParams.get('count') || '20', 10)));

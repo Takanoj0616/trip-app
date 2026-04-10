@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit } from '@/lib/rate-limit'
+import { verifyAuth, isAuthError } from '@/lib/api-auth'
+
+const limiter = rateLimit({ interval: 60 * 1000, uniqueTokenPerInterval: 30 })
 
 type SortBy = 'createdAt' | 'viewCount' | 'likeCount'
 type SortOrder = 'asc' | 'desc'
@@ -72,6 +76,9 @@ function applyFilters(items: TravelPost[], params: URLSearchParams) {
 }
 
 export async function GET(req: NextRequest) {
+  const rateLimitResult = limiter.check(req)
+  if (rateLimitResult) return rateLimitResult
+
   const { searchParams } = new URL(req.url)
   const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10))
   const limit = Math.min(24, Math.max(1, parseInt(searchParams.get('limit') || '12', 10)))
@@ -89,6 +96,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const rateLimitResult = limiter.check(req)
+  if (rateLimitResult) return rateLimitResult
+
+  const authResult = await verifyAuth(req)
+  if (isAuthError(authResult)) return authResult
+
   const body = await req.json().catch(() => null)
   if (!body || !body.title || !body.content || !body.author) {
     return NextResponse.json({ message: 'Invalid payload' }, { status: 400 })

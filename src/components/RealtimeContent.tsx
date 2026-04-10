@@ -47,7 +47,7 @@ interface Tweet {
     thumbnailUrl?: string;
     alt?: string;
   }[];
-  contextAnnotations: any[];
+  contextAnnotations: { domain?: { id: string; name: string }; entity?: { id: string; name: string } }[];
   category?: 'traffic' | 'weather' | 'events' | 'food' | 'sightseeing' | 'emergency';
   relevanceScore?: number;
   spotId?: string;
@@ -450,7 +450,7 @@ export default function RealtimeContent() {
     return summary;
   };
   
-  const processTweets = async (rawTweets: any[]): Promise<Tweet[]> => {
+  const processTweets = async (rawTweets: Partial<Tweet>[]): Promise<Tweet[]> => {
     const spot = getCurrentSpot();
     
     const processedTweets = await Promise.all(
@@ -479,7 +479,7 @@ export default function RealtimeContent() {
   };
 
   // フォールバックデータ生成関数
-  const generateFallbackTweets = (spot: SpotLocation, category: string) => {
+  const generateFallbackTweets = (spot: SpotQuery, category: string) => {
     const baseData = [
       {
         id: '1',

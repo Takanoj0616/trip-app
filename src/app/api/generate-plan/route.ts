@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { rateLimit } from '@/lib/rate-limit';
+import { verifyAuth, isAuthError } from '@/lib/api-auth';
+
+const limiter = rateLimit({ interval: 60 * 1000, uniqueTokenPerInterval: 10 });
 
 // OpenAI client - only initialize if API key is available
 let openai: OpenAI | null = null;
@@ -19,6 +23,12 @@ interface PlanRequest {
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimitResult = limiter.check(request);
+  if (rateLimitResult) return rateLimitResult;
+
+  const authResult = await verifyAuth(request);
+  if (isAuthError(authResult)) return authResult;
+
   try {
     const data: PlanRequest = await request.json();
 

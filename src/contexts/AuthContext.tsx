@@ -15,7 +15,7 @@ import {
   onAuthStateChanged,
   updateProfile
 } from '@/lib/firebase';
-import { User } from '@/types';
+import { User, WindowWithGtag } from '@/types';
 
 interface AuthContextType {
   user: User | null;
@@ -97,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     }
     try {
-      const w: any = typeof window !== 'undefined' ? (window as any) : undefined;
+      const w: WindowWithGtag | undefined = typeof window !== 'undefined' ? (window as WindowWithGtag) : undefined;
       if (w && w.gtag) {
         w.gtag('event', 'sign_up', { method: 'email' });
       } else {
@@ -114,10 +114,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const result = await signInWithPopup(auth, provider);
     try {
       // Fire sign_up only if this looks like the first sign-in (new account)
-      const u = result?.user as any;
+      const u = result?.user;
       const isNew = u?.metadata?.creationTime && u?.metadata?.lastSignInTime && (u.metadata.creationTime === u.metadata.lastSignInTime);
       if (isNew) {
-        const w: any = typeof window !== 'undefined' ? (window as any) : undefined;
+        const w: WindowWithGtag | undefined = typeof window !== 'undefined' ? (window as WindowWithGtag) : undefined;
         if (w && w.gtag) {
           w.gtag('event', 'sign_up', { method: 'google' });
         } else {
@@ -135,10 +135,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const provider = new OAuthProvider('apple.com');
       const result = await signInWithPopup(auth, provider);
       try {
-        const u = result?.user as any;
+        const u = result?.user;
         const isNew = u?.metadata?.creationTime && u?.metadata?.lastSignInTime && (u.metadata.creationTime === u.metadata.lastSignInTime);
         if (isNew) {
-          const w: any = typeof window !== 'undefined' ? (window as any) : undefined;
+          const w: WindowWithGtag | undefined = typeof window !== 'undefined' ? (window as WindowWithGtag) : undefined;
           if (w && w.gtag) {
             w.gtag('event', 'sign_up', { method: 'apple' });
           } else {
@@ -146,8 +146,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         }
       } catch {}
-    } catch (e: any) {
-      const msg = e?.message || 'Apple sign-in is not configured';
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Apple sign-in is not configured';
       throw new Error(msg);
     }
   };

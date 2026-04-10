@@ -75,28 +75,29 @@ export const CheckInProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        const checkInsData = snapshot.docs.map((doc: any) => {
-          const data = doc.data();
+        const checkInsData = snapshot.docs.map((d) => {
+          const data = d.data();
           return {
-            id: doc.id,
+            id: d.id,
             ...data,
             timestamp: data.timestamp?.toDate() || new Date(),
           } as CheckIn;
         });
         setCheckIns(checkInsData);
       },
-      async (error: any) => {
-        if (error?.code === 'failed-precondition') {
+      async (error: unknown) => {
+        const firebaseError = error instanceof Error && 'code' in error ? (error as { code: string }) : null;
+        if (firebaseError?.code === 'failed-precondition') {
           console.info('Firestore index missing for checkIns query. Falling back to unordered fetch.');
           try {
             const fallbackQ = query(checkInsRef, where('userId', '==', user.id), limit(100));
-            const snapshot = await getDocs(fallbackQ as any);
-            const data = snapshot.docs.map((doc: any) => {
-              const d = doc.data();
-              return { id: doc.id, ...d, timestamp: d.timestamp?.toDate?.() || new Date() } as CheckIn;
+            const snapshot = await getDocs(fallbackQ);
+            const data = snapshot.docs.map((snapDoc) => {
+              const d = snapDoc.data();
+              return { id: snapDoc.id, ...d, timestamp: d.timestamp?.toDate?.() || new Date() } as CheckIn;
             });
             // Client-side sort by timestamp desc
-            data.sort((a, b) => (b.timestamp as any) - (a.timestamp as any));
+            data.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
             setCheckIns(data);
           } catch (e) {
             console.warn('Fallback fetch for checkIns failed:', e);
